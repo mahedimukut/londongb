@@ -1,5 +1,3 @@
-// app/products/[id]/page.tsx
-
 import { allProducts } from "@/app/allProducts";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -11,18 +9,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+interface PageProps {
+  params: { id: string };
+}
+
 export async function generateStaticParams() {
   return allProducts.map((product) => ({
     id: product.id.toString(),
   }));
 }
 
-// ✅ Main Page — must be async & use inline `params`
-export default async function ProductPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function ProductPage({ params }: PageProps) {
   const productId = parseInt(params.id);
   const product = allProducts.find((p) => p.id === productId);
 
@@ -44,6 +41,7 @@ export default async function ProductPage({
               alt={product.name}
               fill
               className="object-cover rounded-2xl"
+              priority
             />
           </div>
 
@@ -184,6 +182,7 @@ export default async function ProductPage({
                       alt={item.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform"
+                      loading="lazy"
                     />
                   </div>
                   <div className="mt-2 text-sm">

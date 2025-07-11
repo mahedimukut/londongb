@@ -13,15 +13,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { allProducts } from "@/app/allProducts";
 
-interface ProductPageProps {
-  params: { id: string };
-}
-
-export default async function ProductPage({ params }: ProductPageProps) {
-  // First safely parse the ID
+export default function ProductPage({ params }: { params: { id: string } }) {
   const productId = parseInt(params.id);
-
-  // Then find the product
   const product = allProducts.find((p) => p.id === productId);
 
   if (!product) {
@@ -36,7 +29,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <>
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Back button */}
         <Link
           href="/shop"
           className="flex items-center text-brand-primary-600 hover:text-brand-primary-800 transition-colors mb-4"
@@ -45,9 +37,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           Back to Shop
         </Link>
 
-        {/* Product Main Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Product Image */}
           <div className="bg-gray-50 rounded-xl overflow-hidden shadow-lg h-[550px] flex items-center justify-center p-2">
             <div className="relative w-full h-full">
               <Image
@@ -61,9 +51,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
 
-          {/* Product Info */}
           <div className="space-y-4">
-            {/* Badges */}
             <div className="flex gap-2">
               {product.isNew && (
                 <span className="bg-brand-primary-600 text-white text-xs px-2.5 py-1 rounded-full">
@@ -77,10 +65,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               )}
             </div>
 
-            {/* Title */}
             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
 
-            {/* Rating */}
             <div className="flex items-center gap-2">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
@@ -99,7 +85,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </span>
             </div>
 
-            {/* Price */}
             <div className="flex items-baseline gap-3">
               <p className="text-3xl font-bold text-brand-primary-600">
                 {new Intl.NumberFormat("bn-BD", {
@@ -121,7 +106,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               )}
             </div>
 
-            {/* Description */}
             <div className="py-3">
               <p className="text-gray-700">
                 {product.description ||
@@ -129,7 +113,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </p>
             </div>
 
-            {/* Key Features */}
             <div className="space-y-2 py-3">
               <div className="flex items-center">
                 <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
@@ -153,7 +136,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </div>
             </div>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button className="flex-1 bg-brand-primary-600 hover:bg-brand-primary-700 text-white py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg hover:shadow-xl">
                 <ShoppingCart className="h-5 w-5" />
@@ -165,7 +147,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </button>
             </div>
 
-            {/* Specifications */}
             <div className="pt-6">
               <div className="flex items-center gap-2 mb-3">
                 <Info className="h-5 w-5 text-brand-primary-600" />
@@ -193,7 +174,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        {/* Reviews Section */}
         <div className="mb-10 bg-white rounded-xl shadow-sm p-6">
           <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
           <div className="flex items-center justify-between mb-4">
@@ -216,7 +196,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               Write Review
             </button>
           </div>
-          {/* Sample review */}
           <div className="border-t pt-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="h-8 w-8 rounded-full bg-gray-200"></div>
@@ -229,7 +208,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-bold mb-4">Similar Products</h2>
@@ -273,5 +251,3 @@ export default async function ProductPage({ params }: ProductPageProps) {
     </>
   );
 }
-// Note: Ensure that the `allProducts` array is properly imported and contains the necessary product data.
-// The `notFound` function is used to handle cases where the product is not found,

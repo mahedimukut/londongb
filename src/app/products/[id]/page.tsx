@@ -13,22 +13,21 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { allProducts } from "@/app/allProducts";
 
-// ✅ Define static params for build
-export function generateStaticParams() {
+// ✅ You MUST define this for dynamic routes to work in App Router
+export async function generateStaticParams() {
   return allProducts.map((product) => ({
     id: product.id.toString(),
   }));
 }
 
-// ✅ Define props type
-interface ProductPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function ProductPage({ params }: ProductPageProps) {
+// ✅ You do NOT need to define ProductPageProps manually, just destructure
+export default async function ProductPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const productId = parseInt(params.id);
+
   const product = allProducts.find((p) => p.id === productId);
 
   if (!product) return notFound();
@@ -185,8 +184,6 @@ export default function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
         </div>
-
-        {/* You can keep review and related product sections here */}
       </div>
       <Footer />
     </>

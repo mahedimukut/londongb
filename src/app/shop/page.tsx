@@ -23,6 +23,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { allProducts } from "@/app/allProducts";
 
 type Product = {
   id: number;
@@ -31,7 +32,7 @@ type Product = {
   originalPrice?: number;
   rating: number;
   reviews: number;
-  image: string;
+  images: string[];
   colors: string[];
   isNew?: boolean;
   isBestSeller?: boolean;
@@ -40,399 +41,6 @@ type Product = {
   stock: number;
   ageRange?: string;
 };
-
-const allProducts: Product[] = [
-  // Clothing (8 items)
-  {
-    id: 1,
-    name: "Organic Cotton Bodysuits (Pack of 5)",
-    price: 3499,
-    originalPrice: 3999,
-    rating: 4.8,
-    reviews: 142,
-    image: "/images/products/baby-clothing.png",
-    colors: ["white", "gray", "yellow"],
-    isNew: true,
-    isBestSeller: true,
-    category: "clothing",
-    stock: 42,
-    ageRange: "0-6m",
-  },
-  {
-    id: 2,
-    name: "Baby Romper with Hat Set",
-    price: 1799,
-    rating: 4.5,
-    reviews: 87,
-    image: "/images/products/bath-skincare.png",
-    colors: ["blue", "pink"],
-    category: "clothing",
-    stock: 15,
-    ageRange: "6-12m",
-  },
-  {
-    id: 3,
-    name: "Premium Baby Kimono Set",
-    price: 2299,
-    originalPrice: 2599,
-    rating: 4.7,
-    reviews: 64,
-    image: "/images/products/diapering.jpeg",
-    colors: ["white", "beige"],
-    isNew: true,
-    category: "clothing",
-    stock: 28,
-    ageRange: "0-3m",
-  },
-  {
-    id: 4,
-    name: "Baby Sun Hat with UV Protection",
-    price: 799,
-    rating: 4.3,
-    reviews: 56,
-    image: "/images/products/feeding-nursing.jpeg",
-    colors: ["white", "blue"],
-    category: "clothing",
-    stock: 39,
-    ageRange: "0-12m",
-  },
-  {
-    id: 5,
-    name: "Soft Sole Baby Shoes (Pair)",
-    price: 1199,
-    rating: 4.6,
-    reviews: 92,
-    image: "/images/products/moms-care.jpeg",
-    colors: ["pink", "blue"],
-    category: "clothing",
-    stock: 25,
-    ageRange: "6-12m",
-  },
-  {
-    id: 6,
-    name: "Baby Winter Jacket",
-    price: 2899,
-    originalPrice: 3299,
-    rating: 4.7,
-    reviews: 34,
-    image: "/images/products/stroller-carriers.jpeg",
-    colors: ["red", "navy"],
-    category: "clothing",
-    stock: 18,
-    ageRange: "3-6m",
-  },
-  {
-    id: 7,
-    name: "Cotton Baby Socks (Pack of 6)",
-    price: 699,
-    rating: 4.4,
-    reviews: 128,
-    image: "/images/products/toys-learning.jpeg",
-    colors: ["multi"],
-    category: "clothing",
-    stock: 50,
-    ageRange: "24-36m",
-  },
-  {
-    id: 8,
-    name: "Baby Denim Overalls",
-    price: 2499,
-    rating: 4.5,
-    reviews: 76,
-    image: "/images/products/baby-clothing.png",
-    colors: ["blue", "black"],
-    category: "clothing",
-    stock: 22,
-    ageRange: "12-24m",
-  },
-
-  // Toys & Learning (6 items)
-  {
-    id: 9,
-    name: "Montessori Wooden Activity Cube",
-    price: 4999,
-    rating: 4.9,
-    reviews: 203,
-    image: "/images/products/bath-skincare.png",
-    colors: ["natural"],
-    isBestSeller: true,
-    category: "toys",
-    stock: 8,
-    ageRange: "6-24m",
-  },
-  {
-    id: 10,
-    name: "Sensory Teething Toys Set",
-    price: 1299,
-    rating: 4.6,
-    reviews: 156,
-    image: "/images/products/diapering.jpeg",
-    colors: ["multi"],
-    category: "toys",
-    stock: 34,
-    ageRange: "3-12m",
-  },
-  {
-    id: 11,
-    name: "Baby Piano Play Gym",
-    price: 3599,
-    originalPrice: 3999,
-    rating: 4.8,
-    reviews: 98,
-    image: "/images/products/feeding-nursing.jpeg",
-    colors: ["multi"],
-    isNew: true,
-    category: "toys",
-    stock: 12,
-    ageRange: "0-12m",
-  },
-  {
-    id: 12,
-    name: "Stacking Rings Toy",
-    price: 899,
-    rating: 4.5,
-    reviews: 87,
-    image: "/images/products/moms-care.jpeg",
-    colors: ["multi"],
-    category: "toys",
-    stock: 45,
-    ageRange: "6-18m",
-  },
-  {
-    id: 13,
-    name: "Soft Plush Rattle Set",
-    price: 1499,
-    rating: 4.7,
-    reviews: 112,
-    image: "/images/products/stroller-carriers.jpeg",
-    colors: ["multi"],
-    category: "toys",
-    stock: 28,
-    ageRange: "0-6m",
-  },
-  {
-    id: 14,
-    name: "Baby First Book Set",
-    price: 1799,
-    rating: 4.8,
-    reviews: 65,
-    image: "/images/products/toys-learning.jpeg",
-    colors: ["multi"],
-    category: "toys",
-    stock: 37,
-    ageRange: "12-24m",
-  },
-
-  // Feeding (5 items)
-  {
-    id: 15,
-    name: "Anti-Colic Baby Bottle Set",
-    price: 2799,
-    originalPrice: 3299,
-    rating: 4.7,
-    reviews: 98,
-    image: "/images/products/baby-clothing.png",
-    colors: ["pink", "blue"],
-    isNew: true,
-    category: "feeding",
-    stock: 22,
-    ageRange: "0-12m",
-  },
-  {
-    id: 16,
-    name: "Insulated Baby Food Jar",
-    price: 899,
-    rating: 4.4,
-    reviews: 45,
-    image: "/images/products/bath-skincare.png",
-    colors: ["green"],
-    category: "feeding",
-    stock: 50,
-    ageRange: "6-24m",
-  },
-  {
-    id: 17,
-    name: "Baby Feeding Spoon Set",
-    price: 599,
-    rating: 4.3,
-    reviews: 78,
-    image: "/images/products/diapering.jpeg",
-    colors: ["pink", "blue"],
-    category: "feeding",
-    stock: 60,
-    ageRange: "4-24m",
-  },
-  {
-    id: 18,
-    name: "Silicone Baby Bibs (Pack of 3)",
-    price: 1299,
-    rating: 4.6,
-    reviews: 134,
-    image: "/images/products/feeding-nursing.jpeg",
-    colors: ["blue", "pink", "gray"],
-    category: "feeding",
-    stock: 42,
-    ageRange: "4-24m",
-  },
-  {
-    id: 19,
-    name: "Electric Baby Food Maker",
-    price: 4599,
-    originalPrice: 4999,
-    rating: 4.8,
-    reviews: 56,
-    image: "/images/products/moms-care.jpeg",
-    colors: ["white"],
-    category: "feeding",
-    stock: 15,
-    ageRange: "4-12m",
-  },
-
-  // Nursery (5 items)
-  {
-    id: 20,
-    name: "Musical Mobile for Crib",
-    price: 3599,
-    rating: 4.8,
-    reviews: 132,
-    image: "/images/products/baby-clothing.png",
-    colors: ["white"],
-    isBestSeller: true,
-    category: "nursery",
-    stock: 12,
-    ageRange: "0-12m",
-  },
-  {
-    id: 21,
-    name: "Organic Cotton Swaddle Blanket",
-    price: 1499,
-    rating: 4.9,
-    reviews: 287,
-    image: "/images/products/bath-skincare.png",
-    colors: ["gray", "mint"],
-    category: "nursery",
-    stock: 37,
-    ageRange: "0-6m",
-  },
-  {
-    id: 22,
-    name: "Baby Night Light Projector",
-    price: 2299,
-    rating: 4.7,
-    reviews: 89,
-    image: "/images/products/diapering.jpeg",
-    colors: ["white", "blue"],
-    category: "nursery",
-    stock: 24,
-    ageRange: "0-24m",
-  },
-  {
-    id: 23,
-    name: "Waterproof Crib Mattress",
-    price: 4999,
-    originalPrice: 5499,
-    rating: 4.8,
-    reviews: 76,
-    image: "/images/products/feeding-nursing.jpeg",
-    colors: ["white"],
-    category: "nursery",
-    stock: 9,
-    ageRange: "0-24m",
-  },
-  {
-    id: 24,
-    name: "Baby Nursery Decor Set",
-    price: 3299,
-    rating: 4.6,
-    reviews: 43,
-    image: "/images/products/moms-care.jpeg",
-    colors: ["neutral"],
-    category: "nursery",
-    stock: 18,
-    ageRange: "0-24m",
-  },
-
-  // Bath & Skincare (3 items)
-  {
-    id: 25,
-    name: "Baby Bath Tub with Support",
-    price: 2299,
-    originalPrice: 2699,
-    rating: 4.5,
-    reviews: 76,
-    image: "/images/products/stroller-carriers.jpeg",
-    colors: ["white"],
-    isNew: true,
-    category: "bath",
-    stock: 18,
-    ageRange: "0-12m",
-  },
-  {
-    id: 26,
-    name: "Organic Baby Shampoo Set",
-    price: 1299,
-    rating: 4.7,
-    reviews: 143,
-    image: "/images/products/toys-learning.jpeg",
-    colors: ["clear"],
-    category: "bath",
-    stock: 42,
-    ageRange: "0-24m",
-  },
-  {
-    id: 27,
-    name: "Hooded Baby Towel",
-    price: 999,
-    rating: 4.6,
-    reviews: 98,
-    image: "/images/products/baby-clothing.png",
-    colors: ["blue", "pink"],
-    category: "bath",
-    stock: 31,
-    ageRange: "0-24m",
-  },
-
-  // Gear & Accessories (3 items)
-  {
-    id: 28,
-    name: "Lightweight Baby Stroller",
-    price: 8999,
-    originalPrice: 9999,
-    rating: 4.8,
-    reviews: 89,
-    image: "/images/products/bath-skincare.png",
-    colors: ["black", "navy"],
-    isBestSeller: true,
-    category: "gear",
-    stock: 7,
-    ageRange: "0-36m",
-  },
-  {
-    id: 29,
-    name: "Ergonomic Baby Carrier",
-    price: 4599,
-    rating: 4.9,
-    reviews: 201,
-    image: "/images/products/diapering.jpeg",
-    colors: ["gray", "khaki"],
-    category: "gear",
-    stock: 14,
-    ageRange: "0-24m",
-  },
-  {
-    id: 30,
-    name: "Car Seat & Stroller Combo",
-    price: 12999,
-    originalPrice: 14999,
-    rating: 4.7,
-    reviews: 67,
-    image: "/images/products/moms-care.jpeg",
-    colors: ["black"],
-    category: "gear",
-    stock: 5,
-    ageRange: "0-36m",
-  },
-];
 
 const categories = [
   { id: "all", name: "All Products", count: allProducts.length },
@@ -527,7 +135,7 @@ const ProductCard = ({
       >
         <div className="relative w-full sm:w-48 h-48 rounded-lg overflow-hidden group">
           <Image
-            src={product.image}
+            src={product.images[0]}
             alt={product.name}
             fill
             className="object-cover"
@@ -540,10 +148,10 @@ const ProductCard = ({
           )}
 
           {/* Quick View Button for List View */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <Link
               href={`/products/${product.id}`}
-              className="flex items-center gap-1 bg-white text-brand-primary-600 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-brand-primary-50 transition-colors"
+              className="flex items-center gap-1 bg-white text-brand-primary-600 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-brand-primary-50 transition-colors shadow-md"
               onClick={(e) => e.stopPropagation()}
             >
               <Eye className="h-4 w-4" />
@@ -567,7 +175,7 @@ const ProductCard = ({
                     key={i}
                     className={`h-4 w-4 ${
                       i < Math.floor(product.rating)
-                        ? "text-yellow-400 fill-yellow-400"
+                        ? "text-brand-gold-400 fill-brand-gold-400"
                         : "text-gray-300"
                     }`}
                   />
@@ -635,7 +243,7 @@ const ProductCard = ({
     >
       <div className="relative aspect-square">
         <Image
-          src={product.image}
+          src={product.images[0]}
           alt={product.name}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -648,14 +256,14 @@ const ProductCard = ({
             </span>
           )}
           {product.isBestSeller && (
-            <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded block">
+            <span className="bg-brand-gold-500 text-white text-xs px-2 py-1 rounded block">
               BESTSELLER
             </span>
           )}
         </div>
         <button
           onClick={() => setIsFavorite(!isFavorite)}
-          className="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white"
+          className="absolute z-10 top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white shadow-sm"
         >
           <Heart
             className={`h-5 w-5 ${
@@ -665,10 +273,10 @@ const ProductCard = ({
         </button>
 
         {/* Quick View Button for Grid View */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
           <Link
             href={`/products/${product.id}`}
-            className="flex items-center gap-1 bg-white text-brand-primary-600 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-brand-primary-50 transition-colors"
+            className="flex items-center gap-1 bg-white text-brand-primary-600 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-brand-primary-50 transition-colors shadow-md"
             onClick={(e) => e.stopPropagation()}
           >
             <Eye className="h-4 w-4" />
@@ -699,7 +307,7 @@ const ProductCard = ({
               )}
             </div>
             <div className="flex items-center text-sm">
-              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+              <Star className="h-4 w-4 text-brand-gold-400 fill-brand-gold-400" />
               <span>{product.rating.toFixed(1)}</span>
             </div>
           </div>

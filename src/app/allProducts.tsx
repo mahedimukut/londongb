@@ -51,7 +51,7 @@ export const allProducts: CompleteProduct[] = [
     stock: 42,
     ageRange: "0-6m",
     description:
-      "Soft and breathable organic cotton bodysuits perfect for your newborn. Features envelope neckline for easy dressing and snap closures for quick diaper changes.",
+      "Crafted from soft, breathable organic cotton, these bodysuits are ideal for your newborn’s delicate skin. Designed with a gentle envelope neckline for hassle-free dressing and convenient snap buttons for quick diaper changes, this essential set ensures all-day comfort and ease for both baby and parent.",
     specifications: {
       brand: "BabyComfy",
       countryOfOrigin: "India",

@@ -36,6 +36,7 @@ interface Product {
     countryOfOrigin: string;
     materials: string;
     packContains: string;
+    productType: string;
   };
 }
 
@@ -432,6 +433,12 @@ export default function ProductPageClient({
                 <span className="text-brand-neutral-600">Package Includes</span>
                 <span className="font-medium">
                   {product.specifications.packContains}
+                </span>
+              </div>
+              <div className="flex justify-between border-b border-brand-neutral-100 pb-2">
+                <span className="text-brand-neutral-600">Product type</span>
+                <span className="font-medium">
+                  {product.specifications.productType}
                 </span>
               </div>
               {product.ageRange && (

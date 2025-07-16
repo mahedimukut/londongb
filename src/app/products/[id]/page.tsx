@@ -45,7 +45,7 @@ export default async function ProductPage({
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center text-sm text-gray-600 mb-6">
+        <div className="flex items-center text-sm text-brand-neutral-500 mb-6">
           <Link href="/" className="hover:text-brand-primary-600">
             Home
           </Link>
@@ -54,12 +54,12 @@ export default async function ProductPage({
             Shop
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-900">{product.name}</span>
+          <span className="text-brand-neutral-800">{product.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Product Image Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <div className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-4">
             <div className="relative aspect-square w-full">
               <Image
                 src={product.images[0]}
@@ -73,18 +73,18 @@ export default async function ProductPage({
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-brand-neutral-300 hover:bg-brand-neutral-50"
               >
-                <Share2 className="w-4 h-4" />
-                Share
+                <Share2 className="w-4 h-4 text-brand-neutral-600" />
+                <span className="text-brand-neutral-700">Share</span>
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-brand-neutral-300 hover:bg-brand-neutral-50"
               >
-                <Heart className="w-4 h-4" />
-                Save
+                <Heart className="w-4 h-4 text-brand-neutral-600" />
+                <span className="text-brand-neutral-700">Save</span>
               </Button>
             </div>
           </div>
@@ -92,17 +92,17 @@ export default async function ProductPage({
           {/* Product Info Section */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl md:text-3xl font-bold text-brand-neutral-900">
                 {product.name}
               </h1>
               <div className="flex items-center gap-2 mt-2">
                 {product.isNew && (
-                  <Badge className="bg-green-600 hover:bg-green-700 text-white">
+                  <Badge className="bg-brand-secondary-500 hover:bg-brand-secondary-600 text-white">
                     New
                   </Badge>
                 )}
                 {product.isBestSeller && (
-                  <Badge className="bg-orange-500 hover:bg-orange-600 text-white">
+                  <Badge className="bg-brand-gold-500 hover:bg-brand-gold-600 text-white">
                     Bestseller
                   </Badge>
                 )}
@@ -111,50 +111,50 @@ export default async function ProductPage({
 
             {/* Rating and Reviews */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center bg-blue-50 px-3 py-1 rounded-full">
+              <div className="flex items-center bg-brand-sky-100 px-3 py-1 rounded-full">
                 <div className="flex mr-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       className={`w-4 h-4 ${
                         i < Math.floor(product.rating)
-                          ? "text-yellow-400 fill-yellow-400"
-                          : "text-gray-300"
+                          ? "text-brand-gold-400 fill-brand-gold-400"
+                          : "text-brand-neutral-300"
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-sm font-medium text-blue-700">
+                <span className="text-sm font-medium text-brand-sky-600">
                   {product.rating.toFixed(1)}
                 </span>
               </div>
               <Link
                 href="#reviews"
-                className="text-sm text-blue-600 hover:underline"
+                className="text-sm text-brand-primary-600 hover:underline"
               >
                 {product.reviews} reviews
               </Link>
-              <span className="text-sm text-gray-500">|</span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-brand-neutral-400">|</span>
+              <span className="text-sm text-brand-neutral-400">
                 100+ bought in past month
               </span>
             </div>
 
-            <Separator />
+            <Separator className="bg-brand-neutral-200" />
 
             {/* Price Section */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-bold text-gray-900">
+                <span className="text-3xl font-bold text-brand-neutral-900">
                   ৳{product.price.toLocaleString()}
                 </span>
                 {product.originalPrice && (
-                  <span className="text-lg text-gray-500 line-through">
+                  <span className="text-lg text-brand-neutral-500 line-through">
                     ৳{product.originalPrice.toLocaleString()}
                   </span>
                 )}
                 {product.originalPrice && (
-                  <span className="text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded">
+                  <span className="text-sm bg-brand-secondary-100 text-brand-secondary-800 px-2 py-0.5 rounded">
                     {Math.round(
                       ((product.originalPrice - product.price) /
                         product.originalPrice) *
@@ -164,16 +164,18 @@ export default async function ProductPage({
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-500">
-                <span className="text-green-600">In Stock</span> - Only{" "}
-                {product.stock} left
+              <p className="text-sm text-brand-neutral-500">
+                <span className="text-brand-secondary-500">In Stock</span> -
+                Only {product.stock} left
               </p>
             </div>
 
             {/* Key Features */}
             <div className="space-y-2">
-              <h3 className="font-medium text-gray-900">Highlights:</h3>
-              <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+              <h3 className="font-medium text-brand-neutral-900">
+                Highlights:
+              </h3>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-brand-neutral-700">
                 <li>Premium quality materials</li>
                 <li>Safe for babies and children</li>
                 <li>Easy to clean and maintain</li>
@@ -186,14 +188,14 @@ export default async function ProductPage({
             {/* Color Selection */}
             {product.colors.length > 0 && (
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-900">Color:</h3>
+                <h3 className="font-medium text-brand-neutral-900">Color:</h3>
                 <div className="flex gap-2">
                   {product.colors.map((color) => (
                     <button
                       key={color}
                       className={`w-10 h-10 rounded-full border-2 ${
                         color === product.colors[0]
-                          ? "border-blue-600"
+                          ? "border-brand-primary-600"
                           : "border-transparent"
                       }`}
                       style={{ backgroundColor: color }}
@@ -207,41 +209,43 @@ export default async function ProductPage({
             {/* Quantity and Add to Cart */}
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-4">
-                <div className="flex items-center border border-gray-300 rounded-md w-24">
-                  <button className="px-3 py-2 text-gray-600 hover:bg-gray-100">
+                <div className="flex items-center border border-brand-neutral-300 rounded-md w-24">
+                  <button className="px-3 py-2 text-brand-neutral-600 hover:bg-brand-neutral-100">
                     -
                   </button>
                   <span className="flex-1 text-center">1</span>
-                  <button className="px-3 py-2 text-gray-600 hover:bg-gray-100">
+                  <button className="px-3 py-2 text-brand-neutral-600 hover:bg-brand-neutral-100">
                     +
                   </button>
                 </div>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-brand-neutral-500">
                   {product.stock} available
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 flex-1 py-6 text-lg">
+                <Button className="bg-brand-gold-400 hover:bg-brand-gold-500 text-brand-neutral-900 flex-1 py-6 text-lg">
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   Add to Cart
                 </Button>
-                <Button className="bg-orange-500 hover:bg-orange-600 text-white flex-1 py-6 text-lg">
+                <Button className="bg-brand-primary-600 hover:bg-brand-primary-700 text-white flex-1 py-6 text-lg">
                   Buy Now
                 </Button>
               </div>
             </div>
 
             {/* Delivery Options */}
-            <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+            <div className="border border-brand-neutral-200 rounded-lg p-4 space-y-3">
               <div className="flex items-start gap-3">
-                <Truck className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <Truck className="w-5 h-5 text-brand-primary-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-gray-900">Delivery</p>
-                  <p className="text-sm text-gray-600">
-                    <span className="text-green-600">Free delivery</span> on
-                    orders over ৳500
+                  <p className="font-medium text-brand-neutral-900">Delivery</p>
+                  <p className="text-sm text-brand-neutral-600">
+                    <span className="text-brand-secondary-500">
+                      Free delivery
+                    </span>{" "}
+                    on orders over ৳500
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-brand-neutral-600 mt-1">
                     Delivery by{" "}
                     {new Date(
                       Date.now() + 3 * 24 * 60 * 60 * 1000
@@ -254,22 +258,25 @@ export default async function ProductPage({
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <RotateCw className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <RotateCw className="w-5 h-5 text-brand-primary-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-gray-900">Returns</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-medium text-brand-neutral-900">Returns</p>
+                  <p className="text-sm text-brand-neutral-600">
                     Free 30-day returns.{" "}
-                    <Link href="#" className="text-blue-600 hover:underline">
+                    <Link
+                      href="#"
+                      className="text-brand-primary-600 hover:underline"
+                    >
                       Details
                     </Link>
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <Shield className="w-5 h-5 text-brand-primary-600 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-gray-900">Warranty</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-medium text-brand-neutral-900">Warranty</p>
+                  <p className="text-sm text-brand-neutral-600">
                     1 year manufacturer warranty
                   </p>
                 </div>
@@ -279,49 +286,55 @@ export default async function ProductPage({
         </div>
 
         {/* Product Details Section */}
-        <section className="mt-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <section className="mt-12 bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-6">
+          <h2 className="text-xl font-bold text-brand-neutral-900 mb-4">
             Product Details
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Description */}
             <div>
-              <h3 className="font-medium text-gray-900 mb-2">Description</h3>
-              <p className="text-gray-700">{product.description}</p>
+              <h3 className="font-medium text-brand-neutral-900 mb-2">
+                Description
+              </h3>
+              <p className="text-brand-neutral-700">{product.description}</p>
             </div>
 
             {/* Specifications */}
             <div>
-              <h3 className="font-medium text-gray-900 mb-2">Specifications</h3>
+              <h3 className="font-medium text-brand-neutral-900 mb-2">
+                Specifications
+              </h3>
               <div className="space-y-3">
-                <div className="flex justify-between border-b border-gray-100 pb-2">
-                  <span className="text-gray-600">Brand</span>
+                <div className="flex justify-between border-b border-brand-neutral-100 pb-2">
+                  <span className="text-brand-neutral-600">Brand</span>
                   <span className="font-medium">
                     {product.specifications.brand}
                   </span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 pb-2">
-                  <span className="text-gray-600">Origin</span>
+                <div className="flex justify-between border-b border-brand-neutral-100 pb-2">
+                  <span className="text-brand-neutral-600">Origin</span>
                   <span className="font-medium">
                     {product.specifications.countryOfOrigin}
                   </span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 pb-2">
-                  <span className="text-gray-600">Materials</span>
+                <div className="flex justify-between border-b border-brand-neutral-100 pb-2">
+                  <span className="text-brand-neutral-600">Materials</span>
                   <span className="font-medium">
                     {product.specifications.materials}
                   </span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 pb-2">
-                  <span className="text-gray-600">Package Includes</span>
+                <div className="flex justify-between border-b border-brand-neutral-100 pb-2">
+                  <span className="text-brand-neutral-600">
+                    Package Includes
+                  </span>
                   <span className="font-medium">
                     {product.specifications.packContains}
                   </span>
                 </div>
                 {product.ageRange && (
-                  <div className="flex justify-between border-b border-gray-100 pb-2">
-                    <span className="text-gray-600">Age Range</span>
+                  <div className="flex justify-between border-b border-brand-neutral-100 pb-2">
+                    <span className="text-brand-neutral-600">Age Range</span>
                     <span className="font-medium">{product.ageRange}</span>
                   </div>
                 )}
@@ -333,15 +346,15 @@ export default async function ProductPage({
         {/* Reviews Section */}
         <section
           id="reviews"
-          className="mt-12 bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          className="mt-12 bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-6"
         >
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-xl font-bold text-brand-neutral-900">
               Customer Reviews
             </h2>
             <Button
               variant="outline"
-              className="border-blue-600 text-blue-600 hover:bg-blue-50"
+              className="border-brand-primary-600 text-brand-primary-600 hover:bg-brand-primary-50"
             >
               Write a Review
             </Button>
@@ -349,7 +362,7 @@ export default async function ProductPage({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Rating Summary */}
-            <div className="bg-gray-50 rounded-lg p-6">
+            <div className="bg-brand-neutral-50 rounded-lg p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="text-4xl font-bold">
                   {product.rating.toFixed(1)}
@@ -361,13 +374,13 @@ export default async function ProductPage({
                         key={i}
                         className={`w-5 h-5 ${
                           i < Math.floor(product.rating)
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-300"
+                            ? "text-brand-gold-400 fill-brand-gold-400"
+                            : "text-brand-neutral-300"
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-brand-neutral-600">
                     {product.reviews} global ratings
                   </p>
                 </div>
@@ -378,13 +391,13 @@ export default async function ProductPage({
                 {[5, 4, 3, 2, 1].map((star) => (
                   <div key={star} className="flex items-center gap-2">
                     <span className="text-sm w-8">{star} star</span>
-                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="flex-1 h-2 bg-brand-neutral-200 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-yellow-400"
+                        className="h-full bg-brand-gold-400"
                         style={{ width: `${(product.rating / 5) * 100}%` }}
                       />
                     </div>
-                    <span className="text-sm text-gray-600 w-8 text-right">
+                    <span className="text-sm text-brand-neutral-600 w-8 text-right">
                       {Math.round((product.rating / 5) * product.reviews)}
                     </span>
                   </div>
@@ -397,10 +410,10 @@ export default async function ProductPage({
               {[1, 2].map((review) => (
                 <div
                   key={review}
-                  className="border-b border-gray-200 pb-6 last:border-0 last:pb-0"
+                  className="border-b border-brand-neutral-200 pb-6 last:border-0 last:pb-0"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                    <div className="w-10 h-10 rounded-full bg-brand-neutral-200 flex items-center justify-center text-brand-neutral-500">
                       {review === 1 ? "JD" : "SM"}
                     </div>
                     <div>
@@ -413,8 +426,8 @@ export default async function ProductPage({
                             key={i}
                             className={`w-4 h-4 ${
                               i < 4
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300"
+                                ? "text-brand-gold-400 fill-brand-gold-400"
+                                : "text-brand-neutral-300"
                             }`}
                           />
                         ))}
@@ -426,12 +439,12 @@ export default async function ProductPage({
                       ? "Perfect for my baby!"
                       : "Great quality product"}
                   </h3>
-                  <p className="text-gray-600 mb-2">
+                  <p className="text-brand-neutral-600 mb-2">
                     {review === 1
                       ? "This product exceeded my expectations. My baby loves it and it's very durable. The materials feel high quality and it's easy to clean."
                       : "Exactly as described. The quality is excellent for the price. Would definitely recommend to other parents!"}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-brand-neutral-400">
                     Reviewed on{" "}
                     {new Date(
                       Date.now() - review * 7 * 24 * 60 * 60 * 1000
@@ -450,7 +463,7 @@ export default async function ProductPage({
         {/* Related Products */}
         {related.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
+            <h2 className="text-xl font-bold text-brand-neutral-900 mb-6">
               Customers also bought
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -458,9 +471,9 @@ export default async function ProductPage({
                 <Link
                   key={product.id}
                   href={`/products/${product.id}`}
-                  className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all"
+                  className="group bg-white border border-brand-neutral-200 rounded-lg overflow-hidden hover:shadow-md transition-all"
                 >
-                  <div className="relative aspect-square bg-gray-50">
+                  <div className="relative aspect-square bg-brand-neutral-50">
                     <Image
                       src={product.images[0]}
                       alt={product.name}
@@ -470,7 +483,7 @@ export default async function ProductPage({
                     />
                   </div>
                   <div className="p-3">
-                    <h3 className="font-medium text-gray-900 group-hover:text-blue-600 line-clamp-2 text-sm">
+                    <h3 className="font-medium text-brand-neutral-900 group-hover:text-brand-primary-600 line-clamp-2 text-sm">
                       {product.name}
                     </h3>
                     <div className="flex items-center gap-1 mt-1">
@@ -480,22 +493,22 @@ export default async function ProductPage({
                             key={i}
                             className={`w-3 h-3 ${
                               i < Math.floor(product.rating)
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300"
+                                ? "text-brand-gold-400 fill-brand-gold-400"
+                                : "text-brand-neutral-300"
                             }`}
                           />
                         ))}
                       </div>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-brand-neutral-500">
                         ({product.reviews})
                       </span>
                     </div>
                     <div className="mt-2">
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-brand-neutral-900">
                         ৳{product.price}
                       </span>
                       {product.originalPrice && (
-                        <span className="text-xs text-gray-500 line-through ml-1">
+                        <span className="text-xs text-brand-neutral-500 line-through ml-1">
                           ৳{product.originalPrice}
                         </span>
                       )}

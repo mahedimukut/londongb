@@ -75,7 +75,7 @@ const categories = [
   {
     id: "cat-9",
     name: "Travel Gear",
-    image: "/images/categories/newborn-essential.jpeg", // Same as cat-1
+    image: "/images/categories/newborn-essential.jpeg",
     href: "/categories/travel-gear",
     bgColor: "bg-brand-primary-50",
     textColor: "text-brand-primary-600",
@@ -83,7 +83,7 @@ const categories = [
   {
     id: "cat-10",
     name: "Safety Products",
-    image: "/images/categories/feeding-nursing.jpeg", // Same as cat-2
+    image: "/images/categories/feeding-nursing.jpeg",
     href: "/categories/safety-products",
     bgColor: "bg-brand-secondary-50",
     textColor: "text-brand-secondary-600",
@@ -91,7 +91,7 @@ const categories = [
   {
     id: "cat-11",
     name: "Organic Cotton",
-    image: "/images/categories/diapering.jpeg", // Same as cat-3
+    image: "/images/categories/diapering.jpeg",
     href: "/categories/organic-cotton",
     bgColor: "bg-brand-sky-50",
     textColor: "text-brand-sky-600",
@@ -99,7 +99,7 @@ const categories = [
   {
     id: "cat-12",
     name: "Gift Sets",
-    image: "/images/categories/toys-learning.jpeg", // Same as cat-4
+    image: "/images/categories/toys-learning.jpeg",
     href: "/categories/gift-sets",
     bgColor: "bg-brand-gold-100",
     textColor: "text-brand-gold-600",
@@ -107,7 +107,7 @@ const categories = [
   {
     id: "cat-13",
     name: "Strollers & Carriers",
-    image: "/images/categories/bath-skincare.png", // Same as cat-5
+    image: "/images/categories/bath-skincare.png",
     href: "/categories/strollers-carriers",
     bgColor: "bg-brand-primary-100",
     textColor: "text-brand-primary-700",
@@ -115,7 +115,7 @@ const categories = [
   {
     id: "cat-14",
     name: "Feeding Accessories",
-    image: "/images/categories/nursery-decor.png", // Same as cat-6
+    image: "/images/categories/nursery-decor.png",
     href: "/categories/feeding-accessories",
     bgColor: "bg-brand-secondary-100",
     textColor: "text-brand-secondary-700",
@@ -123,7 +123,7 @@ const categories = [
   {
     id: "cat-15",
     name: "Sleep Solutions",
-    image: "/images/categories/moms-care.jpeg", // Same as cat-7
+    image: "/images/categories/moms-care.jpeg",
     href: "/categories/sleep-solutions",
     bgColor: "bg-brand-sky-100",
     textColor: "text-brand-sky-700",
@@ -131,7 +131,7 @@ const categories = [
   {
     id: "cat-16",
     name: "Eco-Friendly Products",
-    image: "/images/categories/baby-clothing.png", // Same as cat-8
+    image: "/images/categories/baby-clothing.png",
     href: "/categories/eco-friendly",
     bgColor: "bg-brand-gold-100",
     textColor: "text-brand-gold-700",
@@ -271,7 +271,7 @@ export default function FeaturedCategories() {
       initial={{ opacity: 0 }}
       animate={sectionInView ? { opacity: 1 } : {}}
       transition={{ duration: 0.5 }}
-      className="py-16 px-4 sm:px-6 lg:px-8 bg-white relative"
+      className="pt-16 pb-0 px-4 sm:px-6 lg:px-8 bg-white relative"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -294,30 +294,36 @@ export default function FeaturedCategories() {
           <AnimatePresence>
             {showControls && (
               <>
-                <motion.button
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => scroll("left")}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hidden md:block"
-                  aria-label="Scroll left"
-                >
-                  <ChevronLeft className="h-6 w-6 text-brand-primary-600" />
-                </motion.button>
-                <motion.button
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => scroll("right")}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hidden md:block"
-                  aria-label="Scroll right"
-                >
-                  <ChevronRight className="h-6 w-6 text-brand-primary-600" />
-                </motion.button>
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden md:block">
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => scroll("left")}
+                    className="bg-white rounded-full p-2 shadow-lg"
+                    aria-label="Scroll left"
+                    style={{ transformOrigin: "center center" }}
+                  >
+                    <ChevronLeft className="h-6 w-6 text-brand-primary-600" />
+                  </motion.button>
+                </div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden md:block">
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => scroll("right")}
+                    className="bg-white rounded-full p-2 shadow-lg"
+                    aria-label="Scroll right"
+                    style={{ transformOrigin: "center center" }}
+                  >
+                    <ChevronRight className="h-6 w-6 text-brand-primary-600" />
+                  </motion.button>
+                </div>
               </>
             )}
           </AnimatePresence>
@@ -327,10 +333,8 @@ export default function FeaturedCategories() {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="overflow-x-auto pb-6 -mx-2 px-2 touch-pan-x"
+            className="overflow-x-auto pb-6 -mx-2 px-2 touch-pan-x hide-scrollbar"
             style={{
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
               cursor: isDragging ? "grabbing" : "grab",
             }}
           >

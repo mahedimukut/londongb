@@ -156,6 +156,7 @@
 }
 
 /* Hide scrollbar while allowing scrolling */
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

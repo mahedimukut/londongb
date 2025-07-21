@@ -5,7 +5,7 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const categories = [
   {
@@ -150,7 +150,7 @@ const CategoryCard = ({ category }: { category: (typeof categories)[0] }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
-      className="min-w-[280px] px-2"
+      className="min-w-[280px] px-2 flex-shrink-0"
     >
       <Link
         href={category.href}
@@ -204,20 +204,13 @@ export default function FeaturedCategories() {
     threshold: 0.1,
   });
   const controls = useAnimation();
-  const [isDragging, setIsDragging] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [showControls, setShowControls] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
-  const scroll = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const scrollAmount = direction === "left" ? -300 : 300;
-      carouselRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
+  // Check if scroll controls are needed
   useEffect(() => {
     const checkScroll = () => {
       if (carouselRef.current) {
@@ -230,6 +223,47 @@ export default function FeaturedCategories() {
     window.addEventListener("resize", checkScroll);
     return () => window.removeEventListener("resize", checkScroll);
   }, []);
+
+  // Scroll function with boundary checks
+  const scroll = useCallback((direction: "left" | "right") => {
+    if (!carouselRef.current) return;
+
+    const container = carouselRef.current;
+    const scrollAmount = direction === "left" ? -300 : 300;
+    const newScrollLeft = container.scrollLeft + scrollAmount;
+
+    // Boundary checks
+    if (newScrollLeft < 0) {
+      container.scrollTo({ left: 0, behavior: "smooth" });
+    } else if (newScrollLeft > container.scrollWidth - container.clientWidth) {
+      container.scrollTo({
+        left: container.scrollWidth - container.clientWidth,
+        behavior: "smooth",
+      });
+    } else {
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  }, []);
+
+  // Touch event handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!carouselRef.current) return;
+    setIsDragging(true);
+    setStartX(e.touches[0].pageX - carouselRef.current.offsetLeft);
+    setScrollLeft(carouselRef.current.scrollLeft);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || !carouselRef.current) return;
+    e.preventDefault();
+    const x = e.touches[0].pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Adjust scroll speed
+    carouselRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
 
   return (
     <motion.section
@@ -288,16 +322,16 @@ export default function FeaturedCategories() {
             )}
           </AnimatePresence>
 
-          <motion.div
+          <div
             ref={carouselRef}
-            drag="x"
-            dragConstraints={{ right: 0, left: 0 }}
-            onDragStart={() => setIsDragging(true)}
-            onDragEnd={() => setIsDragging(false)}
-            className="overflow-x-auto pb-6 -mx-2 px-2"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="overflow-x-auto pb-6 -mx-2 px-2 touch-pan-x"
             style={{
               scrollbarWidth: "none",
               msOverflowStyle: "none",
+              cursor: isDragging ? "grabbing" : "grab",
             }}
           >
             <motion.div
@@ -305,13 +339,31 @@ export default function FeaturedCategories() {
               animate={sectionInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.5, delay: 0.4 }}
               className="flex gap-4 w-max"
-              style={{ pointerEvents: isDragging ? "none" : "auto" }}
             >
               {categories.map((category) => (
                 <CategoryCard key={category.id} category={category} />
               ))}
             </motion.div>
-          </motion.div>
+          </div>
+        </div>
+
+        {/* Mobile indicators */}
+        <div className="md:hidden flex justify-center gap-2 mt-4">
+          {[0, 1, 2].map((dot) => (
+            <button
+              key={dot}
+              onClick={() => {
+                if (carouselRef.current) {
+                  carouselRef.current.scrollTo({
+                    left: carouselRef.current.clientWidth * dot,
+                    behavior: "smooth",
+                  });
+                }
+              }}
+              className="w-3 h-3 rounded-full bg-brand-neutral-200 hover:bg-brand-primary-600 transition-colors"
+              aria-label={`Go to slide ${dot + 1}`}
+            />
+          ))}
         </div>
       </div>
     </motion.section>

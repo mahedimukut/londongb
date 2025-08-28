@@ -12,15 +12,22 @@ import {
   X,
   ChevronRight,
   Trash2,
+  LogOut,
+  Settings,
+  Package,
+  ChevronDown,
 } from "lucide-react";
 import Announcement from "./Announcement";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [cartCount, setCartCount] = useState(3);
   const [wishlistCount] = useState(5);
@@ -28,6 +35,9 @@ const Header = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const cartRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  const { data: session, status } = useSession();
 
   // Sample cart data
   const [cartItems, setCartItems] = useState([
@@ -75,6 +85,12 @@ const Header = () => {
       }
       if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
         setCartOpen(false);
+      }
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setProfileDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -243,10 +259,112 @@ const Header = () => {
                 )}
               </button>
             </Link>
-            <button className="p-2.5 rounded-md text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-colors">
-              <span className="sr-only">Account</span>
-              <User className="w-6 h-6" aria-hidden="true" />
-            </button>
+
+            {/* Profile/Login Button */}
+            <div className="relative" ref={profileRef}>
+              {status === "authenticated" ? (
+                <button
+                  className="p-2.5 rounded-md text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-colors flex items-center gap-1"
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                >
+                  {session.user?.image ? (
+                    <Image
+                      src={session.user.image}
+                      alt={session.user.name || "User"}
+                      width={24}
+                      height={24}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <User className="w-6 h-6" />
+                  )}
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => signIn("google")}
+                  className="p-2.5 rounded-md text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-colors"
+                >
+                  <User className="w-6 h-6" />
+                </button>
+              )}
+
+              {/* Profile Dropdown */}
+              {profileDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-brand-neutral-200 z-50 overflow-hidden">
+                  <div className="p-4 border-b border-brand-neutral-200">
+                    <div className="flex items-center gap-3">
+                      {session?.user?.image && (
+                        <Image
+                          src={session.user.image}
+                          alt={session.user.name || "User"}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-brand-neutral-900 truncate">
+                          {session?.user?.name}
+                        </p>
+                        <p className="text-xs text-brand-neutral-500 truncate">
+                          {session?.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-2">
+                    <Link
+                      href="/account"
+                      className="flex items-center gap-3 px-3 py-2 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-md transition-colors"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      <User className="w-4 h-4" />
+                      My Account
+                    </Link>
+                    <Link
+                      href="/orders"
+                      className="flex items-center gap-3 px-3 py-2 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-md transition-colors"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      <Package className="w-4 h-4" />
+                      My Orders
+                    </Link>
+                    <Link
+                      href="/wishlist"
+                      className="flex items-center gap-3 px-3 py-2 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-md transition-colors"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      <Heart className="w-4 h-4" />
+                      Wishlist
+                    </Link>
+                    <Link
+                      href="/settings"
+                      className="flex items-center gap-3 px-3 py-2 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-md transition-colors"
+                      onClick={() => setProfileDropdownOpen(false)}
+                    >
+                      <Settings className="w-4 h-4" />
+                      Settings
+                    </Link>
+                  </div>
+
+                  <div className="p-2 border-t border-brand-neutral-200">
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setProfileDropdownOpen(false);
+                      }}
+                      className="flex items-center gap-3 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button
               className="p-2.5 rounded-md text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-colors relative"
               onClick={() => setCartOpen(true)}
@@ -317,14 +435,70 @@ const Header = () => {
 
             {/* Mobile account links */}
             <div className="mt-8 pt-6 border-t border-brand-neutral-200">
-              <Link
-                href="/account"
-                className="flex items-center px-4 py-3 text-lg font-medium text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <User className="w-5 h-5 mr-3 text-brand-primary-500" />
-                My Account
-              </Link>
+              {status === "authenticated" ? (
+                <>
+                  <div className="flex items-center px-4 py-3 mb-4">
+                    {session.user?.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.name || "User"}
+                        width={40}
+                        height={40}
+                        className="rounded-full mr-3"
+                      />
+                    ) : (
+                      <User className="w-8 h-8 mr-3 text-brand-primary-500" />
+                    )}
+                    <div>
+                      <p className="font-medium text-brand-neutral-900">
+                        {session.user?.name}
+                      </p>
+                      <p className="text-sm text-brand-neutral-500">
+                        {session.user?.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/account"
+                    className="flex items-center px-4 py-3 text-lg font-medium text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <User className="w-5 h-5 mr-3 text-brand-primary-500" />
+                    My Account
+                  </Link>
+                  <Link
+                    href="/orders"
+                    className="flex items-center px-4 py-3 text-lg font-medium text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Package className="w-5 h-5 mr-3 text-brand-primary-500" />
+                    My Orders
+                  </Link>
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center w-full px-4 py-3 text-lg font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <LogOut className="w-5 h-5 mr-3" />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    signIn("google");
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center w-full px-4 py-3 text-lg font-medium text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors"
+                >
+                  <FcGoogle className="w-5 h-5 mr-3" />
+                  Sign in with Google
+                </button>
+              )}
+
               <Link
                 href="/wishlist"
                 className="flex items-center px-4 py-3 text-lg font-medium text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors relative"

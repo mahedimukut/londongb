@@ -40,12 +40,12 @@ export default function Footer() {
   const contactInfo = [
     {
       icon: <Phone className="h-5 w-5 text-brand-primary-300" />,
-      main: "+880 1234 567890",
-      sub: "Mon-Sat, 9AM-6PM",
+      main: "+880 1684-986746",
+      sub: "Sat-Thu, 9AM-10PM",
     },
     {
       icon: <Mail className="h-5 w-5 text-brand-primary-300" />,
-      main: "support@londongb.com",
+      main: "support@britcartbd.com",
       sub: "Response within 24 hours",
     },
     {
@@ -161,7 +161,7 @@ export default function Footer() {
             {/* Brand Column */}
             <div className="space-y-6">
               <Link href="/" className="flex items-center">
-                <h2 className="text-2xl font-bold text-white">LondonGB</h2>
+                <h2 className="text-2xl font-bold text-white">BritCartBD</h2>
               </Link>
               <p className="text-brand-neutral-300 text-sm leading-relaxed">
                 Your trusted partner for premium baby care products in

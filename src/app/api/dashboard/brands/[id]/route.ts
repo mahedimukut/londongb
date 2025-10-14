@@ -11,48 +11,41 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// ✅ Correct typing for context
+type RouteContext = {
+  params: { id: string };
+};
+
 // GET single brand - PUBLIC
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const { id } = params; // Destructure params here
+    const { id } = context.params;
     const brand = await prisma.brand.findUnique({
       where: { id },
       include: {
         _count: {
-          select: { products: true }
-        }
-      }
+          select: { products: true },
+        },
+      },
     });
 
     if (!brand) {
-      return NextResponse.json(
-        { error: 'Brand not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
     }
 
     return NextResponse.json(brand);
   } catch (error) {
     console.error('Error fetching brand:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch brand' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch brand' }, { status: 500 });
   }
 }
 
 // PUT update brand - PROTECTED
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: RouteContext) {
   try {
-    const { id } = params; // Destructure params here
+    const { id } = context.params;
     const session = await auth();
-    
+
     if (!session || session.user?.email !== 'britcartbd@gmail.com') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -60,39 +53,25 @@ export async function PUT(
     const body = await request.json();
     const { name, slug, description, logo, isFeatured } = body;
 
-    // Validate required fields
     if (!name || !slug) {
-      return NextResponse.json(
-        { error: 'Name and slug are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Name and slug are required' }, { status: 400 });
     }
 
-    // Check if brand exists
-    const existingBrand = await prisma.brand.findUnique({
-      where: { id }
-    });
+    const existingBrand = await prisma.brand.findUnique({ where: { id } });
 
     if (!existingBrand) {
-      return NextResponse.json(
-        { error: 'Brand not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
     }
 
-    // Check if another brand already has the same name or slug
     const duplicateBrand = await prisma.brand.findFirst({
       where: {
         AND: [
           { id: { not: id } },
           {
-            OR: [
-              { name },
-              { slug }
-            ]
-          }
-        ]
-      }
+            OR: [{ name }, { slug }],
+          },
+        ],
+      },
     });
 
     if (duplicateBrand) {
@@ -102,7 +81,6 @@ export async function PUT(
       );
     }
 
-    // Update brand in database
     const updatedBrand = await prisma.brand.update({
       where: { id },
       data: {
@@ -110,51 +88,40 @@ export async function PUT(
         slug,
         description: description || null,
         logo: logo || existingBrand.logo,
-        isFeatured: isFeatured || false
-      }
+        isFeatured: isFeatured || false,
+      },
     });
 
     return NextResponse.json(updatedBrand);
   } catch (error) {
     console.error('Error updating brand:', error);
-    return NextResponse.json(
-      { error: 'Failed to update brand' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update brand' }, { status: 500 });
   }
 }
 
 // DELETE brand - PROTECTED
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    const { id } = params; // Destructure params here
+    const { id } = context.params;
     const session = await auth();
-    
+
     if (!session || session.user?.email !== 'britcartbd@gmail.com') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check if brand exists
     const brand = await prisma.brand.findUnique({
       where: { id },
       include: {
         _count: {
-          select: { products: true }
-        }
-      }
+          select: { products: true },
+        },
+      },
     });
 
     if (!brand) {
-      return NextResponse.json(
-        { error: 'Brand not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
     }
 
-    // Prevent deletion if brand has products
     if (brand._count.products > 0) {
       return NextResponse.json(
         { error: 'Cannot delete brand with associated products' },
@@ -162,40 +129,28 @@ export async function DELETE(
       );
     }
 
-    // Delete logo from Cloudinary if it exists
     if (brand.logo) {
       try {
-        // Extract public ID from Cloudinary URL
         const urlParts = brand.logo.split('/');
         const publicIdWithExtension = urlParts[urlParts.length - 1];
         const publicId = publicIdWithExtension.split('.')[0];
-        
-        // Get the folder path from the URL
+
         const folderIndex = urlParts.indexOf('britcartbd');
         if (folderIndex !== -1) {
           const folderPath = urlParts.slice(folderIndex, urlParts.length - 1).join('/');
           const fullPublicId = `${folderPath}/${publicId}`;
-          
-          // Delete from Cloudinary
           await cloudinary.uploader.destroy(fullPublicId);
         }
       } catch (deleteError) {
         console.error('Error deleting logo from Cloudinary:', deleteError);
-        // Continue with deletion even if logo deletion fails
       }
     }
 
-    // Delete brand from database
-    await prisma.brand.delete({
-      where: { id }
-    });
+    await prisma.brand.delete({ where: { id } });
 
     return NextResponse.json({ message: 'Brand deleted successfully' });
   } catch (error) {
     console.error('Error deleting brand:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete brand' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to delete brand' }, { status: 500 });
   }
 }

@@ -10,7 +10,7 @@ export default function ServicesSection() {
       title: "Fast Delivery",
       id: "delivery",
       color: "bg-brand-primary-50",
-      textColor: "text-brand-primary-600",
+      textColor: "text-brand-primary-700",
     },
     {
       icon: <ShieldCheck className="w-6 h-6" />,
@@ -30,7 +30,7 @@ export default function ServicesSection() {
       icon: <BadgeCheck className="w-6 h-6" />,
       title: "Authentic Brands",
       id: "authentic",
-      color: "bg-brand-gold-50",
+      color: "bg-brand-gold-100",
       textColor: "text-brand-gold-600",
     },
   ];

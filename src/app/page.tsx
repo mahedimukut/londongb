@@ -1,10 +1,12 @@
 import BestDeals from "@/components/BestDeals";
+import BestSellers from "@/components/BestSeller";
 import FeaturedBrands from "@/components/FeaturedBrands";
 import FeaturedCategories from "@/components/FeaturedCategories";
 import Footer from "@/components/Footer";
 import GiftsAndBundles from "@/components/GiftsandBundles";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import NewArrivals from "@/components/NewArriaval";
 import PromotionalBanner from "@/components/PromotionalBanner";
 import ServicesSection from "@/components/ServicesSection";
 import Testimonials from "@/components/Testimonials";
@@ -22,9 +24,14 @@ const Homepage = () => {
       <ServicesSection />
       {/* <FeaturedCategories /> */}
       <FeaturedCategories />
+      {/* <TrendingProducts /> */}
       <TrendingProducts />
-      <BestDeals />
-      <GiftsAndBundles />
+      {/* <BestDeals /> */}
+      <BestSellers />
+      {/* <NewArrivals /> */}
+      <NewArrivals />
+      {/* <GiftsAndBundles /> */}
+      {/* <GiftsAndBundles /> */}
       {/* <FeaturedBrands /> */}
       <FeaturedBrands />
       <Testimonials />

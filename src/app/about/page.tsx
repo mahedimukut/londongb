@@ -9,6 +9,8 @@ import {
   Truck,
   Award,
   Users,
+  ShoppingBag,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -17,19 +19,19 @@ import Link from "next/link";
 export default function AboutPage() {
   const stats = [
     {
-      value: "10,000+",
-      label: "Happy Families",
+      value: "50,000+",
+      label: "Happy Customers",
       icon: <Users className="h-6 w-6" />,
     },
     {
-      value: "100%",
-      label: "Safety Guarantee",
-      icon: <Shield className="h-6 w-6" />,
+      value: "1,000+",
+      label: "Quality Products",
+      icon: <ShoppingBag className="h-6 w-6" />,
     },
     {
-      value: "500+",
-      label: "Quality Products",
-      icon: <Award className="h-6 w-6" />,
+      value: "64",
+      label: "Districts Served",
+      icon: <Globe className="h-6 w-6" />,
     },
     {
       value: "24/7",
@@ -41,27 +43,37 @@ export default function AboutPage() {
   const values = [
     {
       icon: <Shield className="h-8 w-8 text-brand-primary-600" />,
-      title: "Safety First",
+      title: "Quality Guaranteed",
       description:
-        "Every product meets international safety standards for your little ones.",
-    },
-    {
-      icon: <Leaf className="h-8 w-8 text-brand-primary-600" />,
-      title: "Eco-Friendly",
-      description:
-        "We prioritize sustainable materials and ethical manufacturing.",
-    },
-    {
-      icon: <HeartHandshake className="h-8 w-8 text-brand-primary-600" />,
-      title: "Community Focused",
-      description:
-        "Supporting local artisans and mothers in need through our initiatives.",
+        "Every product is carefully selected and tested for quality assurance.",
     },
     {
       icon: <Truck className="h-8 w-8 text-brand-primary-600" />,
-      title: "Hassle-Free Experience",
-      description: "From browsing to delivery, we make parenting easier.",
+      title: "Fast Delivery",
+      description:
+        "Quick and reliable shipping across all 64 districts of Bangladesh.",
     },
+    {
+      icon: <HeartHandshake className="h-8 w-8 text-brand-primary-600" />,
+      title: "Customer First",
+      description: "Your satisfaction is our top priority with 24/7 support.",
+    },
+    {
+      icon: <Award className="h-8 w-8 text-brand-primary-600" />,
+      title: "Best Prices",
+      description: "Competitive pricing with regular discounts and offers.",
+    },
+  ];
+
+  const categories = [
+    "Skin care & cosmetics",
+    "Health & beauty",
+    "Baby foods & accessories",
+    "Electronic gadgets",
+    "Car/Bike/Bicycle parts",
+    "Pet food & toys",
+    "Musical & Sporting instruments",
+    "Preorder",
   ];
 
   return (
@@ -74,17 +86,16 @@ export default function AboutPage() {
           <div className="absolute inset-0 bg-brand-primary-600/30 z-10 flex items-center justify-center">
             <div className="text-center max-w-2xl px-4">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Our Story
+                About Britcartbd.com
               </h1>
               <p className="text-lg text-white/90">
-                From parents to parents - building a safer, happier world for
-                babies
+                Your trusted online marketplace for everything you need
               </p>
             </div>
           </div>
           <Image
-            src="https://images.pexels.com/photos/4545205/pexels-photo-4545205.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-            alt="Happy family with baby"
+            src="https://images.pexels.com/photos/5632402/pexels-photo-5632402.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            alt="Online shopping experience"
             fill
             className="object-cover"
             priority
@@ -95,13 +106,13 @@ export default function AboutPage() {
         <section className="max-w-4xl mx-auto mb-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-brand-neutral-900 mb-4">
-              Welcome to BabyHaven
+              Welcome to Britcartbd.com
             </h2>
             <div className="w-24 h-1 bg-brand-primary-600 mx-auto mb-6"></div>
             <p className="text-brand-neutral-600 mb-6">
-              Founded in 2018 by parents who struggled to find quality baby
-              products in Bangladesh, BabyHaven has grown into the nation's most
-              trusted destination for baby essentials.
+              Founded with a vision to revolutionize online shopping in
+              Bangladesh, Britcartbd.com has become one of the fastest-growing
+              e-commerce platforms in the country.
             </p>
           </div>
 
@@ -111,26 +122,27 @@ export default function AboutPage() {
                 Our Journey
               </h3>
               <p className="text-brand-neutral-600 mb-4">
-                It all began when our founders, Rahim and Ayesha, became parents
-                for the first time. Frustrated by the lack of safe, affordable
-                baby products available locally, they set out to create a better
-                solution.
+                Britcartbd.com started with a simple mission: to provide
+                Bangladeshi consumers with access to a wide range of quality
+                products at affordable prices, delivered right to their
+                doorstep.
               </p>
               <p className="text-brand-neutral-600 mb-4">
-                Starting from a small showroom in Dhaka, we've now served over
-                10,000 families across Bangladesh with carefully curated
-                products that meet international safety standards.
+                From our humble beginnings, we've grown to serve customers
+                across all 64 districts of Bangladesh, offering everything from
+                daily essentials to specialized products.
               </p>
               <p className="text-brand-neutral-600">
-                Today, we're proud to be Bangladesh's fastest growing baby care
-                brand, with plans to expand across South Asia while maintaining
-                our commitment to quality and community.
+                Today, we're proud to be a trusted name in Bangladeshi
+                e-commerce, continuously expanding our product range while
+                maintaining our commitment to customer satisfaction and reliable
+                service.
               </p>
             </div>
             <div className="relative h-80 rounded-xl overflow-hidden shadow-lg">
               <Image
-                src="https://images.pexels.com/photos/25785858/pexels-photo-25785858.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                alt="Happy parents with baby - BabyHaven founders"
+                src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                alt="Britcartbd.com team and operations"
                 fill
                 className="object-cover"
               />
@@ -138,11 +150,37 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* Product Categories */}
+        <section className="max-w-5xl mx-auto mb-16">
+          <h2 className="text-3xl font-bold text-brand-neutral-900 text-center mb-8">
+            Our Product Categories
+          </h2>
+          <p className="text-brand-neutral-600 text-center mb-8 max-w-2xl mx-auto">
+            We offer a diverse range of products to meet all your needs in one
+            place
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {categories.map((category, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 rounded-lg border border-brand-neutral-200 text-center hover:shadow-md transition-shadow"
+              >
+                <div className="bg-brand-primary-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <ShoppingBag className="h-6 w-6 text-brand-primary-600" />
+                </div>
+                <p className="text-sm font-medium text-brand-neutral-800">
+                  {category}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Stats Section */}
         <section className="bg-brand-primary-50 py-12 mb-16 rounded-xl">
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="text-3xl font-bold text-brand-neutral-900 text-center mb-12">
-              Why Parents Trust Us
+              Why Customers Choose Us
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {stats.map((stat, index) => (
@@ -163,7 +201,7 @@ export default function AboutPage() {
         {/* Our Values */}
         <section className="max-w-5xl mx-auto mb-16">
           <h2 className="text-3xl font-bold text-brand-neutral-900 text-center mb-12">
-            Our Core Values
+            Our Commitment to You
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => (
@@ -183,71 +221,84 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Team Section */}
-        <section className="max-w-5xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold text-brand-neutral-900 text-center mb-12">
-            Meet Our Team
+        {/* Shipping & Service */}
+        <section className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-8 mb-16">
+          <h2 className="text-3xl font-bold text-brand-neutral-900 text-center mb-8">
+            Our Service Promise
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Rahim Khan",
-                role: "Founder & CEO",
-                bio: "Father of two, passionate about child safety and local manufacturing.",
-                image:
-                  "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-              },
-              {
-                name: "Ayesha Rahman",
-                role: "Co-Founder & CMO",
-                bio: "Mother and child development specialist with 10+ years experience.",
-                image:
-                  "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-              },
-              {
-                name: "Tahmina Akter",
-                role: "Head of Product Safety",
-                bio: "Ensures every product meets our rigorous safety standards.",
-                image:
-                  "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-              },
-            ].map((member, index) => (
-              <div key={index} className="text-center">
-                <div className="relative h-64 w-full rounded-xl overflow-hidden mb-4">
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-brand-neutral-900">
-                  {member.name}
-                </h3>
-                <p className="text-brand-primary-600 mb-2">{member.role}</p>
-                <p className="text-brand-neutral-600">{member.bio}</p>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="bg-brand-primary-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Truck className="h-10 w-10 text-brand-primary-600" />
               </div>
-            ))}
+              <h3 className="text-xl font-semibold text-brand-neutral-900 mb-3">
+                Nationwide Delivery
+              </h3>
+              <ul className="text-brand-neutral-600 space-y-2 text-left">
+                <li>• Inside Dhaka: ৳60-৳80 (1-2 days)</li>
+                <li>• Outside Dhaka: ৳120-৳150 (2-4 days)</li>
+                <li>• All 64 districts covered</li>
+                <li>• Cash on Delivery available</li>
+              </ul>
+            </div>
+            <div className="text-center">
+              <div className="bg-brand-primary-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <HeartHandshake className="h-10 w-10 text-brand-primary-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-brand-neutral-900 mb-3">
+                Customer Support
+              </h3>
+              <ul className="text-brand-neutral-600 space-y-2 text-left">
+                <li>• 24/7 customer service</li>
+                <li>• Easy returns & exchanges</li>
+                <li>• Product quality guarantee</li>
+                <li>• Secure payment options</li>
+              </ul>
+            </div>
           </div>
         </section>
 
         {/* CTA Section */}
         <section className="bg-brand-primary-600 rounded-xl p-12 text-center mb-16">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Join Our Growing Family
+            Experience the Britcartbd.com Difference
           </h2>
           <p className="text-white/90 max-w-2xl mx-auto mb-8">
-            Discover why thousands of Bangladeshi parents trust BabyHaven for
-            their little ones' needs.
+            Join thousands of satisfied customers who trust us for their
+            shopping needs. From skincare to electronics, baby products to
+            automotive parts - we've got you covered.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button className="bg-white text-brand-primary-600 hover:bg-brand-neutral-100">
-              <Link href={"/shop"}>Shop Now</Link>
+            <Button
+              asChild
+              className="bg-white text-brand-primary-600 hover:bg-brand-neutral-100"
+            >
+              <Link href="/shop">Start Shopping</Link>
             </Button>
-            <Button className=" bg-white text-brand-primary-600 hover:bg-brand-neutral-100">
-              <Link href={"/contact"}>Contact Us</Link>
+            <Button
+              asChild
+              variant="outline"
+              className="border-white text-brand-primary-600 hover:bg-white hover:text-brand-primary-600"
+            >
+              <Link href="/contact">Contact Us</Link>
             </Button>
           </div>
+        </section>
+
+        {/* Store Location */}
+        <section className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-8 text-center mb-16">
+          <h2 className="text-2xl font-bold text-brand-neutral-900 mb-4">
+            Visit Our Store
+          </h2>
+          <p className="text-brand-neutral-600 mb-4">
+            House No-12, Road No-11, Uttara-1, Dhaka 1230, Bangladesh
+          </p>
+          <p className="text-brand-neutral-600 mb-4">
+            📞 +880 1684-986746 | ✉️ support@britcartbd.com
+          </p>
+          <Button asChild variant="outline">
+            <Link href="/contact">Get Directions</Link>
+          </Button>
         </section>
       </main>
 

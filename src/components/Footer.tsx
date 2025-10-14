@@ -50,7 +50,7 @@ export default function Footer() {
     },
     {
       icon: <MapPin className="h-5 w-5 text-brand-primary-300" />,
-      main: "123 Baby Lane, Dhaka 1212",
+      main: "House No-12, Road No-11, Uttara-1, Dhaka 1230",
       sub: "Bangladesh",
     },
   ];
@@ -161,12 +161,14 @@ export default function Footer() {
             {/* Brand Column */}
             <div className="space-y-6">
               <Link href="/" className="flex items-center">
-                <h2 className="text-2xl font-bold text-white">BritCartBD</h2>
+                <h2 className="text-2xl font-bold text-white">
+                  britcartbd.com
+                </h2>
               </Link>
               <p className="text-brand-neutral-300 text-sm leading-relaxed">
-                Your trusted partner for premium baby care products in
-                Bangladesh. We deliver quality, safety, and comfort for your
-                little ones.
+                Your trusted source for premium daily care in Bangladesh. We
+                deliver the quality, safety, and comfort you deserve, making
+                your everyday essentials an experience of well-being.
               </p>
 
               {/* Trust Badges */}
@@ -229,8 +231,8 @@ export default function Footer() {
                 Newsletter
               </h3>
               <p className="text-brand-neutral-300 text-sm mb-4">
-                Subscribe for parenting tips, exclusive offers, and 10% off your
-                first order.
+                Subscribe for tips, exclusive offers, and 10% off your first
+                order.
               </p>
               <form className="space-y-3">
                 <Input
@@ -292,7 +294,8 @@ export default function Footer() {
 
               {/* Copyright */}
               <div className="text-brand-neutral-500 text-sm text-center md:text-left">
-                © {new Date().getFullYear()} LondonGB. All rights reserved.
+                © {new Date().getFullYear()} britcartbd.com. All rights
+                reserved.
               </div>
 
               {/* Developer Credit */}

@@ -1,0 +1,395 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // For non-OAuth users
+  accounts      Account[]
+  sessions      Session[]
+  addresses     Address[]
+  orders        Order[]
+  wishlist      WishlistItem[]
+  cart          CartItem[]
+  reviews       Review[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("users")
+}
+
+// OAuth accounts
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// User sessions
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Verification tokens for email verification
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// Guest shipping addresses
+model GuestShippingAddress {
+  id         String   @id @default(cuid())
+  firstName  String
+  lastName   String
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String   @default("Bangladesh")
+  phone      String
+  email      String
+  orders     Order[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("guest_shipping_addresses")
+}
+
+// Product categories
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+// Product model
+model Product {
+  id             String                @id @default(cuid())
+  name           String
+  slug           String                @unique
+  description    String?
+  price          Decimal               @db.Decimal(10, 2)
+  originalPrice  Decimal?              @db.Decimal(10, 2)
+  rating         Float                 @default(0.0)
+  reviewCount    Int                   @default(0)
+  stock          Int                   @default(0)
+  sku            String?               @unique
+  isFeatured     Boolean               @default(false)
+  isBestSeller   Boolean               @default(false)
+  isNew          Boolean               @default(false)
+  ageRange       String?
+  categoryId     String
+  brandId        String?
+  specifications ProductSpecification?
+  images         ProductImage[]
+  colors         ProductColor[]
+  reviews        Review[]
+  wishlistItems  WishlistItem[]
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  brand    Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+
+  @@map("products")
+}
+
+// Product specifications
+model ProductSpecification {
+  id               String  @id @default(cuid())
+  productId        String  @unique
+  brand            String?
+  countryOfOrigin  String?
+  productType      String?
+  materials        String?
+  packContains     String?
+  weight           String?
+  dimensions       String?
+  careInstructions String?
+  safetyFeatures   String?
+  product          Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_specifications")
+}
+
+// Product images
+model ProductImage {
+  id        String  @id @default(cuid())
+  url       String
+  alt       String?
+  productId String
+  isPrimary Boolean @default(false)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// Product colors
+model ProductColor {
+  id        String  @id @default(cuid())
+  name      String
+  hexCode   String?
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_colors")
+}
+
+// Brands
+model Brand {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  logo        String?
+  description String?
+  rating      Float     @default(0.0)
+  isFeatured  Boolean   @default(false)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("brands")
+}
+
+// User addresses
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  firstName  String
+  lastName   String
+  street     String
+  city       String
+  state      String
+  postalCode String
+  country    String  @default("Bangladesh")
+  phone      String
+  isDefault  Boolean @default(false)
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders     Order[]
+
+  @@map("addresses")
+}
+
+// Orders - UPDATED for guest orders
+model Order {
+  id                     String                @id @default(cuid())
+  userId                 String? // Make optional for guest orders
+  orderNumber            String                @unique
+  status                 OrderStatus           @default(PENDING)
+  total                  Decimal               @db.Decimal(10, 2)
+  subtotal               Decimal               @db.Decimal(10, 2)
+  tax                    Decimal               @default(0.00) @db.Decimal(10, 2)
+  shipping               Decimal               @default(0.00) @db.Decimal(10, 2)
+  discount               Decimal               @default(0.00) @db.Decimal(10, 2)
+  shippingAddressId      String? // Make optional for guest orders
+  guestShippingAddressId String? // Add this for guest orders
+  paymentMethod          PaymentMethod
+  paymentStatus          PaymentStatus         @default(PENDING)
+  // bKash specific fields
+  bkashNumber            String? // Store the bKash number used for payment
+  bkashReference         String? // Store the reference number
+  bkashTransaction       String? // Store transaction ID if available
+  guestEmail             String? // Add this for guest orders
+  items                  OrderItem[]
+  user                   User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shippingAddress        Address?              @relation(fields: [shippingAddressId], references: [id])
+  guestShippingAddress   GuestShippingAddress? @relation(fields: [guestShippingAddressId], references: [id]) // Add this relation
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+
+  @@map("orders")
+}
+
+// Order items
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+  color     String?
+  size      String?
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// Shopping cart items
+model CartItem {
+  id        String  @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int     @default(1)
+  color     String?
+  size      String?
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId, color, size])
+  @@map("cart_items")
+}
+
+// Wishlist items
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+// Product reviews
+model Review {
+  id         String       @id @default(cuid())
+  userId     String
+  productId  String
+  rating     Int // 1-5 stars
+  title      String?
+  comment    String?
+  status     ReviewStatus @default(PENDING)
+  isVerified Boolean      @default(false)
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product    Product      @relation(fields: [productId], references: [id])
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+// Add this enum for review status
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Enums
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  BKASH
+  NAGAD
+  ROCKET
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// For admin dashboard - you can extend this later
+model AdminUser {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String // Hashed password
+  role      AdminRole @default(MODERATOR)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("admin_users")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  MODERATOR
+  SUPPORT
+}
+
+// Preorder requests from customers
+model Preorder {
+  id                 String         @id @default(cuid())
+  productName        String
+  productDescription String
+  category           String
+  urgency            String
+  budget             String?
+  quantity           Int            @default(1)
+  customerName       String
+  email              String
+  phone              String
+  additionalNotes    String?
+  images             String[] // Cloudinary URLs
+  status             PreorderStatus @default(PENDING)
+  adminNotes         String?
+  estimatedPrice     Decimal?       @db.Decimal(10, 2)
+  estimatedTime      String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@map("preorders")
+}
+
+enum PreorderStatus {
+  PENDING
+  REVIEWING
+  PRICED
+  CONTACTED
+  APPROVED
+  REJECTED
+  COMPLETED
+}

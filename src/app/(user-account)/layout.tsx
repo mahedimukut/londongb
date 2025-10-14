@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   User,
   Package,
@@ -12,11 +12,14 @@ import {
   Menu,
   X,
   LogOut,
+  Loader,
+  Shield,
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
+import { ToastContainer } from "react-toastify";
 
 const navigation = [
   {
@@ -47,13 +50,63 @@ export default function UserAccountLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    // Check if authentication is still loading
+    if (status === "loading") return;
+
+    // If not authenticated, redirect to login
+    if (status === "unauthenticated" || !session) {
+      router.push("/login?callbackUrl=" + encodeURIComponent(pathname));
+    } else {
+      // Add a small delay to make the loading state visible and smooth
+      const timer = setTimeout(() => {
+        setIsCheckingAuth(false);
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [status, session, router, pathname]);
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
     setSidebarOpen(false);
   };
+
+  // Show loading state while checking authentication
+  if (status === "loading" || isCheckingAuth) {
+    return (
+      <>
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col items-center justify-center min-h-[60vh]">
+            <div className="relative">
+              <div className="w-20 h-20 border-4 border-brand-primary-100 rounded-full"></div>
+              <div className="w-20 h-20 border-4 border-brand-primary-600 border-t-transparent rounded-full animate-spin absolute top-0"></div>
+              <Shield className="h-8 w-8 text-brand-primary-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+            </div>
+            <p className="mt-6 text-lg font-medium text-brand-neutral-700">
+              Securing your account
+            </p>
+            <p className="mt-2 text-brand-neutral-500">
+              Just a moment while we verify your access...
+            </p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  // If not authenticated, don't render the protected content
+  // The useEffect will handle the redirect
+  if (!session) {
+    return null;
+  }
 
   return (
     <>
@@ -172,6 +225,18 @@ export default function UserAccountLayout({
           <div className="flex-1">
             <div className="bg-white rounded-xl border border-brand-neutral-200 p-6">
               {children}
+              <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
             </div>
           </div>
         </div>

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Nunito_Sans } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { CartProvider } from "./context/CartContext";
+import { ToastContainer } from "react-toastify";
 
 const nunitoSans = Nunito_Sans({
   variable: "--font-nunito-sans",
@@ -10,9 +12,9 @@ const nunitoSans = Nunito_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "LondonGB - Your One Stop Baby Shop - A to Z Baby Essentials",
+  title: "BritCartBD – Your Trusted Online Marketplace",
   description:
-    "Discover a wide range of premium baby products from newborns to toddlers, kids, and moms. Lovingly selected for quality and comfort.",
+    "Shop online in Bangladesh with BritCartBD. From skincare and health to baby products, electronics, auto parts, pet supplies, and more — everything you need in one trusted marketplace.",
 };
 
 export default function RootLayout({
@@ -23,7 +25,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunitoSans.variable} font-sans antialiased`}>
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <CartProvider>
+            {children}
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
+          </CartProvider>
+        </SessionProvider>
       </body>
     </html>
   );

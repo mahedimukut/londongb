@@ -30,49 +30,25 @@ export default function ShippingPage() {
             Shipping Information
           </h1>
           <p className="text-brand-neutral-600 max-w-2xl mx-auto">
-            We deliver happiness to your doorstep! Here's everything you need to
-            know about our shipping policies.
+            We deliver happiness to your doorstep across Bangladesh! Here's
+            everything you need to know about our shipping policies.
           </p>
         </div>
 
         {/* Shipping Options */}
         <div className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-6 mb-12">
           <h2 className="text-2xl font-bold text-brand-neutral-900 mb-6">
-            Shipping Methods & Delivery Times
+            Shipping Methods & Delivery Charges
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Standard Shipping */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Inside Dhaka */}
             <div className="border border-brand-neutral-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-brand-primary-50 rounded-full text-brand-primary-600">
                   <Package className="h-5 w-5" />
                 </div>
-                <h3 className="font-bold text-lg">Standard Shipping</h3>
-              </div>
-              <ul className="space-y-3 text-brand-neutral-700">
-                <li className="flex items-start gap-2">
-                  <Clock className="h-5 w-5 text-brand-neutral-400 flex-shrink-0" />
-                  <span>3-5 business days</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CreditCard className="h-5 w-5 text-brand-neutral-400 flex-shrink-0" />
-                  <span>৳100 (Free on orders over ৳500)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Available nationwide</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Express Shipping */}
-            <div className="border border-brand-neutral-200 rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-brand-primary-50 rounded-full text-brand-primary-600">
-                  <Truck className="h-5 w-5" />
-                </div>
-                <h3 className="font-bold text-lg">Express Shipping</h3>
+                <h3 className="font-bold text-lg">Inside Dhaka</h3>
               </div>
               <ul className="space-y-3 text-brand-neutral-700">
                 <li className="flex items-start gap-2">
@@ -81,38 +57,68 @@ export default function ShippingPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <CreditCard className="h-5 w-5 text-brand-neutral-400 flex-shrink-0" />
-                  <span>৳250 (Free on orders over ৳1000)</span>
+                  <span>৳60 - ৳80</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Available in major cities</span>
+                  <span>All areas of Dhaka city</span>
                 </li>
               </ul>
             </div>
 
-            {/* International Shipping */}
+            {/* Outside Dhaka */}
             <div className="border border-brand-neutral-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-brand-primary-50 rounded-full text-brand-primary-600">
-                  <Globe className="h-5 w-5" />
+                  <Truck className="h-5 w-5" />
                 </div>
-                <h3 className="font-bold text-lg">International Shipping</h3>
+                <h3 className="font-bold text-lg">Outside Dhaka</h3>
               </div>
               <ul className="space-y-3 text-brand-neutral-700">
                 <li className="flex items-start gap-2">
                   <Clock className="h-5 w-5 text-brand-neutral-400 flex-shrink-0" />
-                  <span>7-14 business days</span>
+                  <span>2-4 business days</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CreditCard className="h-5 w-5 text-brand-neutral-400 flex-shrink-0" />
-                  <span>Variable rates (calculated at checkout)</span>
+                  <span>৳120 - ৳150</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                  <span>Available to select countries</span>
+                  <span>All districts of Bangladesh</span>
                 </li>
               </ul>
             </div>
+          </div>
+        </div>
+
+        {/* Product Categories */}
+        <div className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-6 mb-12">
+          <h2 className="text-2xl font-bold text-brand-neutral-900 mb-6">
+            Our Product Categories
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              "Skin care & cosmetics",
+              "Health & beauty",
+              "Baby foods & accessories",
+              "Electronic gadgets",
+              "Car/Bike/Bicycle parts",
+              "Pet food & toys",
+              "Musical & Sporting instruments",
+              "Preorder",
+            ].map((category, index) => (
+              <div
+                key={index}
+                className="bg-brand-primary-50 rounded-lg p-4 text-center"
+              >
+                <Check className="h-5 w-5 text-brand-primary-600 mx-auto mb-2" />
+                <p className="text-sm font-medium text-brand-neutral-800">
+                  {category}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -127,11 +133,11 @@ export default function ShippingPage() {
             <div className="space-y-4 text-brand-neutral-700">
               <p>
                 All orders are processed within{" "}
-                <strong>1-2 business days</strong> (Monday-Friday, excluding
+                <strong>1-2 business days</strong> (Saturday-Thursday, excluding
                 public holidays) after receiving your order confirmation email.
               </p>
               <p>
-                Orders placed after 2 PM or on weekends will be processed the
+                Orders placed after 2 PM or on Fridays will be processed the
                 next business day.
               </p>
               <p>
@@ -149,20 +155,22 @@ export default function ShippingPage() {
             </h2>
             <div className="space-y-4 text-brand-neutral-700">
               <p>
-                We deliver to all districts in Bangladesh. Delivery times may
+                We deliver to all 64 districts in Bangladesh. Delivery times may
                 vary depending on your location:
               </p>
               <ul className="list-disc pl-5 space-y-2">
                 <li>
-                  <strong>Dhaka, Chittagong, Sylhet:</strong> Next day delivery
-                  available for express shipping
+                  <strong>Dhaka City:</strong> 1-2 business days (৳60-৳80)
                 </li>
                 <li>
-                  <strong>Other major cities:</strong> 2-3 business days for
-                  standard shipping
+                  <strong>Major Cities:</strong> 2-3 business days (৳120-৳150)
                 </li>
                 <li>
-                  <strong>Remote areas:</strong> Additional 1-2 business days
+                  <strong>District Headquarters:</strong> 3-4 business days
+                  (৳120-৳150)
+                </li>
+                <li>
+                  <strong>Remote Areas:</strong> Additional 1-2 business days
                   may be required
                 </li>
               </ul>
@@ -173,37 +181,37 @@ export default function ShippingPage() {
         {/* Shipping Restrictions */}
         <div className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-6 mb-12">
           <h2 className="text-2xl font-bold text-brand-neutral-900 mb-6">
-            Shipping Restrictions
+            Shipping Policies
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
               <h3 className="font-bold text-brand-neutral-900 flex items-center gap-2">
                 <Check className="h-5 w-5 text-green-500" />
-                What We Can Ship
+                Shipping Notes
               </h3>
               <ul className="space-y-3 text-brand-neutral-700 pl-7">
-                <li>All baby clothing and accessories</li>
-                <li>Toys and learning materials</li>
-                <li>Feeding supplies (excluding liquids)</li>
-                <li>Nursery decor items</li>
-                <li>Bath and skincare products (non-hazardous)</li>
+                <li>Delivery charges are fixed based on location</li>
+                <li>No minimum order requirement for shipping</li>
+                <li>Cash on Delivery available nationwide</li>
+                <li>Online payment options available</li>
+                <li>Same-day processing for orders before 2 PM</li>
               </ul>
             </div>
 
             <div className="space-y-4">
               <h3 className="font-bold text-brand-neutral-900 flex items-center gap-2">
                 <X className="h-5 w-5 text-red-500" />
-                Shipping Limitations
+                Important Notes
               </h3>
               <ul className="space-y-3 text-brand-neutral-700 pl-7">
-                <li>No hazardous materials (certain cleaning products)</li>
-                <li>No perishable items</li>
+                <li>Delivery times may vary during holidays</li>
+                <li>Some remote areas may experience delays</li>
                 <li>
-                  International restrictions on certain baby care products
+                  Contact us for bulk orders or special delivery requirements
                 </li>
-                <li>Oversized items may have special shipping requirements</li>
-                <li>Some rural areas may have limited service</li>
+                <li>Friday is our weekly holiday - no deliveries</li>
+                <li>Track your order via provided tracking number</li>
               </ul>
             </div>
           </div>
@@ -246,10 +254,10 @@ export default function ShippingPage() {
                   shipping questions.
                 </p>
                 <a
-                  href="tel:+8801234567890"
+                  href="tel:+8801684986746"
                   className="mt-2 inline-block text-brand-primary-600 hover:underline"
                 >
-                  +880 1234 567890
+                  +880 1684-986746
                 </a>
               </div>
 
@@ -262,12 +270,25 @@ export default function ShippingPage() {
                   Send us an email and we'll get back to you within 24 hours.
                 </p>
                 <a
-                  href="mailto:shipping@babyhaven.com"
+                  href="mailto:support@britcartbd.com"
                   className="mt-2 inline-block text-brand-primary-600 hover:underline"
                 >
-                  shipping@babyhaven.com
+                  support@britcartbd.com
                 </a>
               </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg border border-brand-neutral-200 mt-4">
+              <h4 className="font-medium text-brand-neutral-900 mb-2 flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-brand-primary-600" />
+                Visit Our Store
+              </h4>
+              <p className="text-brand-neutral-600">
+                Come visit us at our physical location in Uttara, Dhaka.
+              </p>
+              <p className="mt-2 text-brand-primary-600">
+                House No-12, Road No-11, Uttara-1, Dhaka 1230, Bangladesh
+              </p>
             </div>
           </div>
         </div>

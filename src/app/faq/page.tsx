@@ -128,14 +128,14 @@ export default function FAQPage() {
       title: "Email Support",
       description: "Get answers within 24 hours",
       action: "Email Us",
-      link: "mailto:support@babyhaven.com",
+      link: "mailto:support@britcartbd.com",
     },
     {
       icon: <Phone className="h-6 w-6" />,
       title: "Phone Support",
-      description: "Mon-Fri, 9AM-6PM",
+      description: "Sat-Thu, 9AM-10PM",
       action: "Call Now",
-      link: "tel:+8801234567890",
+      link: "tel:+8801684986746",
     },
     {
       icon: <MessageSquare className="h-6 w-6" />,
@@ -143,7 +143,7 @@ export default function FAQPage() {
       description: "Instant help during business hours",
       action: "Start Chat",
       link: "#",
-      onClick: () => alert("Live chat would open here"),
+      onClick: () => alert("Live chat is not implemented yet."),
     },
   ];
 
@@ -332,7 +332,7 @@ export default function FAQPage() {
                   className="text-brand-primary-600 border-brand-primary-600 hover:bg-brand-primary-50"
                   asChild
                 >
-                  <a href="tel:+8801234567890">Call Support</a>
+                  <a href="tel:+8801684986746">Call Support</a>
                 </Button>
               </div>
             </div>

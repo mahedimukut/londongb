@@ -175,15 +175,6 @@ export default function ReturnsExchangesPage() {
               </div>
             ))}
           </div>
-
-          <div className="mt-12 text-center">
-            <Button
-              className="bg-brand-primary-600 hover:bg-brand-primary-700"
-              asChild
-            >
-              <a href="/returns-center">Start Your Return</a>
-            </Button>
-          </div>
         </div>
 
         {/* Conditions & Exceptions */}
@@ -300,7 +291,7 @@ export default function ReturnsExchangesPage() {
                 What if I received a damaged or incorrect item?
               </h3>
               <p className="text-brand-neutral-600">
-                Contact us immediately at support@babyhaven.com with your order
+                Contact us immediately at support@britcartbd.com with your order
                 number and photos of the issue. We'll arrange for a free return
                 and send a replacement right away or issue a full refund.
               </p>
@@ -347,10 +338,10 @@ export default function ReturnsExchangesPage() {
               className="bg-brand-primary-600 hover:bg-brand-primary-700"
               asChild
             >
-              <a href="mailto:returns@babyhaven.com">Email Returns Team</a>
+              <a href="mailto:support@britcartbd.com">Email Returns Team</a>
             </Button>
             <Button variant="outline" asChild>
-              <a href="tel:+8801234567890">Call Returns Support</a>
+              <a href="tel:+8801684986746">Call Returns Support</a>
             </Button>
             <Button variant="outline" asChild>
               <a href="/contact">Visit Contact Page</a>

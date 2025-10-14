@@ -2,233 +2,255 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Sparkles, ArrowRight, Star } from "lucide-react";
-import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Play,
+  Pause,
+  Sparkles,
+  Zap,
+  TrendingUp,
+  Star,
+  Users,
+  Award,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
-const categories = [
-  "Newborn Essentials",
-  "Feeding & Nursing",
-  "Diapering",
-  "Toys & Learning",
-  "Bath & Skincare",
-  "Mom's Care",
-  "Clothing & Accessories",
-  "Strollers & Carriers",
-  "Health & Safety",
+const heroImages = [
+  {
+    src: "/images/hero/Banner-2.jpg",
+    title: "Elevate Your Daily",
+    highlight: "Beauty Routine",
+    cta: "Shop Beauty",
+    badge: "NEW ARRIVALS",
+    gradient: "from-purple-600/30 to-pink-600/30",
+    stats: [
+      { icon: Star, value: "4.9/5", label: "Beauty Rating" },
+      { icon: Users, value: "10K+", label: "Happy Customers" },
+    ],
+    color: "from-purple-400 to-pink-400",
+  },
+  {
+    src: "/images/hero/Banner-3.jpg",
+    title: "Transform Your",
+    highlight: "Wellness Journey",
+    cta: "Explore Wellness",
+    badge: "BESTSELLER",
+    gradient: "from-blue-600/30 to-cyan-600/30",
+    stats: [
+      { icon: Award, value: "Premium", label: "Quality Products" },
+      { icon: Zap, value: "Fast", label: "Wellness Results" },
+    ],
+    color: "from-blue-400 to-cyan-400",
+  },
+  {
+    src: "/images/hero/hero-image.jpg",
+    title: "Curate Your Perfect",
+    highlight: "Lifestyle",
+    cta: "Discover Style",
+    badge: "LIMITED EDITION",
+    gradient: "from-emerald-600/30 to-teal-600/30",
+    stats: [
+      { icon: TrendingUp, value: "50K+", label: "Lovers" },
+      { icon: Sparkles, value: "Trending", label: "This Week" },
+    ],
+    color: "from-emerald-400 to-teal-400",
+  },
 ];
 
 export default function Hero() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  const currentContent = heroImages[currentImageIndex];
+
   return (
-    <section className="relative bg-gradient-to-br from-brand-primary-50 via-white to-white overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-brand-primary-100/50 blur-3xl"></div>
-        <div className="absolute bottom-10 right-20 w-40 h-40 rounded-full bg-brand-primary-200/30 blur-3xl"></div>
-      </div>
+    <section className="relative bg-black h-[300px] md:h-[400px] lg:h-[450px] overflow-hidden">
+      {/* Floating Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_24px,rgba(255,255,255,0.03)_25px,transparent_26px),linear-gradient(transparent_24px,rgba(255,255,255,0.03)_25px,transparent_26px)] bg-[size:50px_50px] animate-pulse" />
 
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-10 flex flex-col lg:flex-row gap-6 h-[600px]">
-        {/* Sidebar - Categories with Custom Scrollbar */}
-        <aside className="hidden lg:block w-64 shrink-0 h-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white rounded-3xl shadow-xl p-5 h-full flex flex-col border border-brand-primary-100/30"
-          >
-            <h3 className="text-lg font-semibold text-brand-primary-600 mb-4 flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-brand-primary-400" />
-              Shop by Category
-            </h3>
-            <ul className="space-y-3 flex-1 overflow-y-auto scrollbar-pink">
-              {categories.map((cat, i) => (
-                <motion.li
-                  key={cat}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.05 }}
-                >
-                  <Link
-                    href={`/categories/${cat
-                      .toLowerCase()
-                      .replace(/\s+/g, "-")}`}
-                    className="group text-brand-neutral-700 hover:text-brand-primary-500 flex items-center justify-between text-sm font-medium transition-all py-2 px-3 rounded-lg hover:bg-brand-primary-50"
-                  >
-                    <span className="transition-all group-hover:translate-x-1">
-                      {cat}
-                    </span>
-                    <ChevronRight className="h-4 w-4 transition-all group-hover:translate-x-1 text-brand-primary-300" />
-                  </Link>
-                </motion.li>
-              ))}
-            </ul>
-            <Link
-              className="group mt-4 text-brand-primary-600 hover:text-brand-primary-700 flex items-center justify-between text-sm font-semibold transition-all py-2 px-3 rounded-lg bg-brand-primary-50 hover:bg-brand-primary-100"
-              href="/categories"
-            >
-              <span className="transition-all group-hover:translate-x-1">
-                Explore All Products
-              </span>
-              <ArrowRight className="h-4 w-4 transition-all group-hover:translate-x-1" />
-            </Link>
-          </motion.div>
-        </aside>
-
-        {/* Hero Section - Enhanced */}
+      {/* Floating Particles */}
+      {[...Array(12)].map((_, i) => (
         <motion.div
-          className="flex-1 relative rounded-3xl overflow-hidden shadow-2xl h-full group"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="relative w-full h-full">
+          key={i}
+          animate={{
+            y: [0, -40, 0],
+            x: [0, Math.random() * 25 - 12.5, 0],
+            opacity: [0.2, 0.8, 0.2],
+          }}
+          transition={{
+            duration: 5 + Math.random() * 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute w-1 h-1 bg-white rounded-full"
+          style={{
+            top: `${15 + Math.random() * 70}%`,
+            left: `${20 + Math.random() * 70}%`,
+          }}
+        />
+      ))}
+
+      {/* Hero Content Wrapper */}
+      <div className="relative w-full h-full">
+        {/* Background Image Transition */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentImageIndex}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
             <Image
-              src="/images/hero/hero-image-2.jpg"
-              alt="Happy mother holding her baby"
+              src={currentContent.src}
+              alt="Hero banner"
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              className="object-cover object-center"
               priority
-              sizes="(max-width: 768px) 100vw, 70vw"
-              quality={90}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-black/40 lg:via-black/20 lg:to-transparent" />
+            <div
+              className={`absolute inset-0 bg-gradient-to-r ${currentContent.gradient} mix-blend-soft-light`}
+            />
+            <div className="absolute inset-0 bg-black/40" />
+          </motion.div>
+        </AnimatePresence>
 
-            {/* Floating sparkles */}
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: [0, 1, 0], scale: [0, 1, 0] }}
-                transition={{
-                  duration: 3 + Math.random() * 4,
-                  delay: Math.random() * 2,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                }}
-                className="absolute text-yellow-300"
-                style={{
-                  top: `${10 + Math.random() * 70}%`,
-                  left: `${10 + Math.random() * 80}%`,
-                }}
-              >
-                <Sparkles size={18} className="opacity-80" />
-              </motion.div>
-            ))}
-
-            <div className="absolute inset-0 flex flex-col justify-center items-center lg:items-start text-center lg:text-left px-6 sm:px-12 py-10 z-10">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full mb-4"
-              >
-                <Star className="h-4 w-4 fill-yellow-300 text-yellow-300" />
-                <span className="text-sm font-medium text-white">
-                  Trusted by 10,000+ moms
+        {/* Main Content */}
+        <div className="relative flex flex-col justify-center h-full z-10 px-6 sm:px-10 md:px-14 lg:px-20 xl:px-28">
+          <div className="flex flex-col xl:flex-row justify-between items-center xl:items-start gap-12">
+            {/* Left Text Section */}
+            <motion.div
+              key={currentImageIndex}
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 40 }}
+              transition={{ duration: 0.8 }}
+              className="text-center xl:text-left max-w-2xl"
+            >
+              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-lg border border-white/30 px-5 py-2.5 rounded-2xl shadow-lg mb-4">
+                <Sparkles className="h-4 w-4 text-white" />
+                <span className="text-white font-bold text-sm tracking-wider">
+                  {currentContent.badge}
                 </span>
-              </motion.div>
+              </div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4 drop-shadow-2xl"
-              >
-                <span className="bg-gradient-to-r from-brand-primary-100 to-white bg-clip-text text-transparent">
-                  Everything Baby & Mom
+              <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black text-white leading-tight tracking-tight mb-6">
+                {currentContent.title} <br />
+                <span
+                  className={`bg-gradient-to-r ${currentContent.color} bg-clip-text text-transparent`}
+                >
+                  {currentContent.highlight}
                 </span>
-                <br className="hidden sm:block" />
-                <span className="text-white">Needs in One Place</span>
-              </motion.h1>
+              </h1>
 
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="text-white/90 text-lg sm:text-xl mb-8 max-w-xl drop-shadow-md"
+              <Link
+                href="/shop"
+                className="group relative inline-flex items-center gap-4 bg-white text-black px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-bold hover:bg-gray-50 transition-all duration-300 overflow-hidden shadow-2xl"
               >
-                Premium quality essentials, carefully curated for every stage of
-                your baby's growth journey.
-              </motion.p>
+                <span className="relative z-10 text-lg">
+                  {currentContent.cta}
+                </span>
+                <ArrowRight className="h-6 w-6 relative z-10 transition-transform group-hover:translate-x-1 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              </Link>
+            </motion.div>
 
+            {/* Right Side Stats (visible on xl+) */}
+            <div className="hidden xl:block">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="flex flex-col sm:flex-row gap-4"
+                key={currentImageIndex}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="space-y-8"
               >
-                <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
-                  <Link
-                    href="/shop"
-                    className="relative px-8 py-4 bg-gradient-to-r from-brand-primary-500 to-brand-primary-600 text-white font-bold rounded-xl text-center shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden flex items-center justify-center gap-3"
-                  >
-                    <span className="shine-overlay"></span>
-                    <span className="relative z-10">Shop Now</span>
-                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </motion.div>
+                {/* Stats Card */}
+                <div className="bg-white/15 backdrop-blur-lg border border-white/30 rounded-3xl p-8 shadow-2xl">
+                  <div className="space-y-6">
+                    {currentContent.stats.map((stat, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 + index * 0.1 }}
+                        className="flex items-center gap-4"
+                      >
+                        <div
+                          className={`p-3 bg-gradient-to-br ${currentContent.color}/20 rounded-2xl border border-white/20`}
+                        >
+                          <stat.icon className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <div className="text-2xl font-bold text-white">
+                            {stat.value}
+                          </div>
+                          <div className="text-white/70 text-sm font-medium">
+                            {stat.label}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
 
-                <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}>
-                  <Link
-                    href="/new-arrivals"
-                    className="relative px-8 py-4 bg-white/10 border-2 border-white/20 text-white font-medium rounded-xl hover:bg-white/20 hover:border-white/30 transition-all duration-300 overflow-hidden flex items-center justify-center gap-3"
-                  >
-                    <span className="relative z-10">New Arrivals</span>
-                  </Link>
-                </motion.div>
+                {/* Progress Indicator */}
+                <div className="flex items-center gap-3">
+                  {heroImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`w-16 h-1.5 rounded-full transition-all duration-500 ${
+                        index === currentImageIndex
+                          ? `bg-gradient-to-r ${currentContent.color} shadow-lg scale-110`
+                          : "bg-white/40 hover:bg-white/60"
+                      }`}
+                    />
+                  ))}
+                </div>
               </motion.div>
             </div>
           </div>
-        </motion.div>
-      </div>
+        </div>
 
-      {/* Custom Scrollbar Styles */}
-      <style jsx global>{`
-        .scrollbar-pink::-webkit-scrollbar {
-          width: 6px;
-        }
-        .scrollbar-pink::-webkit-scrollbar-track {
-          background: #fce7f3;
-          border-radius: 3px;
-        }
-        .scrollbar-pink::-webkit-scrollbar-thumb {
-          background: #f9a8d4;
-          border-radius: 3px;
-        }
-        .scrollbar-pink::-webkit-scrollbar-thumb:hover {
-          background: #f472b6;
-        }
-        .shine-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.2) 50%,
-            rgba(255, 255, 255, 0) 100%
-          );
-          transform: translateX(-100%);
-          opacity: 0;
-          transition: opacity 0.5s;
-        }
-        .group:hover .shine-overlay {
-          animation: shine 3s infinite;
-          opacity: 1;
-        }
-        @keyframes shine {
-          0% {
-            transform: translateX(-100%);
-          }
-          20% {
-            transform: translateX(100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-      `}</style>
+        {/* Mobile Controls */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 xl:hidden flex items-center gap-4 z-20">
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="bg-white/15 backdrop-blur-lg border border-white/30 p-3 rounded-full hover:bg-white/25 transition-colors shadow-lg"
+          >
+            {isPlaying ? (
+              <Pause className="h-4 w-4 text-white" />
+            ) : (
+              <Play className="h-4 w-4 text-white" />
+            )}
+          </button>
+
+          <div className="flex gap-2 bg-white/15 backdrop-blur-lg border border-white/30 px-3 py-2 rounded-full shadow-lg">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImageIndex(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  index === currentImageIndex
+                    ? "bg-white scale-125 shadow-sm"
+                    : "bg-white/50 hover:bg-white/70"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

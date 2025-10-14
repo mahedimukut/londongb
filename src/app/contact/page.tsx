@@ -31,9 +31,27 @@ export default function ContactPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Prepare email content
+    const emailBody = `
+    Name: ${formData.name}
+    Email: ${formData.email}
+    Phone: ${formData.phone}
+    Subject: ${formData.subject}
+
+    Message:
+    ${formData.message}
+    `.trim();
+
+    // Create mailto link
+    const mailtoLink = `mailto:britcartbd@gmail.com?subject=Contact Form: ${encodeURIComponent(
+      formData.subject
+    )}&body=${encodeURIComponent(emailBody)}`;
+
     // Simulate form submission
     setTimeout(() => {
-      console.log("Form submitted:", formData);
+      // Open user's email client
+      window.location.href = mailtoLink;
+
       setIsSubmitting(false);
       setIsSubmitted(true);
       setFormData({
@@ -44,15 +62,15 @@ export default function ContactPage() {
         message: "",
       });
 
-      // Reset submission status after 3 seconds
-      setTimeout(() => setIsSubmitted(false), 3000);
-    }, 1500);
+      // Reset submission status after 5 seconds
+      setTimeout(() => setIsSubmitted(false), 5000);
+    }, 1000);
   };
 
   const handleGetDirections = () => {
     // Open Google Maps with the store location
     window.open(
-      "https://www.google.com/maps/dir/?api=1&destination=123+Baby+Avenue,Dhaka+1212,Bangladesh",
+      "https://www.google.com/maps/dir/?api=1&destination=House+No-12,Road+No-11,Uttara-1,Dhaka+1230,Bangladesh",
       "_blank"
     );
   };
@@ -92,10 +110,16 @@ export default function ContactPage() {
                       Our Store
                     </h3>
                     <p className="text-brand-neutral-600">
-                      123 Baby Avenue, Dhaka 1212
+                      House No-12, Road No-11, Uttara-1
                       <br />
-                      Bangladesh
+                      Dhaka 1230, Bangladesh
                     </p>
+                    <button
+                      onClick={handleGetDirections}
+                      className="text-brand-primary-600 hover:text-brand-primary-700 text-sm font-medium mt-1 transition-colors"
+                    >
+                      Get Directions →
+                    </button>
                   </div>
                 </div>
 
@@ -110,20 +134,12 @@ export default function ContactPage() {
                     </h3>
                     <p className="text-brand-neutral-600">
                       <a
-                        href="tel:+8801234567890"
+                        href="tel:+8801684986746"
                         className="hover:text-brand-primary-600 transition-colors"
                       >
-                        +880 1234 567890
+                        +880 1684-986746
                       </a>{" "}
                       (Customer Service)
-                      <br />
-                      <a
-                        href="tel:+8809876543210"
-                        className="hover:text-brand-primary-600 transition-colors"
-                      >
-                        +880 9876 543210
-                      </a>{" "}
-                      (Order Support)
                     </p>
                   </div>
                 </div>
@@ -139,20 +155,20 @@ export default function ContactPage() {
                     </h3>
                     <p className="text-brand-neutral-600">
                       <a
-                        href="mailto:info@babyhaven.com"
+                        href="mailto:support@britcartbd.com"
                         className="hover:text-brand-primary-600 transition-colors"
                       >
-                        info@babyhaven.com
-                      </a>{" "}
-                      (General inquiries)
-                      <br />
-                      <a
-                        href="mailto:support@babyhaven.com"
-                        className="hover:text-brand-primary-600 transition-colors"
-                      >
-                        support@babyhaven.com
+                        support@britcartbd.com
                       </a>{" "}
                       (Customer support)
+                      <br />
+                      <a
+                        href="mailto:info@britcartbd.com"
+                        className="hover:text-brand-primary-600 transition-colors"
+                      >
+                        info@britcartbd.com
+                      </a>{" "}
+                      (General inquiries)
                     </p>
                   </div>
                 </div>
@@ -167,11 +183,9 @@ export default function ContactPage() {
                       Business Hours
                     </h3>
                     <p className="text-brand-neutral-600">
-                      Monday - Friday: 9:00 AM - 6:00 PM
+                      Saturday - Thursday: 9:00 AM - 10:00 PM
                       <br />
-                      Saturday: 10:00 AM - 4:00 PM
-                      <br />
-                      Sunday: Closed
+                      Friday: 3:00 PM - 10:00 PM
                     </p>
                   </div>
                 </div>
@@ -186,7 +200,7 @@ export default function ContactPage() {
               <div className="flex gap-4">
                 <Button variant="outline" className="flex-1" asChild>
                   <a
-                    href="https://facebook.com"
+                    href="https://facebook.com/britcartbd"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -195,7 +209,7 @@ export default function ContactPage() {
                 </Button>
                 <Button variant="outline" className="flex-1" asChild>
                   <a
-                    href="https://instagram.com"
+                    href="https://instagram.com/britcartbd"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -204,7 +218,7 @@ export default function ContactPage() {
                 </Button>
                 <Button variant="outline" className="flex-1" asChild>
                   <a
-                    href="https://twitter.com"
+                    href="https://twitter.com/britcartbd"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -229,8 +243,16 @@ export default function ContactPage() {
             {isSubmitted ? (
               <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg mb-6 flex items-center gap-2">
                 <Check className="h-5 w-5" />
-                Thank you for your message! We'll get back to you within 24
-                hours.
+                <div>
+                  <p className="font-medium">Message ready to send!</p>
+                  <p className="text-sm mt-1">
+                    Your email client should open automatically. If not, please
+                    send your message to{" "}
+                    <a href="mailto:britcartbd@gmail.com" className="underline">
+                      britcartbd@gmail.com
+                    </a>
+                  </p>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -357,12 +379,17 @@ export default function ContactPage() {
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                         ></path>
                       </svg>
-                      Sending...
+                      Preparing your message...
                     </>
                   ) : (
-                    "Send Message"
+                    "Open Email to Send Message"
                   )}
                 </Button>
+
+                <p className="text-xs text-brand-neutral-500 text-center">
+                  This will open your email client with your message pre-filled.
+                  You just need to click "Send".
+                </p>
               </form>
             )}
           </div>
@@ -377,22 +404,22 @@ export default function ContactPage() {
           <div className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden">
             {/* Google Maps Embed */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14609.333664297143!2d90.40800755946101!3d23.735486951638972!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b85c366afdaf%3A0x63cbcd8b4dfb9d3c!2sMotijheel%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1753108007477!5m2!1sen!2sbd"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3648.123456789012!2d90.40840737576953!3d23.8700461785892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c70c7a6a1a1b%3A0x1234567890abcdef!2sHouse%20No-12%2C%20Road%20No-11%2C%20Uttara-1%2C%20Dhaka%201230%2C%20Bangladesh!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd"
               width="100%"
               height="450"
               className="border-0"
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Baby Haven Store Location"
+              title="Britcartbd.com Store Location - House No-12, Road No-11, Uttara-1, Dhaka 1230, Bangladesh"
             ></iframe>
 
             <div className="p-6 text-center">
               <h3 className="text-lg font-medium text-brand-neutral-900 mb-2">
-                Baby Haven Store
+                Britcartbd.com Store
               </h3>
               <p className="text-brand-neutral-600 mb-4">
-                123 Baby Avenue, Dhaka 1212, Bangladesh
+                House No-12, Road No-11, Uttara-1, Dhaka 1230, Bangladesh
               </p>
               <Button
                 onClick={handleGetDirections}

@@ -196,22 +196,24 @@ export default function PrivacyPolicyPage() {
                 <li>
                   Email:{" "}
                   <Link
-                    href="mailto:privacy@babyhaven.com"
+                    href="mailto:support@britcartbd.com"
                     className="text-brand-primary-600 hover:underline"
                   >
-                    privacy@babyhaven.com
+                    support@britcartbd.com
                   </Link>
                 </li>
                 <li>
                   Phone:{" "}
                   <Link
-                    href="tel:+8801234567890"
+                    href="tel:+8801684986746"
                     className="text-brand-primary-600 hover:underline"
                   >
-                    +880 1234 567890
+                    +880 1684-986746
                   </Link>
                 </li>
-                <li>Address: 123 Baby Street, Dhaka 1212, Bangladesh</li>
+                <li>
+                  House No-12, Road No-11, Uttara-1, Dhaka 1230, Bangladesh
+                </li>
               </ul>
               <div className="mt-6">
                 <Button variant="outline" asChild>

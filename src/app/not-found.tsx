@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Home, Search, ArrowLeft, Baby, Heart } from "lucide-react";
+import {
+  Home,
+  Search,
+  ArrowLeft,
+  ShoppingBag,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,8 +18,15 @@ export default function NotFound() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gradient-to-br from-brand-primary-50 to-brand-sky-50 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-        <div className="max-w-2xl mx-auto text-center">
+      <main className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-5 w-40 h-40 rounded-full bg-purple-200/40 blur-3xl"></div>
+          <div className="absolute top-40 right-10 w-32 h-32 rounded-full bg-pink-200/50 blur-3xl"></div>
+          <div className="absolute bottom-20 left-20 w-36 h-36 rounded-full bg-blue-200/30 blur-3xl"></div>
+        </div>
+
+        <div className="max-w-2xl mx-auto text-center relative z-10">
           {/* Animated 404 Number */}
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
@@ -21,13 +35,23 @@ export default function NotFound() {
             className="mb-8"
           >
             <div className="relative">
-              <div className="text-9xl font-bold text-brand-primary-600 opacity-20">
+              <div className="text-9xl font-bold text-purple-600 opacity-20">
                 404
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-6xl font-bold text-brand-primary-600">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.05, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  }}
+                  className="text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
+                >
                   404
-                </div>
+                </motion.div>
               </div>
             </div>
           </motion.div>
@@ -39,19 +63,19 @@ export default function NotFound() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mb-12"
           >
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-neutral-900 mb-4">
-              Oops! Little One Got Lost
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Page Not Found
             </h1>
-            <p className="text-lg text-brand-neutral-600 mb-8 max-w-md mx-auto">
-              The page you're looking for seems to have wandered off. Don't
-              worry, we'll help you find your way back to the fun stuff!
+            <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+              Looks like this product page has wandered off! Don't worry - we've
+              got plenty of other amazing finds waiting for you.
             </p>
 
-            {/* Animated Baby Icon */}
+            {/* Animated Shopping Icon */}
             <motion.div
               animate={{
                 y: [0, -10, 0],
-                rotate: [0, 5, -5, 0],
+                scale: [1, 1.1, 1],
               }}
               transition={{
                 duration: 2,
@@ -60,7 +84,7 @@ export default function NotFound() {
               }}
               className="mb-8"
             >
-              <Baby className="h-16 w-16 text-brand-primary-600 mx-auto" />
+              <ShoppingBag className="h-16 w-16 text-purple-600 mx-auto" />
             </motion.div>
           </motion.div>
 
@@ -73,7 +97,7 @@ export default function NotFound() {
           >
             <Button
               asChild
-              className="bg-brand-primary-600 hover:bg-brand-primary-700 text-white px-6 py-3"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 shadow-lg hover:shadow-xl transition-all"
               size="lg"
             >
               <Link href="/" className="flex items-center gap-2">
@@ -85,7 +109,7 @@ export default function NotFound() {
             <Button
               variant="outline"
               asChild
-              className="border-brand-primary-600 text-brand-primary-600 hover:bg-brand-primary-50 px-6 py-3"
+              className="border-purple-600 text-purple-600 hover:bg-purple-50 px-6 py-3 hover:shadow-md transition-all"
               size="lg"
             >
               <Link href="/shop" className="flex items-center gap-2">
@@ -95,24 +119,56 @@ export default function NotFound() {
             </Button>
           </motion.div>
 
-          {/* Quick Links */}
+          {/* Quick Links - Updated for your categories */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-brand-neutral-200"
+            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-purple-100"
           >
-            <h3 className="text-lg font-semibold text-brand-neutral-900 mb-4 flex items-center justify-center gap-2">
-              <Search className="h-5 w-5 text-brand-primary-600" />
-              Popular Pages
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center justify-center gap-2">
+              <Sparkles className="h-5 w-5 text-purple-600" />
+              Popular Categories
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { href: "/shop", label: "All Products", icon: "🛒" },
-                { href: "/new-arrivals", label: "New Arrivals", icon: "⭐" },
-                { href: "/for-moms", label: "For Moms", icon: "👩" },
-                { href: "/sale", label: "Sale", icon: "🔥" },
+                {
+                  href: "/category/skin-care",
+                  label: "Skin Care",
+                  icon: "✨",
+                  count: "28 products",
+                },
+                {
+                  href: "/category/electronics",
+                  label: "Electronics",
+                  icon: "📱",
+                  count: "67 products",
+                },
+                {
+                  href: "/category/baby",
+                  label: "Baby Products",
+                  icon: "👶",
+                  count: "42 products",
+                },
+                {
+                  href: "/category/health-beauty",
+                  label: "Health & Beauty",
+                  icon: "💄",
+                  count: "35 products",
+                },
+                {
+                  href: "/category/auto-parts",
+                  label: "Auto Parts",
+                  icon: "🚗",
+                  count: "23 products",
+                },
+                {
+                  href: "/category/pets",
+                  label: "Pet Supplies",
+                  icon: "🐾",
+                  count: "18 products",
+                },
               ].map((link, index) => (
                 <motion.div
                   key={link.href}
@@ -122,10 +178,18 @@ export default function NotFound() {
                 >
                   <Link
                     href={link.href}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-brand-primary-50 transition-colors text-brand-neutral-700 hover:text-brand-primary-600"
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-purple-50 transition-all group border border-transparent hover:border-purple-200"
                   >
-                    <span className="text-xl">{link.icon}</span>
-                    <span className="font-medium">{link.label}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{link.icon}</span>
+                      <div className="text-left">
+                        <span className="font-medium text-gray-800 group-hover:text-purple-600">
+                          {link.label}
+                        </span>
+                        <p className="text-xs text-gray-500">{link.count}</p>
+                      </div>
+                    </div>
+                    <ArrowLeft className="h-4 w-4 text-gray-400 group-hover:text-purple-600 rotate-180" />
                   </Link>
                 </motion.div>
               ))}
@@ -137,17 +201,42 @@ export default function NotFound() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1 }}
-            className="mt-8 text-center"
+            className="mt-8 text-center bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-purple-100"
           >
-            <p className="text-brand-neutral-500 mb-2">
-              Need help finding something?
-            </p>
-            <div className="flex items-center justify-center gap-2 text-brand-primary-600">
-              <Heart className="h-4 w-4" />
-              <Link href="/contact" className="hover:underline font-medium">
-                Contact our support team
-              </Link>
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <Truck className="h-5 w-5 text-purple-600" />
+              <p className="text-gray-700 font-medium">
+                Fast Delivery Across Bangladesh
+              </p>
             </div>
+            <p className="text-gray-600 text-sm mb-3">
+              Can't find what you're looking for?
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm hover:underline"
+            >
+              <Sparkles className="h-4 w-4" />
+              Contact our support team
+            </Link>
+          </motion.div>
+
+          {/* Search Suggestion */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+            className="mt-6 text-center"
+          >
+            <p className="text-gray-500 text-sm">
+              Try searching for products in our{" "}
+              <Link
+                href="/search"
+                className="text-purple-600 hover:underline font-medium"
+              >
+                search page
+              </Link>
+            </p>
           </motion.div>
         </div>
       </main>

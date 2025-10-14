@@ -20,9 +20,9 @@ const testimonials = [
     rating: 5,
     photo: "/images/testimonials/sarah.jpg",
     review:
-      "The organic baby clothes are incredibly soft and held up perfectly through countless washes. My little one loves them!",
+      "The baby products are absolutely wonderful! From diapers to feeding supplies, everything is top quality and safe for my little one.",
     date: "2 weeks ago",
-    featured: "Baby Clothing",
+    featured: "Baby Products",
   },
   {
     id: 2,
@@ -31,9 +31,9 @@ const testimonials = [
     rating: 4.5,
     photo: "/images/testimonials/rahim.jpg",
     review:
-      "Fast delivery and excellent customer service when I had questions about the stroller features. Would definitely recommend!",
+      "Amazing skincare products! My skin has never looked better. The moisturizers and serums are worth every taka.",
     date: "1 month ago",
-    featured: "Strollers",
+    featured: "Skin Care",
   },
   {
     id: 3,
@@ -42,20 +42,20 @@ const testimonials = [
     rating: 5,
     photo: "/images/testimonials/nusrat.jpg",
     review:
-      "The baby carrier saved my back! So comfortable and my baby falls asleep instantly in it. Worth every taka.",
+      "The health and beauty range is fantastic! Natural ingredients that actually work. My go-to for personal care essentials.",
     date: "3 weeks ago",
-    featured: "Baby Carriers",
+    featured: "Health & Beauty",
   },
   {
     id: 4,
-    name: "Tahmina M.",
+    name: "Karim M.",
     location: "Khulna",
     rating: 5,
     photo: "/images/testimonials/rahmina.jpg",
     review:
-      "As a first-time mom, I appreciate the quality and safety of all products I've purchased here. My go-to baby shop!",
+      "Great electronics selection! Bought a smartphone and headphones - both authentic products with excellent performance.",
     date: "2 months ago",
-    featured: "Newborn Essentials",
+    featured: "Electronics",
   },
 ];
 
@@ -130,14 +130,15 @@ export default function Testimonials() {
             className="inline-flex items-center bg-white text-brand-primary-600 px-6 py-2 rounded-full shadow-sm mb-6 border border-brand-primary-100"
           >
             <Sparkles className="h-4 w-4 mr-2" />
-            <span className="text-sm font-medium">Parent Testimonials</span>
+            <span className="text-sm font-medium">Customer Stories</span>
           </motion.div>
           <h2 className="text-4xl font-bold text-brand-neutral-800 mb-4">
-            Loved by <span className="text-brand-primary-600">Families</span>{" "}
-            Nationwide
+            Trusted by <span className="text-brand-primary-600">Thousands</span>{" "}
+            Across Bangladesh
           </h2>
           <p className="text-brand-neutral-600 max-w-2xl mx-auto text-lg">
-            Hear what parents across Bangladesh say about their experiences
+            Discover why customers love shopping with us for all their lifestyle
+            needs - from baby care to electronics and beyond
           </p>
         </motion.div>
 
@@ -151,7 +152,7 @@ export default function Testimonials() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
               whileHover={{ y: -10 }}
-              className="relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-white/20 group"
+              className="relative bg-white rounded-2xl shadow-md hover:shadow-lg transition-all overflow-hidden border border-white/20 group"
             >
               {/* Featured badge */}
               <div className="absolute top-4 right-4 bg-gradient-to-r from-brand-primary-500 to-brand-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10">
@@ -193,7 +194,7 @@ export default function Testimonials() {
                     {testimonial.date}
                   </span>
                   <Link
-                    href={`/categories/${testimonial.featured
+                    href={`/shop?category=${testimonial.featured
                       .toLowerCase()
                       .replace(/\s+/g, "-")}`}
                     className="text-xs text-brand-primary-600 hover:text-brand-primary-700 font-medium flex items-center"
@@ -209,23 +210,6 @@ export default function Testimonials() {
             </motion.div>
           ))}
         </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="mt-16 text-center"
-        >
-          <Link
-            href="/reviews"
-            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-brand-primary-500 to-brand-primary-600 text-white font-medium rounded-full text-base shadow-md hover:shadow-lg transition-all group"
-          >
-            <span className="mr-2">Read More Reviews</span>
-            <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </motion.div>
       </div>
     </section>
   );

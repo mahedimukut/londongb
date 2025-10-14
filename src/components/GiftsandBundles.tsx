@@ -47,7 +47,7 @@ export default function GiftsAndBundles() {
 
             <h2 className="text-4xl sm:text-5xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-pink-300 to-white bg-clip-text text-transparent">
-                Exquisite Baby Gifts
+                Exquisite Gifts
               </span>
               <br />
               <span className="text-white">That Spark Joy</span>

@@ -17,8 +17,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = params; // Destructure params here
     const brand = await prisma.brand.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         _count: {
           select: { products: true }
@@ -49,6 +50,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = params; // Destructure params here
     const session = await auth();
     
     if (!session || session.user?.email !== 'britcartbd@gmail.com') {
@@ -68,7 +70,7 @@ export async function PUT(
 
     // Check if brand exists
     const existingBrand = await prisma.brand.findUnique({
-      where: { id: params.id }
+      where: { id }
     });
 
     if (!existingBrand) {
@@ -82,7 +84,7 @@ export async function PUT(
     const duplicateBrand = await prisma.brand.findFirst({
       where: {
         AND: [
-          { id: { not: params.id } },
+          { id: { not: id } },
           {
             OR: [
               { name },
@@ -102,7 +104,7 @@ export async function PUT(
 
     // Update brand in database
     const updatedBrand = await prisma.brand.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         slug,
@@ -128,6 +130,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = params; // Destructure params here
     const session = await auth();
     
     if (!session || session.user?.email !== 'britcartbd@gmail.com') {
@@ -136,7 +139,7 @@ export async function DELETE(
 
     // Check if brand exists
     const brand = await prisma.brand.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         _count: {
           select: { products: true }
@@ -184,7 +187,7 @@ export async function DELETE(
 
     // Delete brand from database
     await prisma.brand.delete({
-      where: { id: params.id }
+      where: { id }
     });
 
     return NextResponse.json({ message: 'Brand deleted successfully' });

@@ -1,5 +1,5 @@
 // app/api/dashboard/brands/[id]/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { v2 as cloudinary } from "cloudinary";
@@ -10,17 +10,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Helper to extract dynamic ID param from URL
-function getIdFromRequest(req: NextRequest) {
-  const url = new URL(req.url);
-  const parts = url.pathname.split("/");
-  return parts[parts.length - 1]; // 'id' from /api/dashboard/brands/[id]
-}
-
-// GET single brand
-export async function GET(request: NextRequest) {
+// ✅ GET single brand
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = getIdFromRequest(request);
+    const { id } = await context.params;
 
     const brand = await prisma.brand.findUnique({
       where: { id },
@@ -38,10 +34,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT update brand
-export async function PUT(request: NextRequest) {
+// ✅ PUT update brand
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = getIdFromRequest(request);
+    const { id } = await context.params;
     const session = await auth();
 
     if (!session || session.user?.email !== "britcartbd@gmail.com") {
@@ -94,10 +93,13 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// DELETE brand
-export async function DELETE(request: NextRequest) {
+// ✅ DELETE brand
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = getIdFromRequest(request);
+    const { id } = await context.params;
     const session = await auth();
 
     if (!session || session.user?.email !== "britcartbd@gmail.com") {

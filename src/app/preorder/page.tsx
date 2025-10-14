@@ -1,1114 +1,681 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import useSWR from "swr";
-import Link from "next/link";
-import Image from "next/image";
+import { motion } from "framer-motion";
 import {
-  Search,
-  Filter,
-  Eye,
-  ChevronDown,
-  ChevronUp,
-  Loader2,
-  X,
-  MapPin,
   Package,
-  CreditCard,
+  Upload,
+  Camera,
+  Phone,
+  Mail,
   User,
-  Calendar,
-  Truck,
+  Info,
   CheckCircle,
-  XCircle,
-  RefreshCw,
-  AlertCircle,
-  IndianRupee,
   Clock,
-  AlertTriangle,
-  MessageCircle,
-  DollarSign,
-  CalendarDays,
-  Save,
-  ChevronLeft,
-  ChevronRight,
+  Shield,
+  Truck,
 } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
-// Preorder Types based on your Prisma schema
-interface Preorder {
-  id: string;
+interface PreorderFormData {
   productName: string;
   productDescription: string;
   category: string;
   urgency: string;
-  budget: string | null;
-  quantity: number;
+  budget: string;
+  quantity: string;
   customerName: string;
   email: string;
   phone: string;
-  additionalNotes: string | null;
-  images: string[];
-  status:
-    | "PENDING"
-    | "REVIEWING"
-    | "PRICED"
-    | "CONTACTED"
-    | "APPROVED"
-    | "REJECTED"
-    | "COMPLETED";
-  adminNotes: string | null;
-  estimatedPrice: number | null;
-  estimatedTime: string | null;
-  createdAt: string;
-  updatedAt: string;
+  additionalNotes: string;
+  images: File[];
 }
 
-interface PreordersResponse {
-  preorders: Preorder[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    pages: number;
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  _count: {
+    products: number;
   };
 }
 
-// SWR fetcher
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-// Pagination Component
-const Pagination = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-  onItemsPerPageChange,
-  totalItems,
-  itemsPerPage,
-}: {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  onItemsPerPageChange: (itemsPerPage: number) => void;
-  totalItems: number;
-  itemsPerPage: number;
-}) => {
-  const getPageNumbers = () => {
-    const delta = 2; // Number of pages to show on each side of current page
-    const range = [];
-    const rangeWithDots = [];
-
-    for (
-      let i = Math.max(2, currentPage - delta);
-      i <= Math.min(totalPages - 1, currentPage + delta);
-      i++
-    ) {
-      range.push(i);
-    }
-
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, "...");
-    } else {
-      rangeWithDots.push(1);
-    }
-
-    rangeWithDots.push(...range);
-
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push("...", totalPages);
-    } else {
-      rangeWithDots.push(totalPages);
-    }
-
-    return rangeWithDots;
-  };
-
-  if (totalPages <= 1) return null;
-
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
-
-  return (
-    <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-white">
-      <div className="flex items-center space-x-2 text-sm text-gray-700">
-        <span>
-          Showing {startItem} to {endItem} of {totalItems} results
-        </span>
-      </div>
-
-      <div className="flex items-center space-x-1">
-        {/* Previous Button */}
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`flex items-center px-3 py-1.5 rounded-lg border text-sm font-medium ${
-            currentPage === 1
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
-              : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
-          }`}
-        >
-          <ChevronLeft className="w-4 h-4 mr-1" />
-          Previous
-        </button>
-
-        {/* Page Numbers */}
-        {getPageNumbers().map((page, index) => (
-          <button
-            key={index}
-            onClick={() => typeof page === "number" && onPageChange(page)}
-            className={`flex items-center justify-center w-10 h-10 rounded-lg border text-sm font-medium ${
-              page === currentPage
-                ? "bg-brand-primary-600 text-white border-brand-primary-600"
-                : page === "..."
-                ? "bg-white text-gray-500 border-gray-300 cursor-default"
-                : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
-            }`}
-            disabled={page === "..."}
-          >
-            {page}
-          </button>
-        ))}
-
-        {/* Next Button */}
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`flex items-center px-3 py-1.5 rounded-lg border text-sm font-medium ${
-            currentPage === totalPages
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
-              : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
-          }`}
-        >
-          Next
-          <ChevronRight className="w-4 h-4 ml-1" />
-        </button>
-      </div>
-
-      {/* Items Per Page Selector */}
-      <div className="flex items-center space-x-2 text-sm text-gray-700">
-        <span>Items per page:</span>
-        <select
-          value={itemsPerPage}
-          onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-          className="border border-gray-300 rounded-lg px-2 py-1 text-sm focus:ring-brand-primary-500 focus:border-brand-primary-500"
-        >
-          <option value={10}>10</option>
-          <option value={25}>25</option>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-        </select>
-      </div>
-    </div>
-  );
-};
-
-export default function PreordersPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("ALL");
-  const [sortField, setSortField] = useState("createdAt");
-  const [sortDirection, setSortDirection] = useState("desc");
-  const [selectedPreorder, setSelectedPreorder] = useState<Preorder | null>(
-    null
-  );
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [updateError, setUpdateError] = useState<string | null>(null);
-
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  // Local state for form fields
-  const [localFormData, setLocalFormData] = useState({
-    estimatedPrice: "",
-    estimatedTime: "",
-    adminNotes: "",
+export default function PreorderPage() {
+  const [formData, setFormData] = useState<PreorderFormData>({
+    productName: "",
+    productDescription: "",
+    category: "",
+    urgency: "medium",
+    budget: "",
+    quantity: "1",
+    customerName: "",
+    email: "",
+    phone: "",
+    additionalNotes: "",
+    images: [],
   });
 
-  // Build query params with pagination
-  const queryParams = new URLSearchParams();
-  if (searchTerm) queryParams.append("search", searchTerm);
-  if (selectedStatus !== "ALL") queryParams.append("status", selectedStatus);
-  queryParams.append("page", currentPage.toString());
-  queryParams.append("limit", itemsPerPage.toString());
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
-  const { data, error, isLoading, mutate } = useSWR<PreordersResponse>(
-    `/api/preorders?${queryParams.toString()}`,
-    fetcher,
-    {
-      refreshInterval: 30000,
-      revalidateOnFocus: true,
-    }
-  );
-
-  const preorders = data?.preorders || [];
-
-  // Initialize local form data when preorder is selected
+  // Fetch categories from API
   useEffect(() => {
-    if (selectedPreorder) {
-      setLocalFormData({
-        estimatedPrice: selectedPreorder.estimatedPrice?.toString() || "",
-        estimatedTime: selectedPreorder.estimatedTime || "",
-        adminNotes: selectedPreorder.adminNotes || "",
-      });
-    }
-  }, [selectedPreorder]);
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/dashboard/categories");
+        if (response.ok) {
+          const data = await response.json();
+          setCategories(data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
 
-  // Reset to page 1 when filters change
-  const handleFilterChange = (filterType: string, value: string) => {
-    setCurrentPage(1);
-    if (filterType === "search") setSearchTerm(value);
-    if (filterType === "status") setSelectedStatus(value);
-  };
+    fetchCategories();
+  }, []);
 
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Handle items per page change
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); // Reset to first page when changing items per page
-  };
-
-  const statusOptions = [
-    {
-      value: "PENDING",
-      label: "Pending",
-      color: "bg-yellow-100 text-yellow-800",
-      icon: Clock,
-    },
-    {
-      value: "REVIEWING",
-      label: "Reviewing",
-      color: "bg-blue-100 text-blue-800",
-      icon: Eye,
-    },
-    {
-      value: "PRICED",
-      label: "Priced",
-      color: "bg-purple-100 text-purple-800",
-      icon: DollarSign,
-    },
-    {
-      value: "CONTACTED",
-      label: "Contacted",
-      color: "bg-indigo-100 text-indigo-800",
-      icon: MessageCircle,
-    },
-    {
-      value: "APPROVED",
-      label: "Approved",
-      color: "bg-green-100 text-green-800",
-      icon: CheckCircle,
-    },
-    {
-      value: "REJECTED",
-      label: "Rejected",
-      color: "bg-red-100 text-red-800",
-      icon: XCircle,
-    },
-    {
-      value: "COMPLETED",
-      label: "Completed",
-      color: "bg-emerald-100 text-emerald-800",
-      icon: CheckCircle,
-    },
-  ];
-
-  const urgencyOptions = [
-    { value: "LOW", label: "Low", color: "bg-gray-100 text-gray-800" },
-    {
-      value: "MEDIUM",
-      label: "Medium",
-      color: "bg-orange-100 text-orange-800",
-    },
-    { value: "HIGH", label: "High", color: "bg-red-100 text-red-800" },
-    { value: "URGENT", label: "Urgent", color: "bg-red-100 text-red-800" },
-  ];
-
-  const statuses = [{ value: "ALL", label: "All Statuses" }, ...statusOptions];
-
-  // Update preorder status
-  const updatePreorderStatus = async (
-    preorderId: string,
-    newStatus: Preorder["status"]
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
-    setIsUpdating(true);
-    setUpdateError(null);
-    try {
-      const response = await fetch(`/api/preorders/${preorderId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update status");
-      }
-
-      await mutate();
-      // Update selected preorder if it's the one being updated
-      if (selectedPreorder?.id === preorderId) {
-        setSelectedPreorder((prev) =>
-          prev ? { ...prev, status: newStatus } : null
-        );
-      }
-    } catch (error: any) {
-      console.error("Error updating preorder status:", error);
-      setUpdateError(error.message || "Failed to update preorder status");
-    } finally {
-      setIsUpdating(false);
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // Save pricing and timeline details
-  const savePricingDetails = async () => {
-    if (!selectedPreorder) return;
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
 
-    setIsUpdating(true);
-    setUpdateError(null);
-    try {
-      const updates: any = {};
+    const newImages = Array.from(files);
+    const totalImages = formData.images.length + newImages.length;
 
-      if (localFormData.estimatedPrice !== "") {
-        updates.estimatedPrice = parseFloat(localFormData.estimatedPrice);
-      } else {
-        updates.estimatedPrice = null;
-      }
-
-      if (localFormData.estimatedTime !== "") {
-        updates.estimatedTime = localFormData.estimatedTime;
-      } else {
-        updates.estimatedTime = null;
-      }
-
-      if (localFormData.adminNotes !== "") {
-        updates.adminNotes = localFormData.adminNotes;
-      } else {
-        updates.adminNotes = null;
-      }
-
-      const response = await fetch(`/api/preorders/${selectedPreorder.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updates),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update preorder");
-      }
-
-      const updatedPreorder = await response.json();
-
-      await mutate();
-      setSelectedPreorder(updatedPreorder);
-
-      // Show success feedback
-      setUpdateError(null);
-    } catch (error: any) {
-      console.error("Error updating preorder details:", error);
-      setUpdateError(error.message || "Failed to update preorder details");
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  // Delete preorder
-  const deletePreorder = async (preorderId: string) => {
-    if (
-      !confirm(
-        "Are you sure you want to delete this preorder? This action cannot be undone."
-      )
-    ) {
+    // Limit to 3 images
+    if (totalImages > 3) {
+      alert("Maximum 3 images allowed");
       return;
     }
 
-    setIsUpdating(true);
-    setUpdateError(null);
+    // Check file sizes (max 5MB each)
+    const oversizedFiles = newImages.filter(
+      (file) => file.size > 5 * 1024 * 1024
+    );
+    if (oversizedFiles.length > 0) {
+      alert("Some files are too large. Maximum file size is 5MB.");
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...newImages],
+    }));
+
+    // Create preview URLs
+    const newPreviews = newImages.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
+  };
+
+  const removeImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+
+    // Revoke the object URL to avoid memory leaks
+    URL.revokeObjectURL(imagePreviews[index]);
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      const response = await fetch(`/api/preorders/${preorderId}`, {
-        method: "DELETE",
+      const formDataToSend = new FormData();
+
+      // Append all form fields
+      formDataToSend.append("productName", formData.productName);
+      formDataToSend.append("productDescription", formData.productDescription);
+      formDataToSend.append("category", formData.category);
+      formDataToSend.append("urgency", formData.urgency);
+      formDataToSend.append("budget", formData.budget);
+      formDataToSend.append("quantity", formData.quantity);
+      formDataToSend.append("customerName", formData.customerName);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("phone", formData.phone);
+      formDataToSend.append("additionalNotes", formData.additionalNotes);
+
+      // Append images
+      formData.images.forEach((image) => {
+        formDataToSend.append("images", image);
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to delete preorder");
+      const response = await fetch("/api/preorders", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to submit preorder");
       }
-
-      await mutate();
-      setSelectedPreorder(null);
-    } catch (error: any) {
-      console.error("Error deleting preorder:", error);
-      setUpdateError(error.message || "Failed to delete preorder");
+    } catch (error) {
+      console.error("Error submitting preorder:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "There was an error submitting your preorder. Please try again."
+      );
     } finally {
-      setIsUpdating(false);
+      setIsSubmitting(false);
     }
   };
 
-  const filteredAndSortedPreorders = [...preorders].sort((a, b) => {
-    let aValue: any, bValue: any;
+  // Clean up object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imagePreviews]);
 
-    switch (sortField) {
-      case "customerName":
-        aValue = a.customerName;
-        bValue = b.customerName;
-        break;
-      case "createdAt":
-        aValue = new Date(a.createdAt).getTime();
-        bValue = new Date(b.createdAt).getTime();
-        break;
-      case "productName":
-        aValue = a.productName;
-        bValue = b.productName;
-        break;
-      case "urgency":
-        const urgencyOrder = { URGENT: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
-        aValue = urgencyOrder[a.urgency as keyof typeof urgencyOrder] || 0;
-        bValue = urgencyOrder[b.urgency as keyof typeof urgencyOrder] || 0;
-        break;
-      default:
-        aValue = a[sortField as keyof Preorder];
-        bValue = b[sortField as keyof Preorder];
-    }
-
-    if (sortDirection === "asc") {
-      return aValue > bValue ? 1 : -1;
-    } else {
-      return aValue < bValue ? 1 : -1;
-    }
-  });
-
-  const handleSort = (field: string) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDirection("desc");
-    }
-  };
-
-  const SortIcon = ({ field }: { field: string }) => {
-    if (sortField !== field)
-      return <ChevronDown className="w-4 h-4 opacity-30" />;
-    return sortDirection === "asc" ? (
-      <ChevronUp className="w-4 h-4" />
-    ) : (
-      <ChevronDown className="w-4 h-4" />
-    );
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatCurrency = (amount: number | null) => {
-    if (!amount) return "Not priced";
-    return new Intl.NumberFormat("en-BD", {
-      style: "currency",
-      currency: "BDT",
-    }).format(amount);
-  };
-
-  const getUrgencyColor = (urgency: string) => {
-    const option = urgencyOptions.find((u) => u.value === urgency);
-    return option?.color || "bg-gray-100 text-gray-800";
-  };
-
-  // Check if form has changes
-  const hasFormChanges =
-    selectedPreorder &&
-    (localFormData.estimatedPrice !==
-      (selectedPreorder.estimatedPrice?.toString() || "") ||
-      localFormData.estimatedTime !== (selectedPreorder.estimatedTime || "") ||
-      localFormData.adminNotes !== (selectedPreorder.adminNotes || ""));
-
-  // Handle data reload
-  const handleReload = async () => {
-    await mutate();
-  };
-
-  if (error) {
+  if (isSubmitted) {
     return (
-      <div className="flex items-center justify-center min-h-96">
-        <div className="text-center">
-          <p className="text-red-600 text-lg">Failed to load preorders</p>
-          <button
-            onClick={handleReload}
-            className="mt-4 px-4 py-2 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
+      <>
+        <Header />
+        <SuccessMessage formData={formData} />
+        <Footer />
+      </>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Preorder Requests
-          </h1>
-          <p className="text-gray-600">
-            {isLoading
-              ? "Loading..."
-              : `Showing ${filteredAndSortedPreorders.length} of ${
-                  data?.pagination.total || 0
-                } preorder requests`}
-          </p>
-        </div>
-        <button
-          onClick={handleReload}
-          disabled={isLoading}
-          className="flex items-center space-x-2 px-4 py-2 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 disabled:opacity-50"
-        >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-          <span>Refresh</span>
-        </button>
-      </div>
+    <>
+      <Header />
 
-      {/* Filters and search */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search preorders, customers, products..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-brand-primary-500 focus:border-brand-primary-500"
-              value={searchTerm}
-              onChange={(e) => handleFilterChange("search", e.target.value)}
-            />
-          </div>
-
-          <select
-            className="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-brand-primary-500 focus:border-brand-primary-500"
-            value={selectedStatus}
-            onChange={(e) => handleFilterChange("status", e.target.value)}
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Header Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
           >
-            {statuses.map((status) => (
-              <option key={status.value} value={status.value}>
-                {status.label}
-              </option>
-            ))}
-          </select>
-
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <Filter className="w-4 h-4" />
-            <span>Auto-refresh every 30s</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Error Alert */}
-      {updateError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex items-center">
-            <AlertCircle className="w-5 h-5 text-red-400 mr-2" />
-            <span className="text-red-800">{updateError}</span>
-            <button
-              onClick={() => setUpdateError(null)}
-              className="ml-auto text-red-400 hover:text-red-600"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Preorders table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort("productName")}
-                >
-                  <div className="flex items-center">
-                    Product Request
-                    <SortIcon field="productName" />
-                  </div>
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort("customerName")}
-                >
-                  <div className="flex items-center">
-                    Customer
-                    <SortIcon field="customerName" />
-                  </div>
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  onClick={() => handleSort("createdAt")}
-                >
-                  <div className="flex items-center">
-                    Request Date
-                    <SortIcon field="createdAt" />
-                  </div>
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Urgency
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Status
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Estimated Price
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center">
-                    <div className="flex items-center justify-center">
-                      <Loader2 className="w-6 h-6 animate-spin text-brand-primary-600" />
-                      <span className="ml-2 text-gray-600">
-                        Loading preorders...
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ) : filteredAndSortedPreorders.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center">
-                    <div className="text-gray-500">
-                      {searchTerm || selectedStatus !== "ALL"
-                        ? "No preorders match your filters"
-                        : "No preorder requests found"}
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredAndSortedPreorders.map((preorder) => (
-                  <tr key={preorder.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {preorder.productName}
-                      </div>
-                      <div className="text-sm text-gray-500 line-clamp-2">
-                        {preorder.productDescription}
-                      </div>
-                      <div className="text-xs text-gray-400 mt-1">
-                        {preorder.category} • Qty: {preorder.quantity}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {preorder.customerName}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {preorder.email}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {preorder.phone}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {formatDate(preorder.createdAt)}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getUrgencyColor(
-                          preorder.urgency
-                        )}`}
-                      >
-                        {preorder.urgency}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          statusOptions.find((s) => s.value === preorder.status)
-                            ?.color || "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {preorder.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {formatCurrency(preorder.estimatedPrice)}
-                      </div>
-                      {preorder.estimatedTime && (
-                        <div className="text-xs text-gray-500">
-                          Est: {preorder.estimatedTime}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => setSelectedPreorder(preorder)}
-                        className="inline-flex items-center text-brand-primary-600 hover:text-brand-primary-900"
-                      >
-                        <Eye className="w-4 h-4 mr-1" />
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {data?.pagination && (
-          <Pagination
-            currentPage={data.pagination.page}
-            totalPages={data.pagination.pages}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-            totalItems={data.pagination.total}
-            itemsPerPage={itemsPerPage}
-          />
-        )}
-      </div>
-
-      {/* Preorder Details Modal */}
-      {selectedPreorder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  Preorder Request
-                </h2>
-                <p className="text-gray-600">
-                  Submitted on {formatDate(selectedPreorder.createdAt)}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span
-                    className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      statusOptions.find(
-                        (s) => s.value === selectedPreorder.status
-                      )?.color || "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {selectedPreorder.status}
-                  </span>
-                  <span
-                    className={`px-2 py-1 text-xs font-semibold rounded-full ${getUrgencyColor(
-                      selectedPreorder.urgency
-                    )}`}
-                  >
-                    {selectedPreorder.urgency} Priority
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  setSelectedPreorder(null);
-                  setUpdateError(null);
-                  setLocalFormData({
-                    estimatedPrice: "",
-                    estimatedTime: "",
-                    adminNotes: "",
-                  });
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-6 h-6" />
-              </button>
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+              <Package className="h-8 w-8 text-blue-600" />
             </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Can't Find What You're Looking For?
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Tell us about the product you want, and we'll source it for you!
+              We specialize in bringing international products to Bangladesh.
+            </p>
+          </motion.div>
 
-            <div className="p-6 space-y-6">
-              {/* Error Display */}
-              {updateError && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <div className="flex items-center">
-                    <AlertCircle className="w-5 h-5 text-red-400 mr-2" />
-                    <span className="text-red-800">{updateError}</span>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Benefits Sidebar */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Why Preorder With Us?
+                </h3>
+
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="bg-green-100 p-2 rounded-full">
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">
+                        Global Sourcing
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        We source from trusted international suppliers
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-blue-100 p-2 rounded-full">
+                      <Shield className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">
+                        Quality Guaranteed
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        All products are quality checked before delivery
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-purple-100 p-2 rounded-full">
+                      <Truck className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">
+                        Doorstep Delivery
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        Free delivery anywhere in Bangladesh
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="bg-orange-100 p-2 rounded-full">
+                      <Clock className="h-5 w-5 text-orange-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">
+                        Quick Response
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        We'll get back to you within 24 hours
+                      </p>
+                    </div>
                   </div>
                 </div>
-              )}
 
-              {/* Product Information */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3 flex items-center">
-                  <Package className="w-5 h-5 mr-2" />
-                  Product Request
-                </h3>
-                <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Product Name
-                    </label>
-                    <p className="text-gray-900 font-medium">
-                      {selectedPreorder.productName}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
-                    <p className="text-gray-600">
-                      {selectedPreorder.productDescription}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Category
-                      </label>
-                      <p className="text-gray-600">
-                        {selectedPreorder.category}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Quantity
-                      </label>
-                      <p className="text-gray-600">
-                        {selectedPreorder.quantity}
-                      </p>
-                    </div>
-                  </div>
-                  {selectedPreorder.budget && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Customer Budget
-                      </label>
-                      <p className="text-gray-600">{selectedPreorder.budget}</p>
-                    </div>
-                  )}
+                {/* Process Info */}
+                <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-semibold text-blue-900 mb-2">
+                    Our Process
+                  </h4>
+                  <ol className="text-sm text-blue-800 space-y-1">
+                    <li>1. Submit your request</li>
+                    <li>2. We'll find the best price</li>
+                    <li>3. Confirm order with you</li>
+                    <li>4. Import and deliver</li>
+                  </ol>
                 </div>
               </div>
+            </motion.div>
 
-              {/* Customer Images */}
-              {selectedPreorder.images.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">
-                    Reference Images
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {selectedPreorder.images.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden"
-                      >
-                        <Image
-                          src={image}
-                          alt={`Reference image ${index + 1}`}
-                          fill
-                          className="object-cover"
+            {/* Main Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="lg:col-span-2"
+            >
+              <form
+                onSubmit={handleSubmit}
+                className="bg-white rounded-2xl shadow-lg p-8"
+              >
+                <div className="space-y-6">
+                  {/* Product Information Section */}
+                  <section>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <Package className="h-5 w-5 text-blue-600" />
+                      Product Information
+                    </h2>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Product Name *
+                        </label>
+                        <input
+                          type="text"
+                          name="productName"
+                          value={formData.productName}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          placeholder="e.g., Philips Avent Baby Bottle"
                         />
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
-              {/* Customer Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center">
-                    <User className="w-5 h-5 mr-2" />
-                    Customer Information
-                  </h3>
-                  <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Name
-                      </label>
-                      <p className="text-gray-900">
-                        {selectedPreorder.customerName}
-                      </p>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Product Category *
+                        </label>
+                        <select
+                          name="category"
+                          value={formData.category}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        >
+                          <option value="">Select a category</option>
+                          {categories.map((category) => (
+                            <option key={category.id} value={category.name}>
+                              {category.name}
+                            </option>
+                          ))}
+                          <option value="Other">Others</option>
+                        </select>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Email
-                      </label>
-                      <p className="text-gray-900">{selectedPreorder.email}</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Phone
-                      </label>
-                      <p className="text-gray-900">{selectedPreorder.phone}</p>
-                    </div>
-                  </div>
-                </div>
 
-                {/* Admin Controls */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold flex items-center">
-                      <DollarSign className="w-5 h-5 mr-2" />
-                      Pricing & Timeline
-                    </h3>
-                    {hasFormChanges && (
-                      <button
-                        onClick={savePricingDetails}
-                        disabled={isUpdating}
-                        className="flex items-center space-x-2 px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 disabled:opacity-50"
-                      >
-                        {isUpdating ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Save className="w-4 h-4" />
-                        )}
-                        <span>Save</span>
-                      </button>
-                    )}
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Estimated Price (BDT)
-                      </label>
-                      <input
-                        type="number"
-                        value={localFormData.estimatedPrice}
-                        onChange={(e) =>
-                          setLocalFormData((prev) => ({
-                            ...prev,
-                            estimatedPrice: e.target.value,
-                          }))
-                        }
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent"
-                        placeholder="Enter estimated price"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Estimated Time
-                      </label>
-                      <input
-                        type="text"
-                        value={localFormData.estimatedTime}
-                        onChange={(e) =>
-                          setLocalFormData((prev) => ({
-                            ...prev,
-                            estimatedTime: e.target.value,
-                          }))
-                        }
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent"
-                        placeholder="e.g., 2-3 weeks"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Admin Notes
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Product Description *
                       </label>
                       <textarea
-                        value={localFormData.adminNotes}
-                        onChange={(e) =>
-                          setLocalFormData((prev) => ({
-                            ...prev,
-                            adminNotes: e.target.value,
-                          }))
-                        }
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent"
-                        placeholder="Add internal notes..."
-                        rows={3}
+                        name="productDescription"
+                        value={formData.productDescription}
+                        onChange={handleInputChange}
+                        required
+                        rows={4}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        placeholder="Please describe the product in detail. Include brand, model, specifications, color, size, etc."
                       />
                     </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Additional Notes */}
-              {selectedPreorder.additionalNotes && (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Customer Notes</h3>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-gray-600">
-                      {selectedPreorder.additionalNotes}
+                    {/* Budget and Quantity */}
+                    <div className="grid md:grid-cols-3 gap-6 mt-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Expected Budget (BDT)
+                        </label>
+                        <input
+                          type="text"
+                          name="budget"
+                          value={formData.budget}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          placeholder="e.g., 5000"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Quantity Needed
+                        </label>
+                        <input
+                          type="number"
+                          name="quantity"
+                          value={formData.quantity}
+                          onChange={handleInputChange}
+                          min="1"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Urgency
+                        </label>
+                        <select
+                          name="urgency"
+                          value={formData.urgency}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        >
+                          <option value="low">Low (1-2 months)</option>
+                          <option value="medium">Medium (2-4 weeks)</option>
+                          <option value="high">High (1-2 weeks)</option>
+                          <option value="urgent">Urgent (Within week)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Image Upload Section */}
+                  <section>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <Camera className="h-5 w-5 text-blue-600" />
+                      Product Images (Optional)
+                    </h2>
+
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <input
+                        type="file"
+                        id="image-upload"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className="cursor-pointer flex flex-col items-center justify-center"
+                      >
+                        <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                        <span className="text-sm font-medium text-gray-600">
+                          Click to upload product images
+                        </span>
+                        <span className="text-xs text-gray-500 mt-1">
+                          PNG, JPG, JPEG up to 5MB each (max 3 images)
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Image Previews */}
+                    {imagePreviews.length > 0 && (
+                      <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {imagePreviews.map((preview, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={preview}
+                              alt={`Preview ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+
+                  {/* Contact Information Section */}
+                  <section>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <User className="h-5 w-5 text-blue-600" />
+                      Your Contact Information
+                    </h2>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          name="customerName"
+                          value={formData.customerName}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          placeholder="Your full name"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Email Address *
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          placeholder="your.email@example.com"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Phone Number *
+                        </label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          placeholder="01XXXXXXXXX"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Additional Notes
+                      </label>
+                      <textarea
+                        name="additionalNotes"
+                        value={formData.additionalNotes}
+                        onChange={handleInputChange}
+                        rows={3}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        placeholder="Any special requirements, preferred suppliers, or additional information..."
+                      />
+                    </div>
+                  </section>
+
+                  {/* Submit Button */}
+                  <div className="pt-6">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          Processing Your Request...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="h-5 w-5" />
+                          Submit Preorder Request
+                        </>
+                      )}
+                    </button>
+
+                    <p className="text-xs text-gray-500 text-center mt-3">
+                      By submitting, you agree to our terms and privacy policy.
+                      We'll contact you within 24 hours to discuss your request.
                     </p>
                   </div>
                 </div>
-              )}
+              </form>
+            </motion.div>
+          </div>
+        </div>
+      </main>
 
-              {/* Status Controls */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Update Status</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {statusOptions.map((status) => (
-                    <button
-                      key={status.value}
-                      onClick={() =>
-                        updatePreorderStatus(
-                          selectedPreorder.id,
-                          status.value as Preorder["status"]
-                        )
-                      }
-                      disabled={
-                        isUpdating || selectedPreorder.status === status.value
-                      }
-                      className={`flex items-center justify-center p-3 rounded-lg border transition-colors ${
-                        selectedPreorder.status === status.value
-                          ? "border-brand-primary-500 bg-brand-primary-50 text-brand-primary-700"
-                          : "border-gray-200 hover:bg-gray-50"
-                      } ${isUpdating ? "opacity-50 cursor-not-allowed" : ""}`}
-                    >
-                      <status.icon className="w-4 h-4 mr-2" />
-                      <span className="text-sm font-medium">
-                        {status.label}
-                      </span>
-                    </button>
-                  ))}
+      <Footer />
+    </>
+  );
+}
+
+// Success Message Component (keep this the same)
+function SuccessMessage({ formData }: { formData: PreorderFormData }) {
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white rounded-2xl shadow-lg p-8"
+        >
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="h-8 w-8 text-green-600" />
+          </div>
+
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Preorder Request Submitted!
+          </h1>
+
+          <p className="text-lg text-gray-600 mb-8">
+            Thank you, <strong>{formData.customerName}</strong>! We've received
+            your request for
+            <strong> {formData.productName}</strong> and will contact you within
+            24 hours.
+          </p>
+
+          <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
+            <h3 className="font-semibold text-gray-900 mb-4">
+              What happens next?
+            </h3>
+            <div className="space-y-3 text-sm text-gray-600">
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-xs">
+                  1
                 </div>
+                <span>We'll research availability and best prices</span>
               </div>
-
-              {/* Delete Button */}
-              <div className="border-t pt-4">
-                <button
-                  onClick={() => deletePreorder(selectedPreorder.id)}
-                  disabled={isUpdating}
-                  className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isUpdating ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <XCircle className="w-5 h-5" />
-                  )}
-                  <span>Delete Preorder</span>
-                </button>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-xs">
+                  2
+                </div>
+                <span>Contact you with pricing and timeline</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-xs">
+                  3
+                </div>
+                <span>Confirm order and arrange delivery</span>
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/preorder"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Submit Another Request
+            </a>
+            <a
+              href="/"
+              className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Back to Home
+            </a>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-500">
+              Need immediate assistance? <br />
+              Call us at <strong>+880 1684-986746</strong> or email{" "}
+              <strong>preorder@britcartbd.com</strong>
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </main>
   );
 }

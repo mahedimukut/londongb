@@ -5,8 +5,10 @@ export default function ShopPage() {
   return (
     <Suspense
       fallback={
-        <div className="animate-pulse text-center p-10 text-gray-500">
-          Loading shop...
+        <div className="flex items-center justify-center h-[60vh] space-x-2">
+          <div className="w-3 h-3 bg-daffodil-yellow rounded-full animate-bounce" />
+          <div className="w-3 h-3 bg-brand-primary-600 rounded-full animate-bounce delay-150" />
+          <div className="w-3 h-3 bg-brand-secondary-600 rounded-full animate-bounce delay-300" />
         </div>
       }
     >

@@ -1,25 +1,30 @@
 "use client";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Shield, Heart, Package, ArrowLeft } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const LoginPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/account";
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Redirect if user is already authenticated
+  // Redirect authenticated users
   useEffect(() => {
     if (status === "authenticated") {
       router.push(returnUrl);
+    } else if (status !== "loading") {
+      setIsLoading(false);
     }
   }, [status, router, returnUrl]);
 
@@ -27,33 +32,29 @@ const LoginPage = () => {
     signIn(provider, { callbackUrl: returnUrl });
   };
 
-  // Show loading state while checking authentication
-  if (status === "loading") {
+  // Loading effect while checking session
+  if (isLoading) {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-gradient-to-br from-brand-primary-50 to-brand-sky-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary-600 mx-auto mb-4"></div>
-            <p className="text-brand-neutral-600">Checking authentication...</p>
-          </div>
+        <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-brand-primary-50 to-brand-sky-50">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 1 }}
+            className="w-16 h-16 border-4 border-t-brand-primary-600 border-b-brand-primary-300 rounded-full mb-4"
+          />
+          <p className="text-brand-neutral-600">Checking authentication...</p>
         </main>
         <Footer />
       </>
     );
   }
 
-  // If user is already authenticated, don't render the login page
-  if (status === "authenticated") {
-    return null;
-  }
-
   return (
     <>
       <Header />
-
-      <main className="min-h-screen bg-gradient-to-br from-brand-primary-50 to-brand-sky-50 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md mx-auto">
+      <main className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-brand-primary-50 to-brand-sky-50 flex justify-center">
+        <div className="max-w-md w-full">
           {/* Back Button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -82,11 +83,11 @@ const LoginPage = () => {
                 Welcome Back
               </h1>
               <p className="text-brand-neutral-500 text-sm">
-                Sign in to your britcartbd.com account
+                Sign in to your BritCartBD.com account
               </p>
             </div>
 
-            {/* Google Sign In Button */}
+            {/* Social Login Buttons */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -99,7 +100,6 @@ const LoginPage = () => {
               </span>
             </motion.button>
 
-            {/* Facebook Sign In Button */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -126,50 +126,21 @@ const LoginPage = () => {
 
             {/* Benefits List */}
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="bg-brand-primary-100 p-2 rounded-full flex-shrink-0">
-                  <Shield className="h-5 w-5 text-brand-primary-600" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-brand-neutral-900 mb-1">
-                    Secure & Protected
-                  </h4>
-                  <p className="text-xs text-brand-neutral-500 leading-relaxed">
-                    Your personal information and data are protected with
-                    bank-level security encryption
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="bg-brand-primary-100 p-2 rounded-full flex-shrink-0">
-                  <Heart className="h-5 w-5 text-brand-primary-600" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-brand-neutral-900 mb-1">
-                    Personalized Experience
-                  </h4>
-                  <p className="text-xs text-brand-neutral-500 leading-relaxed">
-                    Get product recommendations based on your age, developmental
-                    stage, and your preferences
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="bg-brand-primary-100 p-2 rounded-full flex-shrink-0">
-                  <Package className="h-5 w-5 text-brand-primary-600" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-brand-neutral-900 mb-1">
-                    Faster Checkout & Tracking
-                  </h4>
-                  <p className="text-xs text-brand-neutral-500 leading-relaxed">
-                    Save your addresses, track orders in real-time, and manage
-                    returns with just a few clicks
-                  </p>
-                </div>
-              </div>
+              <Benefit
+                icon={<Shield className="h-5 w-5 text-brand-primary-600" />}
+                title="Secure & Protected"
+                description="Your personal information and data are protected with bank-level security encryption."
+              />
+              <Benefit
+                icon={<Heart className="h-5 w-5 text-brand-primary-600" />}
+                title="Personalized Experience"
+                description="Get product recommendations based on your age, developmental stage, and your preferences."
+              />
+              <Benefit
+                icon={<Package className="h-5 w-5 text-brand-primary-600" />}
+                title="Faster Checkout & Tracking"
+                description="Save your addresses, track orders in real-time, and manage returns with just a few clicks."
+              />
             </div>
           </motion.div>
 
@@ -181,7 +152,7 @@ const LoginPage = () => {
             className="text-center mt-8"
           >
             <p className="text-xs text-brand-neutral-500 leading-relaxed">
-              By continuing, you agree to britcartbd.com{" "}
+              By continuing, you agree to BritCartBD.com{" "}
               <a
                 href="/terms"
                 className="text-brand-primary-600 hover:underline font-medium"
@@ -219,10 +190,34 @@ const LoginPage = () => {
           </motion.div>
         </div>
       </main>
-
       <Footer />
     </>
   );
 };
+
+// Benefit Component
+const Benefit = ({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) => (
+  <div className="flex items-start gap-4">
+    <div className="bg-brand-primary-100 p-2 rounded-full flex-shrink-0">
+      {icon}
+    </div>
+    <div>
+      <h4 className="text-sm font-semibold text-brand-neutral-900 mb-1">
+        {title}
+      </h4>
+      <p className="text-xs text-brand-neutral-500 leading-relaxed">
+        {description}
+      </p>
+    </div>
+  </div>
+);
 
 export default LoginPage;

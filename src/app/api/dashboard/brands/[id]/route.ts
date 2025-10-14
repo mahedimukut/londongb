@@ -11,13 +11,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ Correct typing for context
-type RouteContext = {
-  params: { id: string };
-};
+// ✅ Do NOT use a custom type for context — inline it instead
 
 // GET single brand - PUBLIC
-export async function GET(request: NextRequest, context: RouteContext) {
+export async function GET(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
     const { id } = context.params;
     const brand = await prisma.brand.findUnique({
@@ -41,7 +41,10 @@ export async function GET(request: NextRequest, context: RouteContext) {
 }
 
 // PUT update brand - PROTECTED
-export async function PUT(request: NextRequest, context: RouteContext) {
+export async function PUT(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
     const { id } = context.params;
     const session = await auth();
@@ -100,7 +103,10 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 // DELETE brand - PROTECTED
-export async function DELETE(request: NextRequest, context: RouteContext) {
+export async function DELETE(
+  request: NextRequest,
+  context: { params: { id: string } }
+) {
   try {
     const { id } = context.params;
     const session = await auth();

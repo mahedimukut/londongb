@@ -23,7 +23,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Facebook({
       clientId: process.env.AUTH_FACEBOOK_ID!,
       clientSecret: process.env.AUTH_FACEBOOK_SECRET!,
-    }),
+      authorization: {
+        params: {
+          scope: "email,public_profile",
+          fields: "id,name,email,picture.type(large)",
+        },
+      },
+      profile(profile) {
+        return {
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture?.data?.url || "/images/placeholder-image.png",
+        };
+      },
+    })
+
   ],
   // Use JWT strategy for better Edge compatibility
   session: {

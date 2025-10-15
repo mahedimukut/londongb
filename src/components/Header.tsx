@@ -138,7 +138,7 @@ const Header = () => {
           name: product.name,
           slug: product.slug,
           price: product.price,
-          image: product.images[0]?.url || "/placeholder-product.jpg",
+          image: product.images[0]?.url || "/images/placeholder-image.png",
           brand: product.brand,
         }));
         setSearchResults(products);
@@ -288,8 +288,10 @@ const Header = () => {
     setMobileMenuOpen(false);
   };
 
-  // User Avatar Component with better session handling
+  // Fixed User Avatar Component with proper Facebook image handling
   const UserAvatar = () => {
+    const [imageError, setImageError] = useState(false);
+
     if (status === "loading") {
       return (
         <div className="w-10 h-10 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200">
@@ -298,21 +300,23 @@ const Header = () => {
       );
     }
 
-    if (status === "authenticated" && session?.user?.image) {
+    if (status === "authenticated" && session?.user?.image && !imageError) {
       return (
-        <Image
-          src={session.user.image}
-          alt={session.user.name || "User"}
-          width={40}
-          height={40}
-          className="rounded-full border-2 border-brand-primary-200 object-cover"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
-        />
+        <div className="relative">
+          <Image
+            src={session.user.image}
+            alt={session.user.name || "User"}
+            width={40}
+            height={40}
+            className="rounded-full border-2 border-brand-primary-200 object-cover"
+            onError={() => setImageError(true)}
+            priority={false}
+          />
+        </div>
       );
     }
 
+    // Fallback when no image, image error, or Facebook image failed
     return (
       <div className="w-10 h-10 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200">
         <User className="w-5 h-5 text-brand-primary-600" />
@@ -320,8 +324,10 @@ const Header = () => {
     );
   };
 
-  // Mobile User Avatar Component
+  // Fixed Mobile User Avatar Component
   const MobileUserAvatar = () => {
+    const [imageError, setImageError] = useState(false);
+
     if (status === "loading") {
       return (
         <div className="w-12 h-12 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200">
@@ -330,18 +336,19 @@ const Header = () => {
       );
     }
 
-    if (status === "authenticated" && session?.user?.image) {
+    if (status === "authenticated" && session?.user?.image && !imageError) {
       return (
-        <Image
-          src={session.user.image}
-          alt={session.user.name || "User"}
-          width={48}
-          height={48}
-          className="rounded-full border-2 border-brand-primary-200 object-cover"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
-        />
+        <div className="relative">
+          <Image
+            src={session.user.image}
+            alt={session.user.name || "User"}
+            width={48}
+            height={48}
+            className="rounded-full border-2 border-brand-primary-200 object-cover"
+            onError={() => setImageError(true)}
+            priority={false}
+          />
+        </div>
       );
     }
 
@@ -578,6 +585,10 @@ const Header = () => {
                                         width={48}
                                         height={48}
                                         className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          e.currentTarget.src =
+                                            "/images/placeholder-image.png";
+                                        }}
                                       />
                                     </div>
                                     <div className="flex-1 min-w-0">

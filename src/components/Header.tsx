@@ -717,7 +717,7 @@ const Header = () => {
                         <div className="p-4">
                           <div className="text-center mb-3">
                             <p className="text-sm text-brand-neutral-600">
-                              Welcome to BritCartBD
+                              Welcome to britcartbd.com
                             </p>
                           </div>
                           <button

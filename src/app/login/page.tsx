@@ -126,7 +126,7 @@ function LoginContent() {
             <Benefit
               icon={<Heart className="h-5 w-5 text-brand-primary-600" />}
               title="Personalized Experience"
-              description="Get recommendations tailored to your preferences and your child's stage."
+              description="Get recommendations tailored to your preferences."
             />
             <Benefit
               icon={<Package className="h-5 w-5 text-brand-primary-600" />}

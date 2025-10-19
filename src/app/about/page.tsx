@@ -86,7 +86,7 @@ export default function AboutPage() {
           <div className="absolute inset-0 bg-brand-primary-600/30 z-10 flex items-center justify-center">
             <div className="text-center max-w-2xl px-4">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                About Britcartbd.com
+                About britcartbd.com
               </h1>
               <p className="text-lg text-white/90">
                 Your trusted online marketplace for everything you need
@@ -106,12 +106,12 @@ export default function AboutPage() {
         <section className="max-w-4xl mx-auto mb-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-brand-neutral-900 mb-4">
-              Welcome to Britcartbd.com
+              Welcome to britcartbd.com
             </h2>
             <div className="w-24 h-1 bg-brand-primary-600 mx-auto mb-6"></div>
             <p className="text-brand-neutral-600 mb-6">
               Founded with a vision to revolutionize online shopping in
-              Bangladesh, Britcartbd.com has become one of the fastest-growing
+              Bangladesh, britcartbd.com has become one of the fastest-growing
               e-commerce platforms in the country.
             </p>
           </div>
@@ -122,7 +122,7 @@ export default function AboutPage() {
                 Our Journey
               </h3>
               <p className="text-brand-neutral-600 mb-4">
-                Britcartbd.com started with a simple mission: to provide
+                britcartbd.com started with a simple mission: to provide
                 Bangladeshi consumers with access to a wide range of quality
                 products at affordable prices, delivered right to their
                 doorstep.
@@ -261,7 +261,7 @@ export default function AboutPage() {
         {/* CTA Section */}
         <section className="bg-brand-primary-600 rounded-xl p-12 text-center mb-16">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Experience the Britcartbd.com Difference
+            Experience the britcartbd.com difference
           </h2>
           <p className="text-white/90 max-w-2xl mx-auto mb-8">
             Join thousands of satisfied customers who trust us for their

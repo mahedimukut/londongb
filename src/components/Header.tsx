@@ -294,7 +294,7 @@ const Header = () => {
 
     if (status === "loading") {
       return (
-        <div className="w-10 h-10 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200">
+        <div className="w-10 h-10 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200 min-w-[40px]">
           <Loader2 className="w-5 h-5 text-brand-neutral-400 animate-spin" />
         </div>
       );
@@ -308,9 +308,10 @@ const Header = () => {
             alt={session.user.name || "User"}
             width={40}
             height={40}
-            className="rounded-full border-2 border-brand-primary-200 object-cover"
+            className="rounded-full border-2 border-brand-primary-200 object-cover min-w-[40px]"
             onError={() => setImageError(true)}
             priority={false}
+            sizes="40px"
           />
         </div>
       );
@@ -318,7 +319,7 @@ const Header = () => {
 
     // Fallback when no image, image error, or Facebook image failed
     return (
-      <div className="w-10 h-10 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200">
+      <div className="w-10 h-10 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200 min-w-[40px]">
         <User className="w-5 h-5 text-brand-primary-600" />
       </div>
     );
@@ -330,7 +331,7 @@ const Header = () => {
 
     if (status === "loading") {
       return (
-        <div className="w-12 h-12 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200">
+        <div className="w-12 h-12 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200 min-w-[48px]">
           <Loader2 className="w-6 h-6 text-brand-neutral-400 animate-spin" />
         </div>
       );
@@ -344,16 +345,17 @@ const Header = () => {
             alt={session.user.name || "User"}
             width={48}
             height={48}
-            className="rounded-full border-2 border-brand-primary-200 object-cover"
+            className="rounded-full border-2 border-brand-primary-200 object-cover min-w-[48px]"
             onError={() => setImageError(true)}
             priority={false}
+            sizes="48px"
           />
         </div>
       );
     }
 
     return (
-      <div className="w-12 h-12 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200">
+      <div className="w-12 h-12 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200 min-w-[48px]">
         <User className="w-6 h-6 text-brand-primary-600" />
       </div>
     );
@@ -378,7 +380,13 @@ const Header = () => {
     <button
       onClick={onClick}
       disabled={loading}
-      className={`relative p-2 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`
+        relative p-3 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 
+        hover:bg-brand-primary-50 transition-all duration-200 focus:outline-none 
+        focus:ring-2 focus:ring-brand-primary-300 disabled:opacity-50 
+        disabled:cursor-not-allowed min-h-[44px] min-w-[44px] flex items-center 
+        justify-center touch-manipulation ${className}
+      `}
       aria-label={label}
     >
       {loading ? (
@@ -387,7 +395,7 @@ const Header = () => {
         <Icon className="w-5 h-5" />
       )}
       {count !== undefined && count > 0 && (
-        <span className="absolute -top-1 -right-1 bg-brand-primary-500 text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center transform scale-100 hover:scale-110 transition-transform">
+        <span className="absolute -top-1 -right-1 bg-brand-primary-500 text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center transform scale-100 hover:scale-110 transition-transform min-w-[20px]">
           {count > 99 ? "99+" : count}
         </span>
       )}
@@ -399,9 +407,15 @@ const Header = () => {
       <Announcement />
 
       <header
-        className={`sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all duration-300 ${
-          scrolled ? "shadow-lg border-b border-brand-neutral-100" : "shadow-sm"
-        }`}
+        className={`
+          sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all duration-300 
+          safe-area-top
+          ${
+            scrolled
+              ? "shadow-lg border-b border-brand-neutral-100"
+              : "shadow-sm"
+          }
+        `}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-4">
           <div className="flex items-center justify-between h-16">
@@ -418,11 +432,11 @@ const Header = () => {
             <div className="flex items-center ml-1 flex-1 lg:flex-none">
               <Link
                 href="/"
-                className="flex items-center group"
+                className="flex items-center group min-h-[44px] min-w-[44px]"
                 aria-label="BritCartBD - Home"
               >
                 <motion.span
-                  className="text-2xl font-bold text-brand-primary-600 font-display"
+                  className="text-xl sm:text-2xl font-bold text-brand-primary-600 font-display"
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
@@ -446,7 +460,7 @@ const Header = () => {
                         onClick={() =>
                           setCategoriesDropdownOpen(!categoriesDropdownOpen)
                         }
-                        className="flex items-center gap-1 px-4 py-2 text-base font-semibold text-brand-neutral-700 hover:text-brand-primary-600 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300"
+                        className="flex items-center gap-1 px-4 py-2 text-base font-semibold text-brand-neutral-700 hover:text-brand-primary-600 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300 min-h-[44px]"
                         aria-expanded={categoriesDropdownOpen}
                       >
                         <Icon className="w-5 h-5" />
@@ -460,7 +474,7 @@ const Header = () => {
                     ) : (
                       <Link
                         href={item.href}
-                        className="flex items-center gap-1 px-4 py-2 text-base font-semibold text-brand-neutral-700 hover:text-brand-primary-600 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300"
+                        className="flex items-center gap-1 px-4 py-2 text-base font-semibold text-brand-neutral-700 hover:text-brand-primary-600 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300 min-h-[44px]"
                       >
                         <Icon className="w-5 h-5" />
                         {item.name}
@@ -489,7 +503,7 @@ const Header = () => {
                                   onClick={() =>
                                     handleCategoryClick(category.slug)
                                   }
-                                  className="flex items-center justify-between w-full px-3 py-3 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors duration-150 group"
+                                  className="flex items-center justify-between w-full px-3 py-3 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors duration-150 group min-h-[44px]"
                                 >
                                   <span className="font-medium">
                                     {category.name}
@@ -514,7 +528,7 @@ const Header = () => {
             </nav>
 
             {/* Action Buttons */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               {/* Search Button */}
               <div className="relative" ref={searchRef}>
                 <ActionButton
@@ -534,7 +548,7 @@ const Header = () => {
                       initial={{ opacity: 0, y: 8, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                      className="absolute right-0 top-full mt-2 w-96 bg-white rounded-xl shadow-xl border border-brand-neutral-200 z-50 overflow-hidden"
+                      className="absolute right-0 top-full mt-2 w-[90vw] max-w-md bg-white rounded-xl shadow-xl border border-brand-neutral-200 z-50 overflow-hidden"
                     >
                       <form onSubmit={handleSearchSubmit}>
                         <div className="relative">
@@ -544,23 +558,24 @@ const Header = () => {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search products, brands, categories..."
-                            className="w-full pl-11 pr-12 py-3 text-sm focus:outline-none placeholder-brand-neutral-400"
+                            className="w-full pl-11 pr-12 py-3 text-base focus:outline-none placeholder-brand-neutral-400 bg-transparent"
                             autoFocus
                           />
                           <button
                             type="button"
                             onClick={() => setSearchOpen(false)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-neutral-400 hover:text-brand-neutral-600 transition-colors"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-neutral-400 hover:text-brand-neutral-600 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                            aria-label="Close search"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-5 w-5" />
                           </button>
                         </div>
 
                         {/* Search Results */}
                         {searchQuery && (
-                          <div className="border-t border-brand-neutral-200 max-h-96 overflow-y-auto">
+                          <div className="border-t border-brand-neutral-200 max-h-60 sm:max-h-96 overflow-y-auto">
                             {searchLoading ? (
-                              <div className="p-6 text-center">
+                              <div className="p-4 sm:p-6 text-center">
                                 <Loader2 className="w-6 h-6 animate-spin mx-auto text-brand-primary-600" />
                                 <p className="text-sm text-brand-neutral-500 mt-2">
                                   Searching products...
@@ -572,13 +587,13 @@ const Header = () => {
                                   <Link
                                     key={result.id}
                                     href={`/products/${result.slug}`}
-                                    className="flex items-center gap-3 px-3 py-3 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors group border-b border-brand-neutral-100 last:border-b-0"
+                                    className="flex items-center gap-3 px-3 py-3 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors group border-b border-brand-neutral-100 last:border-b-0 min-h-[60px]"
                                     onClick={() => {
                                       setSearchOpen(false);
                                       setSearchQuery("");
                                     }}
                                   >
-                                    <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                                       <Image
                                         src={result.image}
                                         alt={result.name}
@@ -589,10 +604,11 @@ const Header = () => {
                                           e.currentTarget.src =
                                             "/images/placeholder-image.png";
                                         }}
+                                        sizes="(max-width: 640px) 40px, 48px"
                                       />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <p className="font-medium truncate">
+                                      <p className="font-medium truncate text-sm sm:text-base">
                                         {result.name}
                                       </p>
                                       {result.brand && (
@@ -609,15 +625,15 @@ const Header = () => {
                                 <div className="p-3 border-t border-brand-neutral-200">
                                   <button
                                     type="submit"
-                                    className="w-full py-2 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition-colors font-medium"
+                                    className="w-full py-3 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition-colors font-medium text-sm sm:text-base min-h-[44px]"
                                   >
                                     View All Search Results
                                   </button>
                                 </div>
                               </div>
                             ) : (
-                              <div className="p-6 text-center">
-                                <Search className="h-12 w-12 text-brand-neutral-300 mx-auto mb-3" />
+                              <div className="p-4 sm:p-6 text-center">
+                                <Search className="h-8 w-8 sm:h-12 sm:w-12 text-brand-neutral-300 mx-auto mb-3" />
                                 <p className="text-sm text-brand-neutral-500 mb-2">
                                   No products found for "{searchQuery}"
                                 </p>
@@ -635,7 +651,7 @@ const Header = () => {
               </div>
 
               {/* Wishlist */}
-              <Link href="/wishlist">
+              <Link href="/wishlist" className="flex">
                 <ActionButton
                   icon={Heart}
                   count={wishlistCount}
@@ -649,7 +665,7 @@ const Header = () => {
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   disabled={status === "loading"}
-                  className="relative p-2 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative p-2 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] min-w-[44px] flex items-center justify-center"
                   aria-label="User account"
                 >
                   <UserAvatar />
@@ -661,7 +677,7 @@ const Header = () => {
                       initial={{ opacity: 0, y: 8, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                      className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-brand-neutral-200 z-50 overflow-hidden"
+                      className="absolute right-0 top-full mt-2 w-[90vw] max-w-xs bg-white rounded-xl shadow-xl border border-brand-neutral-200 z-50 overflow-hidden"
                     >
                       {status === "authenticated" && session?.user ? (
                         <>
@@ -705,7 +721,7 @@ const Header = () => {
                               <Link
                                 key={item.label}
                                 href={item.href}
-                                className="flex items-center gap-3 px-3 py-2.5 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors duration-150"
+                                className="flex items-center gap-3 px-3 py-3 text-sm text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors duration-150 min-h-[44px]"
                                 onClick={() => setProfileDropdownOpen(false)}
                               >
                                 <item.icon className="w-4 h-4" />
@@ -717,7 +733,7 @@ const Header = () => {
                           <div className="p-2 border-t border-brand-neutral-100">
                             <button
                               onClick={handleSignOut}
-                              className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+                              className="flex items-center gap-3 w-full px-3 py-3 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150 min-h-[44px]"
                             >
                               <LogOut className="w-4 h-4" />
                               Sign Out
@@ -726,14 +742,14 @@ const Header = () => {
                         </>
                       ) : (
                         <div className="p-4">
-                          <div className="text-center mb-3">
+                          <div className="text-left mb-3">
                             <p className="text-sm text-brand-neutral-600">
                               Welcome to britcartbd.com
                             </p>
                           </div>
                           <button
                             onClick={handleSignIn}
-                            className="flex items-center gap-3 w-full px-3 py-2.5 text-sm bg-brand-primary-600 text-white hover:bg-brand-primary-700 rounded-lg transition-colors duration-150 font-medium"
+                            className="flex items-center gap-3 w-full px-3 py-3 text-sm bg-brand-primary-600 text-white hover:bg-brand-primary-700 rounded-lg transition-colors duration-150 font-medium min-h-[44px]"
                           >
                             <User className="w-4 h-4" />
                             Sign In / Register
@@ -775,12 +791,12 @@ const Header = () => {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed inset-y-0 left-0 w-80 max-w-full bg-white z-50 lg:hidden overflow-y-auto"
+              className="fixed inset-y-0 left-0 w-[85vw] max-w-sm bg-white z-50 lg:hidden overflow-y-auto safe-area-inset"
             >
               <div className="flex flex-col h-full">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-brand-neutral-200 bg-gradient-to-r from-brand-primary-50 to-purple-50">
-                  <Link href="/" className="flex items-center">
+                <div className="flex items-center justify-between p-4 border-b border-brand-neutral-200 bg-gradient-to-r from-brand-primary-50 to-purple-50 safe-area-top">
+                  <Link href="/" className="flex items-center min-h-[44px]">
                     <span className="text-xl font-bold text-brand-primary-600">
                       britcartbd.com
                     </span>
@@ -793,7 +809,7 @@ const Header = () => {
                 </div>
 
                 {/* Navigation */}
-                <nav className="flex-1 p-4 space-y-3">
+                <nav className="flex-1 p-4 space-y-2">
                   {navItems.map((item) => {
                     const Icon = item.icon;
                     if (item.hasDropdown) {
@@ -801,10 +817,10 @@ const Header = () => {
                         <button
                           key={item.name}
                           onClick={() => setMobileCategoriesOpen(true)}
-                          className="flex items-center justify-between w-full px-4 py-4 text-lg font-bold text-brand-neutral-800 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-xl transition-all duration-200 border-2 border-brand-primary-200 bg-white shadow-sm hover:shadow-md"
+                          className="flex items-center justify-between w-full px-4 py-4 text-base font-bold text-brand-neutral-800 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-xl transition-all duration-200 border-2 border-brand-primary-200 bg-white shadow-sm hover:shadow-md min-h-[60px]"
                         >
                           <div className="flex items-center gap-3">
-                            <Icon className="w-6 h-6 text-brand-primary-500" />
+                            <Icon className="w-5 h-5 text-brand-primary-500" />
                             <span>{item.name}</span>
                           </div>
                           <ChevronRight className="w-5 h-5 text-brand-neutral-400" />
@@ -815,10 +831,10 @@ const Header = () => {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="flex items-center gap-3 px-4 py-4 text-lg font-bold text-brand-neutral-800 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-brand-primary-200 bg-white shadow-sm hover:shadow-md"
+                        className="flex items-center gap-3 px-4 py-4 text-base font-bold text-brand-neutral-800 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-brand-primary-200 bg-white shadow-sm hover:shadow-md min-h-[60px]"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        <Icon className="w-6 h-6 text-brand-primary-500" />
+                        <Icon className="w-5 h-5 text-brand-primary-500" />
                         {item.name}
                       </Link>
                     );
@@ -826,7 +842,7 @@ const Header = () => {
                 </nav>
 
                 {/* User Section */}
-                <div className="p-4 border-t border-brand-neutral-200 bg-gray-50">
+                <div className="p-4 border-t border-brand-neutral-200 bg-gray-50 safe-area-bottom">
                   {status === "authenticated" && session?.user ? (
                     <>
                       <div className="flex items-center gap-3 px-4 py-3 mb-3 bg-white rounded-xl border border-brand-primary-200 shadow-sm">
@@ -854,7 +870,7 @@ const Header = () => {
                           <Link
                             key={item.label}
                             href={item.href}
-                            className="flex items-center gap-3 px-4 py-3 text-base font-medium text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors duration-150 border border-transparent hover:border-brand-primary-200"
+                            className="flex items-center gap-3 px-4 py-3 text-base font-medium text-brand-neutral-700 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-lg transition-colors duration-150 border border-transparent hover:border-brand-primary-200 min-h-[44px]"
                             onClick={() => setMobileMenuOpen(false)}
                           >
                             <item.icon className="w-5 h-5" />
@@ -865,7 +881,7 @@ const Header = () => {
                         {/* Logout Button */}
                         <button
                           onClick={handleSignOut}
-                          className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150 border border-transparent hover:border-red-200"
+                          className="flex items-center gap-3 w-full px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150 border border-transparent hover:border-red-200 min-h-[44px]"
                         >
                           <LogOut className="w-5 h-5" />
                           Sign Out
@@ -875,9 +891,9 @@ const Header = () => {
                   ) : (
                     <button
                       onClick={handleSignIn}
-                      className="flex items-center gap-3 w-full px-4 py-4 text-base font-bold text-brand-neutral-700 hover:bg-brand-primary-50 rounded-xl transition-all duration-200 border-2 border-brand-neutral-200 hover:border-brand-primary-300 bg-white shadow-sm hover:shadow-md"
+                      className="flex items-center gap-3 w-full px-4 py-4 text-base font-bold text-brand-neutral-700 hover:bg-brand-primary-50 rounded-xl transition-all duration-200 border-2 border-brand-neutral-200 hover:border-brand-primary-300 bg-white shadow-sm hover:shadow-md min-h-[60px]"
                     >
-                      <User className="w-6 h-6 text-brand-primary-500" />
+                      <User className="w-5 h-5 text-brand-primary-500" />
                       Sign In / Register
                     </button>
                   )}
@@ -905,14 +921,15 @@ const Header = () => {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed inset-y-0 left-0 w-80 max-w-full bg-white z-50 lg:hidden overflow-y-auto"
+              className="fixed inset-y-0 left-0 w-[85vw] max-w-sm bg-white z-50 lg:hidden overflow-y-auto safe-area-inset"
             >
               <div className="flex flex-col h-full">
                 {/* Categories Header */}
-                <div className="flex items-center gap-3 p-4 border-b border-brand-neutral-200 bg-gradient-to-r from-brand-primary-50 to-purple-50">
+                <div className="flex items-center gap-3 p-4 border-b border-brand-neutral-200 bg-gradient-to-r from-brand-primary-50 to-purple-50 safe-area-top">
                   <button
                     onClick={() => setMobileCategoriesOpen(false)}
-                    className="p-2 rounded-lg text-brand-neutral-700 hover:bg-white hover:text-brand-primary-600 transition-colors"
+                    className="p-2 rounded-lg text-brand-neutral-700 hover:bg-white hover:text-brand-primary-600 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Go back"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
@@ -932,7 +949,7 @@ const Header = () => {
                       <button
                         key={category.id}
                         onClick={() => handleCategoryClick(category.slug)}
-                        className="flex items-center justify-between w-full px-4 py-4 text-base font-semibold text-brand-neutral-800 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-brand-primary-200 bg-white shadow-sm hover:shadow-md"
+                        className="flex items-center justify-between w-full px-4 py-4 text-base font-semibold text-brand-neutral-800 hover:bg-brand-primary-50 hover:text-brand-primary-600 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-brand-primary-200 bg-white shadow-sm hover:shadow-md min-h-[60px]"
                       >
                         <span>{category.name}</span>
                         <span className="px-2 py-1 text-xs bg-brand-primary-100 text-brand-primary-600 rounded-full font-bold">

@@ -11,6 +11,7 @@ import {
   Flame,
   Zap,
   RefreshCw,
+  Eye,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -227,9 +228,7 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
   const favoriteIcon = isClient ? (
     <Heart
       className={`h-4 w-4 ${
-        isFavorite
-          ? "fill-brand-primary-500 text-brand-primary-500"
-          : "text-brand-neutral-600"
+        isFavorite ? "fill-red-500 text-red-500" : "text-brand-neutral-600"
       } ${isAddingToWishlist ? "animate-pulse" : ""}`}
     />
   ) : (
@@ -242,7 +241,7 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
-      className="group bg-white rounded-xl shadow-soft hover:shadow-card transition-all duration-300 border border-brand-neutral-100 hover:border-brand-neutral-200"
+      className="group bg-white rounded-lg md:rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-brand-neutral-100 hover:border-brand-neutral-200 flex flex-col h-full"
     >
       {/* Product Image */}
       <Link href={`/products/${product.slug}`}>
@@ -259,6 +258,7 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
                 quality={90}
                 onLoad={() => setImageLoading(false)}
                 onError={() => setImageLoading(false)}
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
               {imageLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-brand-neutral-50">
@@ -273,46 +273,46 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
           )}
 
           {/* Hot Deal Badge */}
-          <div className="absolute top-3 left-3">
-            <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-button">
+          <div className="absolute top-2 left-2">
+            <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-medium px-2 py-1 rounded-full shadow-sm">
               <Zap className="h-3 w-3 inline mr-1" />
               {product.discountPercentage}% OFF
             </span>
           </div>
 
           {/* Additional Badges */}
-          <div className="absolute top-3 left-3 mt-8 flex flex-col gap-1">
+          <div className="absolute top-2 left-2 mt-6 flex flex-col gap-1">
             {product.isNew && (
-              <span className="bg-brand-sky-500 text-white text-xs font-medium px-2 py-1 rounded">
+              <span className="bg-brand-sky-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
                 NEW
               </span>
             )}
             {product.isBestSeller && (
-              <span className="bg-brand-gold-500 text-white text-xs font-medium px-2 py-1 rounded">
-                BESTSELLER
+              <span className="bg-brand-gold-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+                BEST
               </span>
             )}
           </div>
 
           {/* Quick Actions - Only show on client-side */}
           {isClient && (
-            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-2">
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-1">
               <button
                 onClick={handleFavorite}
                 disabled={isAddingToWishlist}
-                className="bg-white rounded-full p-2 shadow-button hover:shadow-md transition-all disabled:opacity-50"
+                className="bg-white rounded-full p-1.5 shadow-sm hover:shadow-md transition-all disabled:opacity-50"
               >
                 {favoriteIcon}
               </button>
             </div>
           )}
 
-          {/* Add to Cart Button */}
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {/* Add to Cart Button - Desktop */}
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block">
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0 || isAddingToCart}
-              className="bg-gradient-to-r from-brand-neutral-900 to-black text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:from-black hover:to-brand-neutral-800 transition-all shadow-button disabled:bg-brand-neutral-300 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-brand-neutral-900 to-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-black hover:to-brand-neutral-800 transition-all shadow-sm disabled:bg-brand-neutral-300 disabled:cursor-not-allowed"
             >
               {isAddingToCart
                 ? "Adding..."
@@ -324,8 +324,8 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
 
           {/* Stock Status Badge */}
           {product.stock <= 0 && (
-            <div className="absolute top-3 right-3">
-              <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
+            <div className="absolute top-2 right-2">
+              <span className="bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
                 OUT OF STOCK
               </span>
             </div>
@@ -334,10 +334,10 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
       </Link>
 
       {/* Product Info */}
-      <div className="p-5">
+      <div className="p-3 md:p-4 flex-1 flex flex-col">
         {/* Category */}
         {product.category && (
-          <p className="text-xs text-brand-neutral-500 mb-1 uppercase tracking-wide">
+          <p className="text-xs text-brand-neutral-500 mb-1 uppercase tracking-wide truncate">
             {product.category.name}
           </p>
         )}
@@ -350,7 +350,7 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
         </Link>
 
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-3">
+        <div className="flex items-center gap-1 mb-2">
           <div className="flex">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -369,13 +369,13 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
         </div>
 
         {/* Price */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-brand-neutral-900">
+        <div className="flex items-center justify-between mt-auto">
+          <div className="flex flex-col">
+            <span className="text-base md:text-lg font-bold text-brand-neutral-900">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-sm text-brand-neutral-500 line-through">
+              <span className="text-xs text-brand-neutral-500 line-through">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
@@ -386,12 +386,12 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0 || isAddingToCart}
-              className="lg:hidden bg-brand-neutral-100 hover:bg-brand-neutral-200 p-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="md:hidden bg-brand-primary-600 text-white p-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-brand-primary-700"
             >
               {isAddingToCart ? (
-                <Loader2 className="h-4 w-4 animate-spin text-brand-neutral-600" />
+                <Loader2 className="h-3 w-3 animate-spin" />
               ) : (
-                <ShoppingCart className="h-4 w-4 text-brand-neutral-600" />
+                <ShoppingCart className="h-3 w-3" />
               )}
             </button>
           )}
@@ -400,7 +400,7 @@ const ClientHotDealCard = ({ product }: { product: Product }) => {
         {/* You Save */}
         {product.originalPrice && product.originalPrice > product.price && (
           <div className="mt-2 text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
-            You save {formatPrice(product.originalPrice - product.price)}
+            Save {formatPrice(product.originalPrice - product.price)}
           </div>
         )}
 
@@ -475,9 +475,20 @@ export default function HotDealsPage() {
       <>
         <Header />
         <div className="min-h-screen bg-white">
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="flex items-center justify-between mb-8">
-              <div>
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8">
+            {/* Mobile Header */}
+            <div className="md:hidden bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Flame className="h-6 w-6" />
+                <h1 className="text-xl font-bold">Hot Deals</h1>
+              </div>
+              <p className="text-orange-100 text-sm">
+                Loading amazing discounts...
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
+              <div className="hidden md:block">
                 <div className="flex items-center gap-3 mb-2">
                   <Flame className="h-8 w-8 text-orange-500" />
                   <h1 className="text-3xl font-bold text-brand-neutral-900">
@@ -490,22 +501,22 @@ export default function HotDealsPage() {
               </div>
               <div className="flex items-center gap-2 text-brand-neutral-500">
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Loading...</span>
+                <span className="text-sm">Loading...</span>
               </div>
             </div>
 
-            {/* Loading skeleton grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {/* Loading skeleton grid - 2 columns on mobile */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-xl border border-brand-neutral-100 animate-pulse"
+                  className="bg-white rounded-lg border border-brand-neutral-100 animate-pulse flex flex-col h-full"
                 >
-                  <div className="aspect-square bg-brand-neutral-200 rounded-t-xl"></div>
-                  <div className="p-5 space-y-3">
-                    <div className="h-4 bg-brand-neutral-200 rounded w-3/4"></div>
+                  <div className="aspect-square bg-brand-neutral-200 rounded-t-lg"></div>
+                  <div className="p-3 space-y-2">
+                    <div className="h-3 bg-brand-neutral-200 rounded w-3/4"></div>
                     <div className="h-3 bg-brand-neutral-200 rounded w-1/2"></div>
-                    <div className="h-6 bg-brand-neutral-200 rounded w-1/3"></div>
+                    <div className="h-4 bg-brand-neutral-200 rounded w-1/3"></div>
                   </div>
                 </div>
               ))}
@@ -522,29 +533,40 @@ export default function HotDealsPage() {
       <>
         <Header />
         <div className="min-h-screen bg-white">
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="text-center py-12">
-              <Flame className="h-16 w-16 text-brand-neutral-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-brand-neutral-900 mb-4">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8">
+            {/* Mobile Header */}
+            <div className="md:hidden bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Flame className="h-6 w-6" />
+                <h1 className="text-xl font-bold">Hot Deals</h1>
+              </div>
+              <p className="text-orange-100 text-sm">
+                Limited time offers with amazing discounts
+              </p>
+            </div>
+
+            <div className="text-center py-8 md:py-12">
+              <Flame className="h-12 w-12 md:h-16 md:w-16 text-brand-neutral-400 mx-auto mb-3 md:mb-4" />
+              <h2 className="text-xl md:text-2xl font-bold text-brand-neutral-900 mb-3 md:mb-4">
                 Failed to Load Hot Deals
               </h2>
-              <p className="text-red-600 mb-4">
+              <p className="text-red-600 mb-3 md:mb-4 text-sm md:text-base">
                 {error.message || "Failed to load hot deals"}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <button
                   onClick={handleRefresh}
-                  className="px-6 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors flex items-center gap-2 text-sm md:text-base"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Try Again
                 </button>
                 <Link
                   href="/shop"
-                  className="px-6 py-2 border border-brand-neutral-300 text-brand-neutral-700 rounded-lg hover:border-brand-neutral-400 hover:bg-brand-neutral-50 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 border border-brand-neutral-300 text-brand-neutral-700 rounded-lg hover:border-brand-neutral-400 hover:bg-brand-neutral-50 transition-colors flex items-center gap-2 text-sm md:text-base"
                 >
                   <ArrowRight className="h-4 w-4" />
-                  Browse All Products
+                  Browse All
                 </Link>
               </div>
             </div>
@@ -560,9 +582,31 @@ export default function HotDealsPage() {
       <Header />
 
       <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Header Section */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 md:py-8">
+          {/* Mobile Header */}
+          <div className="md:hidden bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Flame className="h-6 w-6" />
+                <h1 className="text-xl font-bold">Hot Deals</h1>
+              </div>
+              <button
+                onClick={handleRefresh}
+                disabled={isValidating}
+                className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors disabled:opacity-50"
+              >
+                <RefreshCw
+                  className={`h-4 w-4 ${isValidating ? "animate-spin" : ""}`}
+                />
+              </button>
+            </div>
+            <p className="text-orange-100 text-sm">
+              Limited time offers with amazing discounts
+            </p>
+          </div>
+
+          {/* Desktop Header */}
+          <div className="hidden md:flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <Flame className="h-8 w-8 text-orange-500" />
@@ -597,24 +641,24 @@ export default function HotDealsPage() {
 
           {/* Stats Bar */}
           {products.length > 0 && (
-            <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-100 rounded-xl p-4 mb-8">
-              <div className="flex flex-wrap items-center justify-between gap-4 text-sm">
-                <div className="flex items-center gap-2">
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-100 rounded-lg md:rounded-xl p-3 md:p-4 mb-6 md:mb-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-orange-700">
-                    {products.length} hot deals available
+                    {products.length} hot deals
                   </span>
-                  <span className="text-orange-600">•</span>
-                  <span className="text-orange-600">
-                    Auto-refreshes every 30 seconds
+                  <span className="text-orange-600 hidden sm:inline">•</span>
+                  <span className="text-orange-600 text-xs sm:text-sm">
+                    Auto-refreshes every 30s
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-orange-600">
+                <div className="flex items-center gap-3 md:gap-4 text-orange-600 text-xs sm:text-sm">
                   <span className="flex items-center gap-1">
-                    <Zap className="h-4 w-4" />
-                    Limited time offers
+                    <Zap className="h-3 w-3 md:h-4 md:w-4" />
+                    Limited time
                   </span>
                   <span className="flex items-center gap-1">
-                    <Flame className="h-4 w-4" />
+                    <Flame className="h-3 w-3 md:h-4 md:w-4" />
                     Up to {maxDiscount}% OFF
                   </span>
                 </div>
@@ -622,30 +666,30 @@ export default function HotDealsPage() {
             </div>
           )}
 
-          {/* Products Grid */}
+          {/* Products Grid - 2 columns on mobile */}
           {products.length === 0 ? (
-            <div className="text-center py-12">
-              <Flame className="h-16 w-16 text-brand-neutral-400 mx-auto mb-4" />
-              <p className="text-brand-neutral-500 text-lg mb-2">
+            <div className="text-center py-8 md:py-12">
+              <Flame className="h-12 w-12 md:h-16 md:w-16 text-brand-neutral-400 mx-auto mb-3 md:mb-4" />
+              <p className="text-brand-neutral-500 text-base md:text-lg mb-2">
                 No hot deals available at the moment.
               </p>
-              <p className="text-brand-neutral-400 text-sm mb-6">
+              <p className="text-brand-neutral-400 text-sm md:text-base mb-4 md:mb-6">
                 Check back later for amazing discounts!
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <button
                   onClick={handleRefresh}
-                  className="px-6 py-2 bg-brand-neutral-500 text-white rounded-lg hover:bg-brand-neutral-600 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-brand-neutral-500 text-white rounded-lg hover:bg-brand-neutral-600 transition-colors flex items-center gap-2 text-sm md:text-base"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Refresh
                 </button>
                 <Link
                   href="/shop"
-                  className="px-6 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors flex items-center gap-2 text-sm md:text-base"
                 >
                   <ShoppingCart className="h-4 w-4" />
-                  Shop All Products
+                  Shop All
                 </Link>
               </div>
             </div>
@@ -653,7 +697,7 @@ export default function HotDealsPage() {
             <>
               <div
                 ref={ref}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
               >
                 {products.map((product) => (
                   <ClientHotDealCard key={product.id} product={product} />
@@ -661,22 +705,22 @@ export default function HotDealsPage() {
               </div>
 
               {/* Bottom Refresh Section */}
-              <div className="mt-12 text-center">
-                <div className="bg-brand-neutral-50 rounded-xl p-6">
-                  <p className="text-brand-neutral-600 mb-4">
+              <div className="mt-8 md:mt-12 text-center">
+                <div className="bg-brand-neutral-50 rounded-lg md:rounded-xl p-4 md:p-6">
+                  <p className="text-brand-neutral-600 text-sm md:text-base mb-3 md:mb-4">
                     Deals updated automatically. Last refreshed just now.
                   </p>
                   <button
                     onClick={handleRefresh}
                     disabled={isValidating}
-                    className="px-6 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
+                    className="px-4 md:px-6 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto text-sm md:text-base"
                   >
                     <RefreshCw
                       className={`h-4 w-4 ${
                         isValidating ? "animate-spin" : ""
                       }`}
                     />
-                    {isValidating ? "Refreshing Deals..." : "Refresh Now"}
+                    {isValidating ? "Refreshing..." : "Refresh Now"}
                   </button>
                 </div>
               </div>

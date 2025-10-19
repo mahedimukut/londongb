@@ -294,8 +294,45 @@ const Header = () => {
 
     if (status === "loading") {
       return (
-        <div className="w-10 h-10 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200 min-w-[40px]">
-          <Loader2 className="w-5 h-5 text-brand-neutral-400 animate-spin" />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200 min-w-[32px] sm:min-w-[40px]">
+          <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-brand-neutral-400 animate-spin" />
+        </div>
+      );
+    }
+
+    if (status === "authenticated" && session?.user?.image && !imageError) {
+      return (
+        <div className="relative">
+          <Image
+            src={session.user.image}
+            alt={session.user.name || "User"}
+            width={32}
+            height={32}
+            className="rounded-full border-2 border-brand-primary-200 object-cover min-w-[32px] sm:min-w-[40px] sm:w-10 sm:h-10"
+            onError={() => setImageError(true)}
+            priority={false}
+            sizes="(max-width: 640px) 32px, 40px"
+          />
+        </div>
+      );
+    }
+
+    // Fallback when no image, image error, or Facebook image failed
+    return (
+      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200 min-w-[32px] sm:min-w-[40px]">
+        <User className="w-4 h-4 sm:w-5 sm:h-5 text-brand-primary-600" />
+      </div>
+    );
+  };
+
+  // Fixed Mobile User Avatar Component
+  const MobileUserAvatar = () => {
+    const [imageError, setImageError] = useState(false);
+
+    if (status === "loading") {
+      return (
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200 min-w-[40px] sm:min-w-[48px]">
+          <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 text-brand-neutral-400 animate-spin" />
         </div>
       );
     }
@@ -308,55 +345,18 @@ const Header = () => {
             alt={session.user.name || "User"}
             width={40}
             height={40}
-            className="rounded-full border-2 border-brand-primary-200 object-cover min-w-[40px]"
+            className="rounded-full border-2 border-brand-primary-200 object-cover min-w-[40px] sm:min-w-[48px] sm:w-12 sm:h-12"
             onError={() => setImageError(true)}
             priority={false}
-            sizes="40px"
-          />
-        </div>
-      );
-    }
-
-    // Fallback when no image, image error, or Facebook image failed
-    return (
-      <div className="w-10 h-10 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200 min-w-[40px]">
-        <User className="w-5 h-5 text-brand-primary-600" />
-      </div>
-    );
-  };
-
-  // Fixed Mobile User Avatar Component
-  const MobileUserAvatar = () => {
-    const [imageError, setImageError] = useState(false);
-
-    if (status === "loading") {
-      return (
-        <div className="w-12 h-12 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200 min-w-[48px]">
-          <Loader2 className="w-6 h-6 text-brand-neutral-400 animate-spin" />
-        </div>
-      );
-    }
-
-    if (status === "authenticated" && session?.user?.image && !imageError) {
-      return (
-        <div className="relative">
-          <Image
-            src={session.user.image}
-            alt={session.user.name || "User"}
-            width={48}
-            height={48}
-            className="rounded-full border-2 border-brand-primary-200 object-cover min-w-[48px]"
-            onError={() => setImageError(true)}
-            priority={false}
-            sizes="48px"
+            sizes="(max-width: 640px) 40px, 48px"
           />
         </div>
       );
     }
 
     return (
-      <div className="w-12 h-12 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200 min-w-[48px]">
-        <User className="w-6 h-6 text-brand-primary-600" />
+      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200 min-w-[40px] sm:min-w-[48px]">
+        <User className="w-5 h-5 sm:w-6 sm:h-6 text-brand-primary-600" />
       </div>
     );
   };
@@ -381,21 +381,21 @@ const Header = () => {
       onClick={onClick}
       disabled={loading}
       className={`
-        relative p-3 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 
+        relative p-2 sm:p-3 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 
         hover:bg-brand-primary-50 transition-all duration-200 focus:outline-none 
         focus:ring-2 focus:ring-brand-primary-300 disabled:opacity-50 
-        disabled:cursor-not-allowed min-h-[44px] min-w-[44px] flex items-center 
-        justify-center touch-manipulation ${className}
+        disabled:cursor-not-allowed min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] 
+        flex items-center justify-center touch-manipulation ${className}
       `}
       aria-label={label}
     >
       {loading ? (
-        <Loader2 className="w-5 h-5 animate-spin" />
+        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
       ) : (
-        <Icon className="w-5 h-5" />
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
       )}
       {count !== undefined && count > 0 && (
-        <span className="absolute -top-1 -right-1 bg-brand-primary-500 text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center transform scale-100 hover:scale-110 transition-transform min-w-[20px]">
+        <span className="absolute -top-1 -right-1 bg-brand-primary-500 text-white text-xs font-medium rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center transform scale-100 hover:scale-110 transition-transform min-w-[16px] sm:min-w-[20px] text-[10px] sm:text-xs">
           {count > 99 ? "99+" : count}
         </span>
       )}
@@ -417,8 +417,8 @@ const Header = () => {
           }
         `}
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-4">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-4">
+          <div className="flex items-center justify-between h-14 sm:h-16">
             {/* Mobile menu button */}
             <div className="flex lg:hidden">
               <ActionButton
@@ -429,14 +429,14 @@ const Header = () => {
             </div>
 
             {/* Logo */}
-            <div className="flex items-center ml-1 flex-1 lg:flex-none">
+            <div className="flex items-center flex-1 lg:flex-none">
               <Link
                 href="/"
-                className="flex items-center group min-h-[44px] min-w-[44px]"
+                className="flex items-center group min-h-[40px] sm:min-h-[44px]"
                 aria-label="BritCartBD - Home"
               >
                 <motion.span
-                  className="text-xl sm:text-2xl font-bold text-brand-primary-600 font-display"
+                  className="text-lg sm:text-xl md:text-2xl font-bold text-brand-primary-600 font-display"
                   whileHover={{ scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
@@ -528,7 +528,7 @@ const Header = () => {
             </nav>
 
             {/* Action Buttons */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
+            <div className="flex items-center gap-0 sm:gap-1 md:gap-2">
               {/* Search Button */}
               <div className="relative" ref={searchRef}>
                 <ActionButton
@@ -665,7 +665,7 @@ const Header = () => {
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                   disabled={status === "loading"}
-                  className="relative p-2 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] min-w-[44px] flex items-center justify-center"
+                  className="relative p-1 sm:p-2 rounded-lg text-brand-neutral-700 hover:text-brand-primary-600 hover:bg-brand-primary-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary-300 disabled:opacity-50 disabled:cursor-not-allowed min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center"
                   aria-label="User account"
                 >
                   <UserAvatar />

@@ -295,7 +295,7 @@ const BestSellerCard = ({ product }: { product: Product }) => {
       </Link>
 
       {/* Product Info */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         {/* Category */}
         {product.category && (
           <p className="text-xs text-gray-500 mb-1 uppercase tracking-wide">
@@ -311,7 +311,7 @@ const BestSellerCard = ({ product }: { product: Product }) => {
         </Link>
 
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-3">
+        <div className="flex items-center gap-1 mb-2 sm:mb-3">
           <div className="flex">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -330,11 +330,11 @@ const BestSellerCard = ({ product }: { product: Product }) => {
         {/* Price */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-semibold text-gray-900">
+            <span className="text-base sm:text-lg font-semibold text-gray-900">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-sm text-gray-500 line-through">
+              <span className="text-xs sm:text-sm text-gray-500 line-through">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
@@ -426,18 +426,18 @@ export default function BestSellers() {
               <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
             </div>
           </div>
-          {/* Loading skeleton grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-            {[...Array(5)].map((_, i) => (
+          {/* Loading skeleton grid - 2 columns on mobile */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
+            {[...Array(10)].map((_, i) => (
               <div
                 key={i}
                 className="bg-white rounded-xl border border-gray-100 animate-pulse"
               >
                 <div className="aspect-square bg-gray-200 rounded-t-xl"></div>
-                <div className="p-4 space-y-3">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+                <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-2 sm:h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 sm:h-6 bg-gray-200 rounded w-1/3"></div>
                 </div>
               </div>
             ))}
@@ -490,8 +490,8 @@ export default function BestSellers() {
           </p>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        {/* Products Grid - 2 columns on mobile */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
           {products.map((product: Product) => (
             <BestSellerCard key={product.id} product={product} />
           ))}

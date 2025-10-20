@@ -35,7 +35,7 @@ const Homepage = () => {
       {/* <FeaturedBrands /> */}
       <FeaturedBrands />
       <Testimonials />
-      <PromotionalBanner />
+      {/* <PromotionalBanner /> */}
       {/* <Footer /> */}
       <Footer />
     </>

@@ -62,16 +62,16 @@ const CategoryCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
-      className="min-w-[280px] px-2 flex-shrink-0"
+      className="min-w-[140px] md:min-w-[280px] px-1 md:px-2 flex-shrink-0"
     >
       <Link
         href={`/shop?category=${category.slug}`}
-        className="group block rounded-xl overflow-hidden shadow-card hover:shadow-lg transition-all duration-300"
+        className="group block rounded-lg md:rounded-xl overflow-hidden shadow-sm md:shadow-card hover:shadow-md md:hover:shadow-lg transition-all duration-300"
       >
         <motion.div
           whileHover={{ scale: 1.03 }}
           transition={{ duration: 0.3 }}
-          className="relative h-48"
+          className="relative h-24 md:h-48"
         >
           {category.image && !imageError ? (
             <Image
@@ -81,7 +81,7 @@ const CategoryCard = ({
               className={`object-cover transition-opacity duration-300 ${
                 imageLoading ? "opacity-0" : "opacity-100"
               }`}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 768px) 140px, (max-width: 1200px) 280px, 280px"
               onLoad={() => setImageLoading(false)}
               onError={() => {
                 setImageLoading(false);
@@ -90,13 +90,13 @@ const CategoryCard = ({
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <span className="text-gray-400 text-sm">No Image</span>
+              <span className="text-gray-400 text-xs md:text-sm">No Image</span>
             </div>
           )}
 
           {imageLoading && (
             <div className="absolute inset-0 bg-gray-100 animate-pulse flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-gray-300 border-t-brand-primary-600 rounded-full animate-spin" />
+              <div className="w-4 h-4 md:w-8 md:h-8 border-2 border-gray-300 border-t-brand-primary-600 rounded-full animate-spin" />
             </div>
           )}
 
@@ -108,7 +108,7 @@ const CategoryCard = ({
         </motion.div>
 
         <motion.div
-          className={`${colorScheme.bgColor} p-5`}
+          className={`${colorScheme.bgColor} p-2 md:p-5`}
           whileHover={{
             backgroundColor: `${colorScheme.bgColor
               .replace("50", "100")
@@ -119,19 +119,19 @@ const CategoryCard = ({
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <h3
-                className={`${colorScheme.textColor} font-semibold text-lg truncate`}
+                className={`${colorScheme.textColor} font-medium md:font-semibold text-xs md:text-lg truncate`}
               >
                 {category.name}
               </h3>
               {category._count && (
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-gray-500 text-xs md:text-sm mt-0.5 md:mt-1">
                   {category._count.products} products
                 </p>
               )}
             </div>
             <motion.div whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
               <ChevronRight
-                className={`${colorScheme.textColor} h-5 w-5 flex-shrink-0`}
+                className={`${colorScheme.textColor} h-3 w-3 md:h-5 md:w-5 flex-shrink-0`}
               />
             </motion.div>
           </div>
@@ -186,20 +186,9 @@ export default function FeaturedCategories() {
     if (!carouselRef.current) return;
 
     const container = carouselRef.current;
-    const scrollAmount = direction === "left" ? -300 : 300;
-    const newScrollLeft = container.scrollLeft + scrollAmount;
+    const scrollAmount = direction === "left" ? -200 : 200;
 
-    // Boundary checks
-    if (newScrollLeft < 0) {
-      container.scrollTo({ left: 0, behavior: "smooth" });
-    } else if (newScrollLeft > container.scrollWidth - container.clientWidth) {
-      container.scrollTo({
-        left: container.scrollWidth - container.clientWidth,
-        behavior: "smooth",
-      });
-    } else {
-      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
+    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
   }, []);
 
   // Touch event handlers for mobile
@@ -224,18 +213,18 @@ export default function FeaturedCategories() {
 
   if (isLoading) {
     return (
-      <section className="pt-16 pb-0 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="pt-12 md:pt-16 pb-0 px-3 sm:px-4 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-brand-neutral-800 mb-3">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-xl md:text-3xl font-bold text-brand-neutral-800 mb-2 md:mb-3">
               Featured Categories
             </h2>
-            <p className="text-brand-neutral-600 max-w-2xl mx-auto">
+            <p className="text-brand-neutral-600 text-sm md:text-base max-w-2xl mx-auto">
               Loading categories...
             </p>
           </div>
           <div className="flex justify-center">
-            <div className="w-8 h-8 border-2 border-gray-300 border-t-brand-primary-600 rounded-full animate-spin" />
+            <div className="w-6 h-6 md:w-8 md:h-8 border-2 border-gray-300 border-t-brand-primary-600 rounded-full animate-spin" />
           </div>
         </div>
       </section>
@@ -244,16 +233,18 @@ export default function FeaturedCategories() {
 
   if (error) {
     return (
-      <section className="pt-16 pb-0 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="pt-12 md:pt-16 pb-0 px-3 sm:px-4 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-brand-neutral-800 mb-3">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-xl md:text-3xl font-bold text-brand-neutral-800 mb-2 md:mb-3">
               Featured Categories
             </h2>
-            <p className="text-red-600 mb-4">Failed to load categories</p>
+            <p className="text-red-600 text-sm md:text-base mb-3 md:mb-4">
+              Failed to load categories
+            </p>
             <button
               onClick={() => mutate()}
-              className="mt-4 px-6 py-2 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition-colors"
+              className="mt-2 md:mt-4 px-4 py-2 md:px-6 md:py-2 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition-colors text-sm md:text-base"
             >
               Try Again
             </button>
@@ -269,7 +260,7 @@ export default function FeaturedCategories() {
       initial={{ opacity: 0 }}
       animate={sectionInView ? { opacity: 1 } : {}}
       transition={{ duration: 0.5 }}
-      className="pt-16 pb-0 px-4 sm:px-6 lg:px-8 bg-white relative"
+      className="pt-12 md:pt-16 pb-0 px-3 sm:px-4 lg:px-8 bg-white relative"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
@@ -278,12 +269,12 @@ export default function FeaturedCategories() {
           initial={{ opacity: 0, y: 20 }}
           animate={sectionInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mb-12"
+          className="text-center mb-6 md:mb-12"
         >
-          <h2 className="text-3xl font-bold text-brand-neutral-800 mb-3">
+          <h2 className="text-xl md:text-3xl font-bold text-brand-neutral-800 mb-2 md:mb-3">
             Shop by Category
           </h2>
-          <p className="text-brand-neutral-600 max-w-2xl mx-auto">
+          <p className="text-brand-neutral-600 text-sm md:text-base max-w-2xl mx-auto">
             Explore our wide range of products across different categories
           </p>
         </motion.div>
@@ -300,11 +291,11 @@ export default function FeaturedCategories() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => scroll("left")}
-                    className="bg-white rounded-full p-2 shadow-lg border border-gray-200"
+                    className="bg-white rounded-full p-1.5 md:p-2 shadow-lg border border-gray-200"
                     aria-label="Scroll left"
                     style={{ transformOrigin: "center center" }}
                   >
-                    <ChevronLeft className="h-6 w-6 text-brand-primary-600" />
+                    <ChevronLeft className="h-4 w-4 md:h-6 md:w-6 text-brand-primary-600" />
                   </motion.button>
                 </div>
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden md:block">
@@ -315,11 +306,11 @@ export default function FeaturedCategories() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => scroll("right")}
-                    className="bg-white rounded-full p-2 shadow-lg border border-gray-200"
+                    className="bg-white rounded-full p-1.5 md:p-2 shadow-lg border border-gray-200"
                     aria-label="Scroll right"
                     style={{ transformOrigin: "center center" }}
                   >
-                    <ChevronRight className="h-6 w-6 text-brand-primary-600" />
+                    <ChevronRight className="h-4 w-4 md:h-6 md:w-6 text-brand-primary-600" />
                   </motion.button>
                 </div>
               </>
@@ -331,7 +322,7 @@ export default function FeaturedCategories() {
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="overflow-x-auto pb-6 -mx-2 px-2 touch-pan-x hide-scrollbar"
+            className="overflow-x-auto pb-4 -mx-1 md:-mx-2 px-1 md:px-2 touch-pan-x hide-scrollbar"
             style={{
               cursor: isDragging ? "grabbing" : "grab",
             }}
@@ -340,7 +331,7 @@ export default function FeaturedCategories() {
               initial={{ opacity: 0 }}
               animate={sectionInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex gap-4 w-max"
+              className="flex gap-2 md:gap-4 w-max"
             >
               {categories.map((category, index) => (
                 <CategoryCard
@@ -355,11 +346,13 @@ export default function FeaturedCategories() {
 
         {/* Empty State */}
         {categories.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg mb-4">No categories found.</p>
+          <div className="text-center py-8 md:py-12">
+            <p className="text-gray-500 text-sm md:text-lg mb-3 md:mb-4">
+              No categories found.
+            </p>
             <Link
               href="/admin/categories"
-              className="inline-flex items-center px-6 py-3 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition-colors"
+              className="inline-flex items-center px-4 py-2 md:px-6 md:py-3 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition-colors text-sm md:text-base"
             >
               Add Categories
             </Link>
@@ -368,7 +361,7 @@ export default function FeaturedCategories() {
 
         {/* Mobile indicators */}
         {categories.length > 0 && (
-          <div className="md:hidden flex justify-center gap-2 mt-4">
+          <div className="md:hidden flex justify-center gap-1.5 mt-3">
             {[0, 1, 2].map((dot) => (
               <button
                 key={dot}
@@ -380,7 +373,7 @@ export default function FeaturedCategories() {
                     });
                   }
                 }}
-                className="w-3 h-3 rounded-full bg-brand-neutral-200 hover:bg-brand-primary-600 transition-colors"
+                className="w-2 h-2 rounded-full bg-brand-neutral-200 hover:bg-brand-primary-600 transition-colors"
                 aria-label={`Go to slide ${dot + 1}`}
               />
             ))}

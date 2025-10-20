@@ -780,7 +780,7 @@ export default function ShopPage() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 md:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 md:py-8 ">
           <div className="flex flex-col md:flex-row gap-4 md:gap-6">
             {/* Sidebar - Hidden on mobile */}
             <div className="hidden md:block w-full md:w-80 flex-shrink-0">

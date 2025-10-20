@@ -17,7 +17,7 @@ type Product = {
   price: number;
   originalPrice?: number;
   rating?: number;
-  reviews?: number;
+  reviewCount: number;
   images: { url: string }[];
   colors: { name: string; hexCode: string }[];
   isNew?: boolean;
@@ -68,7 +68,7 @@ const NewArrivalCard = ({ product }: { product: Product }) => {
   };
 
   const averageRating = product.rating || 4.5;
-  const reviewCount = product.reviews || Math.floor(Math.random() * 100) + 10;
+  const reviewCount = product.reviewCount || 0;
 
   // Calculate how new the product is
   const getDaysAgo = (createdAt: string) => {
@@ -188,7 +188,7 @@ const NewArrivalCard = ({ product }: { product: Product }) => {
           image: product.images[0]?.url || "/placeholder-product.jpg",
           slug: product.slug,
           rating: product.rating || 0,
-          reviewCount: product.reviews || 0,
+          reviewCount: product.reviewCount || 0,
           stock: product.stock,
           isInStock: product.stock > 0,
         });
@@ -214,13 +214,15 @@ const NewArrivalCard = ({ product }: { product: Product }) => {
     }
   };
 
+  const isOutOfStock = product.stock <= 0;
+
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
-      className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-gray-200"
+      className="group bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-brand-neutral-100 hover:border-brand-neutral-200 flex flex-col h-full"
     >
       {/* Product Image */}
       <Link href={`/products/${product.slug}`}>
@@ -237,53 +239,84 @@ const NewArrivalCard = ({ product }: { product: Product }) => {
                 quality={90}
                 onLoad={() => setImageLoading(false)}
                 onError={() => setImageLoading(false)}
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
               />
               {imageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                  <Loader2 className="h-6 w-6 text-gray-400 animate-spin" />
+                <div className="absolute inset-0 flex items-center justify-center bg-brand-neutral-50">
+                  <Loader2 className="h-6 w-6 text-brand-neutral-400 animate-spin" />
                 </div>
               )}
             </>
           ) : (
-            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-              <div className="text-gray-400 text-sm">No Image</div>
+            <div className="w-full h-full bg-brand-neutral-100 flex items-center justify-center">
+              <div className="text-brand-neutral-400 text-sm">No Image</div>
             </div>
           )}
 
           {/* New Badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-2 left-2">
             <span
               className={`text-xs font-medium px-2 py-1 rounded shadow-sm ${
                 isVeryNew
                   ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white"
-                  : "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                  : "bg-gradient-to-r from-brand-primary-500 to-brand-primary-600 text-white"
               }`}
             >
               {isVeryNew ? "🔥 Just In" : "🆕 New"}
             </span>
           </div>
 
-          {/* Quick Actions */}
-          <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-2">
+          {/* Additional Badges */}
+          <div className="absolute top-2 left-2 mt-8 flex flex-col gap-1 items-start">
+            {product.isBestSeller && (
+              <span className="bg-brand-gold-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+                BEST
+              </span>
+            )}
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="bg-green-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+                {Math.round(
+                  ((product.originalPrice - product.price) /
+                    product.originalPrice) *
+                    100
+                )}
+                % OFF
+              </span>
+            )}
+          </div>
+
+          {/* Stock Status Badge */}
+          {isOutOfStock && (
+            <div className="absolute top-2 right-2">
+              <span className="bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+                OUT OF STOCK
+              </span>
+            </div>
+          )}
+
+          {/* Desktop Heart Icon - Top Right */}
+          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex flex-col gap-1">
             <button
               onClick={handleFavorite}
               disabled={isAddingToWishlist}
-              className="bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+              className="bg-white/80 rounded-full p-1.5 shadow-sm hover:bg-white hover:shadow-md transition-all disabled:opacity-50"
             >
               <Heart
-                className={`h-4 w-4 ${
-                  isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"
+                className={`h-3.5 w-3.5 ${
+                  isFavorite
+                    ? "fill-red-500 text-red-500"
+                    : "text-brand-neutral-600"
                 } ${isAddingToWishlist ? "animate-pulse" : ""}`}
               />
             </button>
           </div>
 
-          {/* Add to Cart Button */}
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {/* Add to Cart Button - Desktop */}
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block">
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0 || isAddingToCart}
-              className="bg-gradient-to-r from-black to-gray-800 text-white px-4 py-2 rounded text-sm font-medium hover:from-gray-800 hover:to-black transition-all shadow-lg disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-brand-neutral-900 to-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-black hover:to-brand-neutral-800 transition-all shadow-sm disabled:bg-brand-neutral-300 disabled:cursor-not-allowed"
             >
               {isAddingToCart
                 ? "Adding..."
@@ -292,90 +325,108 @@ const NewArrivalCard = ({ product }: { product: Product }) => {
                 : "Add to Cart"}
             </button>
           </div>
-
-          {/* Stock Status Badge */}
-          {product.stock <= 0 && (
-            <div className="absolute top-3 right-3">
-              <span className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
-                OUT OF STOCK
-              </span>
-            </div>
-          )}
         </div>
       </Link>
 
       {/* Product Info */}
-      <div className="p-3 sm:p-4">
+      <div className="p-3 flex flex-col flex-1">
         {/* Category */}
         {product.category && (
-          <p className="text-xs text-gray-500 mb-1 uppercase tracking-wide">
+          <p className="text-xs text-brand-neutral-500 mb-1 uppercase tracking-wide truncate">
             {product.category.name}
           </p>
         )}
 
         {/* Product Name */}
         <Link href={`/products/${product.slug}`}>
-          <h3 className="font-medium text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2 leading-tight text-sm">
+          <h3 className="font-medium text-brand-neutral-800 mb-2 hover:text-brand-primary-600 transition-colors line-clamp-2 leading-tight text-sm">
             {product.name}
           </h3>
         </Link>
 
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-2 sm:mb-3">
+        <div className="flex items-center gap-1 mb-2">
           <div className="flex">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
                 className={`h-3 w-3 ${
                   i < Math.floor(averageRating)
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "fill-gray-200 text-gray-200"
+                    ? "fill-brand-gold-400 text-brand-gold-400"
+                    : "fill-brand-neutral-200 text-brand-neutral-200"
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs text-gray-500">({reviewCount})</span>
+          <span className="text-xs text-brand-neutral-500">
+            ({reviewCount})
+          </span>
         </div>
 
-        {/* Price */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-base sm:text-lg font-semibold text-gray-900">
+        {/* Price and Actions Row */}
+        <div className="flex items-center justify-between mt-auto">
+          <div className="flex flex-col">
+            <span className="text-base font-semibold text-brand-primary-600">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-xs sm:text-sm text-gray-500 line-through">
+              <span className="text-xs text-brand-neutral-500 line-through">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
           </div>
 
-          {/* Quick Add to Cart for Mobile */}
-          <button
-            onClick={handleAddToCart}
-            disabled={product.stock === 0 || isAddingToCart}
-            className="lg:hidden bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isAddingToCart ? (
-              <Loader2 className="h-4 w-4 animate-spin text-gray-600" />
-            ) : (
-              <ShoppingCart className="h-4 w-4 text-gray-600" />
-            )}
-          </button>
+          {/* Mobile Actions - Heart and Cart */}
+          <div className="flex items-center gap-1 md:hidden">
+            {/* Mobile Heart Icon */}
+            <button
+              onClick={handleFavorite}
+              disabled={isAddingToWishlist}
+              className="bg-brand-neutral-100 hover:bg-brand-neutral-200 p-1.5 rounded-full transition-colors disabled:opacity-50"
+            >
+              <Heart
+                className={`h-3.5 w-3.5 ${
+                  isFavorite
+                    ? "fill-red-500 text-red-500"
+                    : "text-brand-neutral-600"
+                } ${isAddingToWishlist ? "animate-pulse" : ""}`}
+              />
+            </button>
+
+            {/* Mobile Add to Cart */}
+            <button
+              onClick={handleAddToCart}
+              disabled={product.stock === 0 || isAddingToCart}
+              className="bg-brand-primary-600 text-white p-1.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-brand-primary-700"
+            >
+              {isAddingToCart ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <ShoppingCart className="h-3.5 w-3.5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Days Ago */}
         <div className="mt-2">
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-brand-neutral-400">
             Added {daysAgo === 1 ? "today" : `${daysAgo} days ago`}
           </span>
         </div>
 
-        {/* Stock Status */}
-        {product.stock <= 0 && (
+        {/* You Save */}
+        {product.originalPrice && product.originalPrice > product.price && (
+          <div className="mt-2 text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
+            Save {formatPrice(product.originalPrice - product.price)}
+          </div>
+        )}
+
+        {/* Stock Status Text */}
+        {isOutOfStock && (
           <div className="mt-2">
             <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
-              Out of Stock
+              Currently unavailable
             </span>
           </div>
         )}
@@ -432,30 +483,33 @@ export default function NewArrivals() {
 
   if (isLoading) {
     return (
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-12 md:py-16 px-3 sm:px-4 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 md:mb-12">
+            <div className="text-3xl md:text-4xl mb-3 md:mb-4">🆕</div>
+            <h2 className="text-2xl md:text-3xl font-bold text-brand-neutral-800 mb-3 md:mb-4">
               New Arrivals
             </h2>
-            <p className="text-gray-600 mb-4">Loading new arrivals...</p>
+            <p className="text-brand-neutral-600 text-sm md:text-base mb-3 md:mb-4">
+              Loading new arrivals...
+            </p>
             <div className="flex justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+              <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin text-brand-neutral-400" />
             </div>
           </div>
           {/* Loading skeleton grid - 2 columns on mobile */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-6">
             {[...Array(10)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-lg border border-gray-100 animate-pulse"
+                className="bg-white rounded-lg border border-brand-neutral-100 animate-pulse flex flex-col h-full"
               >
-                <div className="aspect-square bg-gray-200 rounded-t-lg"></div>
-                <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
-                  <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-2 sm:h-3 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-4 sm:h-6 bg-gray-200 rounded w-1/3"></div>
-                  <div className="h-2 sm:h-3 bg-gray-200 rounded w-2/3"></div>
+                <div className="aspect-square bg-brand-neutral-200 rounded-t-lg"></div>
+                <div className="p-3 space-y-2">
+                  <div className="h-3 bg-brand-neutral-200 rounded w-3/4"></div>
+                  <div className="h-3 bg-brand-neutral-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-brand-neutral-200 rounded w-1/3"></div>
+                  <div className="h-2 bg-brand-neutral-200 rounded w-2/3"></div>
                 </div>
               </div>
             ))}
@@ -467,22 +521,25 @@ export default function NewArrivals() {
 
   if (error) {
     return (
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-12 md:py-16 px-3 sm:px-4 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-3xl md:text-4xl mb-3 md:mb-4">🆕</div>
+          <h2 className="text-2xl md:text-3xl font-bold text-brand-neutral-800 mb-3 md:mb-4">
             New Arrivals
           </h2>
-          <p className="text-red-600 mb-4">Failed to load new arrivals</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <p className="text-red-600 mb-3 md:mb-4 text-sm md:text-base">
+            Failed to load new arrivals
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <button
               onClick={handleRefresh}
-              className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors text-sm md:text-base"
             >
               Try Again
             </button>
             <Link
               href="/shop"
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 border border-brand-neutral-300 text-brand-neutral-700 rounded-lg hover:border-brand-neutral-400 hover:bg-brand-neutral-50 transition-colors text-sm md:text-base"
             >
               Browse All Products
             </Link>
@@ -493,21 +550,21 @@ export default function NewArrivals() {
   }
 
   return (
-    <section ref={ref} className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+    <section ref={ref} className="py-12 md:py-16 px-3 sm:px-4 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <div className="text-4xl mb-4">🆕</div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-8 md:mb-12">
+          <div className="text-3xl md:text-4xl mb-3 md:mb-4">🆕</div>
+          <h2 className="text-2xl md:text-3xl font-bold text-brand-neutral-800 mb-3 md:mb-4">
             New Arrivals
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-2">
+          <p className="text-brand-neutral-600 max-w-2xl mx-auto text-sm md:text-base">
             Discover our latest products and be the first to get them
           </p>
         </div>
 
         {/* Products Grid - 2 columns on mobile */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-6">
           {products.map((product: Product) => (
             <NewArrivalCard key={product.id} product={product} />
           ))}
@@ -515,19 +572,23 @@ export default function NewArrivals() {
 
         {/* Empty State */}
         {products.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-4xl mb-4">🆕</div>
-            <p className="text-gray-500 text-lg mb-2">No new arrivals found.</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="text-center py-8 md:py-12">
+            <div className="text-brand-neutral-400 text-3xl md:text-4xl mb-3 md:mb-4">
+              🆕
+            </div>
+            <p className="text-brand-neutral-500 text-base md:text-lg mb-2">
+              No new arrivals found.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <button
                 onClick={handleRefresh}
-                className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                className="px-4 py-2 bg-brand-neutral-500 text-white rounded-lg hover:bg-brand-neutral-600 transition-colors text-sm md:text-base"
               >
                 Refresh
               </button>
               <Link
                 href="/shop"
-                className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-brand-neutral-800 transition-colors text-sm md:text-base"
               >
                 Shop All Products
               </Link>
@@ -537,13 +598,13 @@ export default function NewArrivals() {
 
         {/* View All Button */}
         {products.length > 0 && (
-          <div className="text-center mt-12">
+          <div className="text-center mt-8 md:mt-12">
             <Link
               href="/shop?sort=newest"
-              className="inline-flex items-center px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all font-medium"
+              className="inline-flex items-center px-6 py-2 md:px-8 md:py-3 border border-brand-neutral-300 text-brand-neutral-700 rounded-lg hover:border-brand-neutral-400 hover:bg-brand-neutral-50 transition-all font-medium text-sm md:text-base"
             >
               View All New Arrivals
-              <ArrowRight className="h-4 w-4 ml-2" />
+              <ArrowRight className="h-4 w-4 ml-1 md:ml-2" />
             </Link>
           </div>
         )}

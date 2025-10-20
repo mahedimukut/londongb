@@ -1,39 +1,47 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Sparkles, Gift, ArrowRight } from "lucide-react";
+import { X, Sparkles, ArrowRight, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
+type Product = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  originalPrice?: number;
+  images: { url: string }[];
+  discountPercentage: number;
+};
+
 export default function PromotionalBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 2,
-    minutes: 14,
-    seconds: 56,
-  });
+  const [hotProduct, setHotProduct] = useState<Product | null>(null);
 
-  // Countdown timer
+  // Fetch the most discounted product
   useEffect(() => {
-    if (!isVisible) return;
+    const fetchHotDeals = async () => {
+      try {
+        const response = await fetch("/api/hot-deals");
+        const products: Product[] = await response.json();
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        const seconds = prev.seconds - 1;
-        const minutes = seconds < 0 ? prev.minutes - 1 : prev.minutes;
-        const hours = minutes < 0 ? prev.hours - 1 : prev.hours;
+        if (products.length > 0) {
+          const mostDiscounted = products.reduce((max, product) =>
+            product.discountPercentage > max.discountPercentage ? product : max
+          );
+          setHotProduct(mostDiscounted);
+        }
+      } catch (error) {
+        console.error("Error fetching hot deals:", error);
+      }
+    };
 
-        return {
-          hours: hours < 0 ? 0 : hours,
-          minutes: minutes < 0 ? 59 : minutes,
-          seconds: seconds < 0 ? 59 : seconds,
-        };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
+    if (isVisible) {
+      fetchHotDeals();
+    }
   }, [isVisible]);
 
   // Show banner after delay
@@ -43,7 +51,7 @@ export default function PromotionalBanner() {
       if (!isDismissed) {
         setIsVisible(true);
       }
-    }, 1500);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -51,6 +59,16 @@ export default function PromotionalBanner() {
     setIsClosing(true);
     localStorage.setItem("promoBannerDismissed", "true");
     setTimeout(() => setIsVisible(false), 300);
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("bn-BD", {
+      style: "currency",
+      currency: "BDT",
+      minimumFractionDigits: 0,
+    })
+      .format(price)
+      .replace("BDT", "৳");
   };
 
   return (
@@ -61,7 +79,7 @@ export default function PromotionalBanner() {
           animate={{ opacity: isClosing ? 0 : 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
         >
           <motion.div
             initial={{ scale: 0.9, y: 20 }}
@@ -70,157 +88,110 @@ export default function PromotionalBanner() {
               y: isClosing ? 20 : 0,
             }}
             exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
-            className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-2xl overflow-hidden w-full max-w-4xl mx-4 border border-white/20"
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="relative bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-md border border-gray-100"
           >
-            {/* Floating sparkles */}
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: [0, 0.8, 0], scale: [0, 1, 0] }}
-                transition={{
-                  duration: 4 + Math.random() * 3,
-                  delay: Math.random() * 2,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                }}
-                className="absolute text-yellow-300"
-                style={{
-                  top: `${10 + Math.random() * 80}%`,
-                  left: `${10 + Math.random() * 80}%`,
-                }}
-              >
-                <Sparkles size={18} />
-              </motion.div>
-            ))}
-
             {/* Close Button */}
-            <motion.button
+            <button
               onClick={handleClose}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all"
+              className="absolute top-3 right-3 z-20 p-1.5 rounded-full bg-white/80 hover:bg-white shadow-sm transition-all"
               aria-label="Close promotional banner"
             >
-              <X className="h-5 w-5 text-gray-700" />
-            </motion.button>
+              <X className="h-4 w-4 text-gray-600" />
+            </button>
 
-            {/* Banner Content */}
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              {/* Image Section */}
-              <div className="relative h-64 md:h-auto overflow-hidden">
-                <Image
-                  src="/images/promos/summer-sale.jpg"
-                  alt="Summer Sale - Up to 40% Off"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                  priority
-                  quality={100}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-
-                {/* Discount Badge */}
-                <div className="absolute top-4 left-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg z-10">
-                  HOT DEAL
-                </div>
-              </div>
-
-              {/* Text Section */}
-              <div className="p-6 md:p-8 flex flex-col justify-center relative">
-                {/* Ribbon decoration */}
-                <div className="absolute -top-6 right-6 bg-pink-500 text-white px-3 py-1 text-xs font-bold rotate-12 shadow-md">
-                  LIMITED TIME
-                </div>
-
-                <span className="text-sm font-semibold text-pink-500 mb-2 flex items-center gap-2">
-                  <Gift className="h-4 w-4" />
-                  EXCLUSIVE OFFER
-                </span>
-
-                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">
-                  Summer Baby{" "}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">
-                    Care Sale!
+            {/* Content */}
+            <div className="p-5">
+              {/* Header */}
+              <div className="text-center mb-4">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className="bg-gradient-to-r from-red-500 to-orange-500 p-1.5 rounded-full">
+                    <Zap className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Hot Deal Alert!
                   </span>
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  {hotProduct ? (
+                    <>Save {hotProduct.discountPercentage}% Today</>
+                  ) : (
+                    <>Limited Time Offer</>
+                  )}
                 </h3>
 
-                <p className="text-gray-600 mb-6 text-lg">
-                  Get up to{" "}
-                  <span className="font-bold text-pink-500">40% off</span> on
-                  premium baby products. Stock up on essentials for the season!
+                <p className="text-sm text-gray-600">
+                  {hotProduct ? (
+                    <>Don't miss this amazing discount</>
+                  ) : (
+                    <>Exclusive savings waiting for you</>
+                  )}
                 </p>
+              </div>
 
-                <div className="mb-6">
-                  <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500">
-                    40% OFF
-                  </span>
-                  <span className="text-gray-400 ml-2 line-through text-xl">
-                    Selected Items
-                  </span>
+              {/* Product Card */}
+              {hotProduct && (
+                <div className="bg-gray-50 rounded-lg p-3 mb-4 border border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+                      <Image
+                        src={
+                          hotProduct.images[0]?.url ||
+                          "/placeholder-product.jpg"
+                        }
+                        alt={hotProduct.name}
+                        fill
+                        className="object-cover"
+                        quality={80}
+                      />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                        {hotProduct.name}
+                      </h4>
+
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-base font-bold text-red-600">
+                          {formatPrice(hotProduct.price)}
+                        </span>
+                        {hotProduct.originalPrice && (
+                          <span className="text-sm text-gray-500 line-through">
+                            {formatPrice(hotProduct.originalPrice)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              )}
 
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <motion.div
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="relative overflow-hidden"
-                  >
-                    <Link
-                      href="/summer-sale"
-                      className="relative px-8 py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-xl text-center shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
-                    >
-                      <span className="shine-overlay"></span>
-                      <span className="relative z-10">Shop Now</span>
-                      <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </motion.div>
+              {/* CTA Buttons */}
+              <div className="flex flex-col gap-2">
+                <Link
+                  href="/hot-deals"
+                  onClick={handleClose}
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <span>View All Hot Deals</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
 
-                  <motion.button
-                    onClick={handleClose}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 border-2 border-gray-200 hover:border-pink-300 text-gray-700 hover:text-pink-500 font-medium rounded-xl transition-all duration-300"
-                  >
-                    Maybe Later
-                  </motion.button>
-                </div>
+                <button
+                  onClick={handleClose}
+                  className="text-gray-600 hover:text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                >
+                  Maybe Later
+                </button>
               </div>
             </div>
 
-            {/* Countdown Timer */}
-            <div className="bg-gradient-to-r from-pink-50 to-rose-50 px-6 py-3 border-t border-pink-100">
-              <div className="flex items-center justify-center gap-3 text-sm">
-                <span className="text-pink-600 font-medium">
-                  Offer ends in:
-                </span>
-                <div className="flex gap-2 font-medium">
-                  <div className="bg-white px-3 py-1 rounded-lg shadow-sm border border-pink-100 text-center">
-                    <div className="text-2xl font-bold text-pink-600 font-mono">
-                      {String(timeLeft.hours).padStart(2, "0")}
-                    </div>
-                    <div className="text-xs text-pink-400">HOURS</div>
-                  </div>
-                  <div className="text-pink-600 flex items-center text-xl">
-                    :
-                  </div>
-                  <div className="bg-white px-3 py-1 rounded-lg shadow-sm border border-pink-100 text-center">
-                    <div className="text-2xl font-bold text-pink-600 font-mono">
-                      {String(timeLeft.minutes).padStart(2, "0")}
-                    </div>
-                    <div className="text-xs text-pink-400">MINUTES</div>
-                  </div>
-                  <div className="text-pink-600 flex items-center text-xl">
-                    :
-                  </div>
-                  <div className="bg-white px-3 py-1 rounded-lg shadow-sm border border-pink-100 text-center">
-                    <div className="text-2xl font-bold text-pink-600 font-mono">
-                      {String(timeLeft.seconds).padStart(2, "0")}
-                    </div>
-                    <div className="text-xs text-pink-400">SECONDS</div>
-                  </div>
-                </div>
-              </div>
+            {/* Footer Note */}
+            <div className="bg-gray-50 border-t border-gray-100 px-5 py-2">
+              <p className="text-xs text-gray-500 text-center">
+                Limited stock available
+              </p>
             </div>
           </motion.div>
         </motion.div>
@@ -228,29 +199,3 @@ export default function PromotionalBanner() {
     </AnimatePresence>
   );
 }
-
-// Add to your global CSS
-const styles = `
-  .shine-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-      to right,
-      rgba(255,255,255,0) 0%,
-      rgba(255,255,255,0.3) 50%,
-      rgba(255,255,255,0) 100%
-    );
-    transform: skewX(-20deg) translateX(-150%);
-    transition: transform 0.8s;
-  }
-  .group:hover .shine-overlay {
-    transform: skewX(-20deg) translateX(250%);
-  }
-`;
-
-<style jsx global>
-  {styles}
-</style>;

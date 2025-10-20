@@ -17,7 +17,7 @@ type Product = {
   price: number;
   originalPrice?: number;
   rating?: number;
-  reviews?: number;
+  reviewCount: number;
   images: { url: string }[];
   colors: { name: string; hexCode: string }[];
   isNew?: boolean;
@@ -67,7 +67,7 @@ const ProductCard = ({ product }: { product: Product }) => {
   };
 
   const averageRating = product.rating || 4.5;
-  const reviewCount = product.reviews || Math.floor(Math.random() * 200) + 50;
+  const reviewCount = product.reviewCount || 0;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -175,7 +175,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           image: product.images[0]?.url || "/placeholder-product.jpg",
           slug: product.slug,
           rating: product.rating || 0,
-          reviewCount: product.reviews || 0,
+          reviewCount: product.reviewCount || 0,
           stock: product.stock,
           isInStock: product.stock > 0,
         });
@@ -200,6 +200,8 @@ const ProductCard = ({ product }: { product: Product }) => {
       }
     }
   };
+
+  const isOutOfStock = product.stock <= 0;
 
   return (
     <motion.div
@@ -262,8 +264,17 @@ const ProductCard = ({ product }: { product: Product }) => {
             )}
           </div>
 
-          {/* Quick Actions */}
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-1">
+          {/* Stock Status Badge */}
+          {isOutOfStock && (
+            <div className="absolute top-2 right-2">
+              <span className="bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+                OUT OF STOCK
+              </span>
+            </div>
+          )}
+
+          {/* Desktop Heart Icon - Top Right */}
+          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex flex-col gap-1">
             <button
               onClick={handleFavorite}
               disabled={isAddingToWishlist}
@@ -293,15 +304,6 @@ const ProductCard = ({ product }: { product: Product }) => {
                 : "Add to Cart"}
             </button>
           </div>
-
-          {/* Stock Status */}
-          {product.stock <= 0 && (
-            <div className="absolute top-2 right-2">
-              <span className="bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
-                OUT OF STOCK
-              </span>
-            </div>
-          )}
         </div>
       </Link>
 
@@ -340,7 +342,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           </span>
         </div>
 
-        {/* Price */}
+        {/* Price and Actions Row */}
         <div className="flex items-center justify-between mt-auto">
           <div className="flex flex-col">
             <span className="text-base font-semibold text-brand-primary-600">
@@ -353,24 +355,51 @@ const ProductCard = ({ product }: { product: Product }) => {
             )}
           </div>
 
-          {/* Quick Add to Cart for Mobile */}
-          <button
-            onClick={handleAddToCart}
-            disabled={product.stock === 0 || isAddingToCart}
-            className="md:hidden bg-brand-primary-600 text-white p-1.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-brand-primary-700"
-          >
-            {isAddingToCart ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              <ShoppingCart className="h-3 w-3" />
-            )}
-          </button>
+          {/* Mobile Actions - Heart and Cart */}
+          <div className="flex items-center gap-1 md:hidden">
+            {/* Mobile Heart Icon */}
+            <button
+              onClick={handleFavorite}
+              disabled={isAddingToWishlist}
+              className="bg-brand-neutral-100 hover:bg-brand-neutral-200 p-1.5 rounded-full transition-colors disabled:opacity-50"
+            >
+              <Heart
+                className={`h-3.5 w-3.5 ${
+                  isFavorite
+                    ? "fill-red-500 text-red-500"
+                    : "text-brand-neutral-600"
+                } ${isAddingToWishlist ? "animate-pulse" : ""}`}
+              />
+            </button>
+
+            {/* Mobile Add to Cart */}
+            <button
+              onClick={handleAddToCart}
+              disabled={product.stock === 0 || isAddingToCart}
+              className="bg-brand-primary-600 text-white p-1.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-brand-primary-700"
+            >
+              {isAddingToCart ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <ShoppingCart className="h-3.5 w-3.5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* You Save */}
         {product.originalPrice && product.originalPrice > product.price && (
           <div className="mt-2 text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
             Save {formatPrice(product.originalPrice - product.price)}
+          </div>
+        )}
+
+        {/* Stock Status Text */}
+        {isOutOfStock && (
+          <div className="mt-2">
+            <span className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
+              Currently unavailable
+            </span>
           </div>
         )}
       </div>

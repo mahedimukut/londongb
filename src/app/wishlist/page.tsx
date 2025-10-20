@@ -303,25 +303,25 @@ const WishlistPage = () => {
     }
   };
 
-  // Skeleton Loader
+  // Skeleton Loader - Updated for 2 columns on mobile
   const WishlistSkeleton = () => (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {[...Array(4)].map((_, i) => (
         <div
           key={i}
-          className="bg-white rounded-xl shadow-sm border border-brand-neutral-100 overflow-hidden animate-pulse"
+          className="bg-white rounded-lg md:rounded-xl shadow-sm border border-brand-neutral-100 overflow-hidden animate-pulse flex flex-col h-full"
         >
-          <div className="p-4 flex justify-between">
-            <div className="w-5 h-5 bg-gray-200 rounded"></div>
-            <div className="w-5 h-5 bg-gray-200 rounded"></div>
+          <div className="p-3 md:p-4 flex justify-between">
+            <div className="w-4 h-4 md:w-5 md:h-5 bg-gray-200 rounded"></div>
+            <div className="w-4 h-4 md:w-5 md:h-5 bg-gray-200 rounded"></div>
           </div>
-          <div className="px-4">
+          <div className="px-3 md:px-4">
             <div className="aspect-square w-full bg-gray-200 rounded-lg"></div>
           </div>
-          <div className="p-4 space-y-3">
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-6 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-10 bg-gray-200 rounded"></div>
+          <div className="p-3 md:p-4 space-y-2 md:space-y-3">
+            <div className="h-3 md:h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 md:h-6 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-8 md:h-10 bg-gray-200 rounded"></div>
           </div>
         </div>
       ))}
@@ -331,16 +331,16 @@ const WishlistPage = () => {
   return (
     <>
       <Header />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-6 md:py-12">
         {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-brand-neutral-800">
+            <h1 className="text-2xl md:text-3xl font-bold text-brand-neutral-800">
               Your Wishlist
             </h1>
-            <div className="text-brand-neutral-500 mt-2">
+            <div className="text-brand-neutral-500 mt-1 md:mt-2 text-sm md:text-base">
               {isLoading ? (
-                <span className="inline-block h-4 bg-gray-200 rounded w-24 animate-pulse"></span>
+                <span className="inline-block h-3 md:h-4 bg-gray-200 rounded w-24 animate-pulse"></span>
               ) : (
                 `${wishlistItems.length} ${
                   wishlistItems.length === 1 ? "item" : "items"
@@ -350,7 +350,7 @@ const WishlistPage = () => {
           </div>
 
           {wishlistItems.length > 0 && (
-            <div className="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+            <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -359,36 +359,38 @@ const WishlistPage = () => {
                     wishlistItems.length > 0
                   }
                   onChange={selectAllItems}
-                  className="rounded text-brand-primary-600 focus:ring-brand-primary-500"
+                  className="rounded text-brand-primary-600 focus:ring-brand-primary-500 w-4 h-4 md:w-5 md:h-5"
                 />
-                <span className="text-sm text-brand-neutral-600">
+                <span className="text-xs md:text-sm text-brand-neutral-600">
                   Select all
                 </span>
               </div>
 
-              <button
-                onClick={shareWishlist}
-                disabled={isRemoving}
-                className="flex items-center px-4 py-2 border border-brand-neutral-200 rounded-lg text-brand-neutral-700 hover:bg-brand-neutral-50 transition-colors disabled:opacity-50"
-              >
-                <Share2 className="w-5 h-5 mr-2" />
-                Share
-              </button>
-
-              {selectedItems.length > 0 && (
+              <div className="flex gap-2">
                 <button
-                  onClick={removeItems}
+                  onClick={shareWishlist}
                   disabled={isRemoving}
-                  className="flex items-center px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                  className="flex items-center px-3 py-2 border border-brand-neutral-200 rounded-lg text-brand-neutral-700 hover:bg-brand-neutral-50 transition-colors disabled:opacity-50 text-xs md:text-sm"
                 >
-                  {isRemoving ? (
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  ) : (
-                    <Trash2 className="w-5 h-5 mr-2" />
-                  )}
-                  Remove ({selectedItems.length})
+                  <Share2 className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
+                  Share
                 </button>
-              )}
+
+                {selectedItems.length > 0 && (
+                  <button
+                    onClick={removeItems}
+                    disabled={isRemoving}
+                    className="flex items-center px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50 text-xs md:text-sm"
+                  >
+                    {isRemoving ? (
+                      <Loader2 className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2" />
+                    )}
+                    Remove ({selectedItems.length})
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -404,36 +406,36 @@ const WishlistPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.5 }}
-              className="text-center py-16"
+              className="text-center py-12 md:py-16"
             >
-              <Heart className="mx-auto h-12 w-12 text-brand-neutral-300" />
-              <h3 className="mt-4 text-lg font-medium text-brand-neutral-900">
+              <Heart className="mx-auto h-10 w-10 md:h-12 md:w-12 text-brand-neutral-300" />
+              <h3 className="mt-3 md:mt-4 text-lg font-medium text-brand-neutral-900">
                 Your wishlist is empty
               </h3>
-              <p className="mt-2 text-brand-neutral-500">
+              <p className="mt-1 md:mt-2 text-brand-neutral-500 text-sm md:text-base">
                 Start adding items you love by clicking the ♡ icon
               </p>
-              <div className="mt-6">
+              <div className="mt-4 md:mt-6">
                 <Link
                   href="/shop"
-                  className="inline-flex items-center px-6 py-3 border border-transparent rounded-lg text-base font-medium text-white bg-brand-primary-600 hover:bg-brand-primary-700 transition-colors"
+                  className="inline-flex items-center px-4 py-2 md:px-6 md:py-3 border border-transparent rounded-lg text-sm md:text-base font-medium text-white bg-brand-primary-600 hover:bg-brand-primary-700 transition-colors"
                 >
                   Continue Shopping
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-1 md:ml-2 h-4 w-4 md:h-5 md:w-5" />
                 </Link>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Wishlist Items */}
+        {/* Wishlist Items - 2 columns on mobile */}
         <AnimatePresence>
           {!isLoading && wishlistItems.length > 0 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             >
               {wishlistItems.map((item) => (
                 <motion.div
@@ -443,17 +445,17 @@ const WishlistPage = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.2 }}
-                  className={`group bg-white rounded-xl shadow-sm hover:shadow-md border border-brand-neutral-100 overflow-hidden transition-all ${
+                  className={`group bg-white rounded-lg md:rounded-xl shadow-sm hover:shadow-md border border-brand-neutral-100 overflow-hidden transition-all flex flex-col h-full ${
                     selectedItems.includes(item.id)
                       ? "ring-2 ring-brand-primary-500"
                       : ""
                   }`}
                 >
                   {/* Item Header */}
-                  <div className="p-4 flex justify-between items-start">
+                  <div className="p-3 md:p-4 flex justify-between items-start">
                     <button
                       onClick={() => toggleSelectItem(item.id)}
-                      className={`w-5 h-5 rounded border ${
+                      className={`w-4 h-4 md:w-5 md:h-5 rounded border ${
                         selectedItems.includes(item.id)
                           ? "bg-brand-primary-500 border-brand-primary-500"
                           : "border-brand-neutral-300 hover:border-brand-primary-500"
@@ -461,7 +463,7 @@ const WishlistPage = () => {
                     >
                       {selectedItems.includes(item.id) && (
                         <svg
-                          className="w-3 h-3 text-white"
+                          className="w-2 h-2 md:w-3 md:h-3 text-white"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -480,12 +482,15 @@ const WishlistPage = () => {
                       disabled={isRemoving}
                       className="p-1 rounded-full text-brand-neutral-400 hover:bg-brand-neutral-50 hover:text-brand-neutral-600 transition-colors disabled:opacity-50"
                     >
-                      <X className="w-5 h-5" />
+                      <X className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                   </div>
 
                   {/* Product Image */}
-                  <Link href={`/products/${item.slug}`} className="block px-4">
+                  <Link
+                    href={`/products/${item.slug}`}
+                    className="block px-3 md:px-4"
+                  >
                     <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-brand-neutral-50">
                       <Image
                         src={item.image}
@@ -496,7 +501,7 @@ const WishlistPage = () => {
                       />
                       {!item.isInStock && (
                         <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
-                          <span className="bg-white px-3 py-1 rounded-full text-sm font-medium text-brand-neutral-700 shadow-sm">
+                          <span className="bg-white px-2 py-1 rounded-full text-xs font-medium text-brand-neutral-700 shadow-sm">
                             Out of Stock
                           </span>
                         </div>
@@ -505,9 +510,9 @@ const WishlistPage = () => {
                   </Link>
 
                   {/* Product Info */}
-                  <div className="p-4 pt-2">
+                  <div className="p-3 md:p-4 pt-2 flex-1 flex flex-col">
                     <Link href={`/products/${item.slug}`}>
-                      <h3 className="font-medium text-brand-neutral-800 hover:text-brand-primary-600 transition-colors line-clamp-2">
+                      <h3 className="font-medium text-brand-neutral-800 hover:text-brand-primary-600 transition-colors line-clamp-2 text-sm md:text-base">
                         {item.name}
                       </h3>
                     </Link>
@@ -518,7 +523,7 @@ const WishlistPage = () => {
                         {[...Array(5)].map((_, i) => (
                           <span
                             key={i}
-                            className={`text-sm ${
+                            className={`text-xs md:text-sm ${
                               i < Math.floor(item.rating)
                                 ? "text-brand-gold-400"
                                 : "text-gray-300"
@@ -535,12 +540,12 @@ const WishlistPage = () => {
 
                     {/* Price */}
                     <div className="mt-2">
-                      <span className="text-lg font-semibold text-brand-primary-600">
+                      <span className="text-base md:text-lg font-semibold text-brand-primary-600">
                         {formatPrice(item.price)}
                       </span>
                       {item.originalPrice &&
                         item.originalPrice > item.price && (
-                          <span className="ml-2 text-sm text-brand-neutral-500 line-through">
+                          <span className="ml-1 md:ml-2 text-xs md:text-sm text-brand-neutral-500 line-through">
                             {formatPrice(item.originalPrice)}
                           </span>
                         )}
@@ -562,21 +567,21 @@ const WishlistPage = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-4 flex space-x-2">
+                    <div className="mt-3 md:mt-4 flex space-x-2">
                       <button
                         onClick={() => moveToCart(item)}
                         disabled={!item.isInStock || isMovingToCart === item.id}
-                        className={`flex-1 flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium ${
+                        className={`flex-1 flex items-center justify-center py-2 px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium ${
                           item.isInStock
                             ? "bg-brand-primary-600 text-white hover:bg-brand-primary-700"
                             : "bg-brand-neutral-100 text-brand-neutral-400 cursor-not-allowed"
                         } transition-colors disabled:opacity-50`}
                       >
                         {isMovingToCart === item.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <Loader2 className="w-3 h-3 md:w-4 md:h-4 animate-spin" />
                         ) : item.isInStock ? (
                           <>
-                            <ShoppingCart className="w-4 h-4 mr-2" />
+                            <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                             Add to Cart
                           </>
                         ) : (
@@ -604,19 +609,19 @@ const WishlistPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="mt-16"
+              className="mt-12 md:mt-16"
             >
-              <h2 className="text-2xl font-bold text-brand-neutral-800 mb-6">
+              <h2 className="text-xl md:text-2xl font-bold text-brand-neutral-800 mb-4 md:mb-6">
                 You might also like
               </h2>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
                 {recommendedItems.map((item) => (
                   <motion.div
                     key={item.id}
-                    whileHover={{ y: -5 }}
-                    className="bg-white rounded-xl shadow-sm hover:shadow-md border border-brand-neutral-100 overflow-hidden transition-all"
+                    whileHover={{ y: -3 }}
+                    className="bg-white rounded-lg md:rounded-xl shadow-sm hover:shadow-md border border-brand-neutral-100 overflow-hidden transition-all flex flex-col h-full"
                   >
-                    <div className="p-4">
+                    <div className="p-3 md:p-4">
                       <Link href={`/products/${item.slug}`}>
                         <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-brand-neutral-50">
                           <Image
@@ -629,9 +634,9 @@ const WishlistPage = () => {
                         </div>
                       </Link>
                     </div>
-                    <div className="p-4 pt-0">
+                    <div className="p-3 md:p-4 pt-0 flex-1 flex flex-col">
                       <Link href={`/products/${item.slug}`}>
-                        <h3 className="font-medium text-brand-neutral-800 hover:text-brand-primary-600 transition-colors line-clamp-2">
+                        <h3 className="font-medium text-brand-neutral-800 hover:text-brand-primary-600 transition-colors line-clamp-2 text-sm md:text-base">
                           {item.name}
                         </h3>
                       </Link>
@@ -642,7 +647,7 @@ const WishlistPage = () => {
                           {[...Array(5)].map((_, i) => (
                             <span
                               key={i}
-                              className={`text-sm ${
+                              className={`text-xs md:text-sm ${
                                 i < Math.floor(item.rating)
                                   ? "text-brand-gold-400"
                                   : "text-gray-300"
@@ -657,15 +662,15 @@ const WishlistPage = () => {
                         </span>
                       </div>
 
-                      <p className="mt-1 text-lg font-semibold text-brand-primary-600">
+                      <p className="mt-1 text-base md:text-lg font-semibold text-brand-primary-600">
                         {formatPrice(item.price)}
                       </p>
 
                       <button
                         onClick={() => addRecommendedToWishlist(item)}
-                        className="mt-3 w-full flex items-center justify-center py-2 px-4 rounded-lg text-sm font-medium bg-brand-primary-600 text-white hover:bg-brand-primary-700 transition-colors"
+                        className="mt-3 w-full flex items-center justify-center py-2 px-3 md:px-4 rounded-lg text-xs md:text-sm font-medium bg-brand-primary-600 text-white hover:bg-brand-primary-700 transition-colors"
                       >
-                        <Heart className="w-4 h-4 mr-2" />
+                        <Heart className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                         Add to Wishlist
                       </button>
                     </div>

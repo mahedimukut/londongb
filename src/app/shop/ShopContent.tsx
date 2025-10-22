@@ -782,12 +782,12 @@ export default function ShopPage() {
 
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 md:py-8 ">
           <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-            {/* Sidebar - Hidden on mobile */}
-            <div className="hidden md:block w-full md:w-80 flex-shrink-0">
+            <div className="hidden md:block w-full md:w-80 flex-shrink-0 sticky top-24 self-start">
+              {/* Shop by Category Section */}
               {isLoading ? (
                 <CategorySkeleton />
               ) : (
-                <div className="bg-white rounded-lg shadow-sm p-4 mb-6 sticky top-24">
+                <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
                   <h2 className="font-bold text-lg mb-4">Shop by Category</h2>
                   <ul className="space-y-2">
                     {enhancedCategories.map((category) => (
@@ -814,6 +814,7 @@ export default function ShopPage() {
                 </div>
               )}
 
+              {/* Shop by Brand Section */}
               {isLoading ? (
                 <CategorySkeleton />
               ) : (
@@ -844,10 +845,11 @@ export default function ShopPage() {
                 </div>
               )}
 
+              {/* Filters Section */}
               {isLoading ? (
                 <FilterSkeleton />
               ) : (
-                <div className="hidden md:block bg-white rounded-lg shadow-sm p-4 sticky top-24">
+                <div className="bg-white rounded-lg shadow-sm p-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="font-bold text-lg">Filters</h2>
                     {activeFilterCount > 0 && (
@@ -904,7 +906,7 @@ export default function ShopPage() {
                       setSelectedSort(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="px-3 py-2 border border-brand-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary-300"
+                    className="px-3 py-2 border border-brand-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary-300 text-gray-700"
                   >
                     {sortOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -916,20 +918,20 @@ export default function ShopPage() {
                   <div className="flex items-center border border-brand-neutral-200 rounded-lg overflow-hidden">
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`p-2 ${
+                      className={`p-2 transition-colors ${
                         viewMode === "grid"
                           ? "bg-brand-primary-50 text-brand-primary-600"
-                          : "bg-white"
+                          : "bg-white text-gray-500 hover:text-brand-primary-600"
                       }`}
                     >
                       <Grid className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`p-2 ${
+                      className={`p-2 transition-colors ${
                         viewMode === "list"
                           ? "bg-brand-primary-50 text-brand-primary-600"
-                          : "bg-white"
+                          : "bg-white text-gray-500 hover:text-brand-primary-600"
                       }`}
                     >
                       <List className="h-5 w-5" />
@@ -943,7 +945,7 @@ export default function ShopPage() {
                 <div className="bg-white rounded-lg shadow-sm p-3 md:p-4 mb-4 md:mb-6">
                   <div className="flex flex-wrap gap-2">
                     {selectedCategory !== "all" && (
-                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1 border border-brand-primary-200">
                         Category:{" "}
                         {
                           enhancedCategories.find(
@@ -952,14 +954,14 @@ export default function ShopPage() {
                         }
                         <button
                           onClick={() => setSelectedCategory("all")}
-                          className="hover:bg-brand-primary-100 rounded-full p-0.5"
+                          className="hover:bg-brand-primary-100 rounded-full p-0.5 transition-colors"
                         >
                           <X className="h-3 w-3" />
                         </button>
                       </span>
                     )}
                     {selectedBrand !== "all" && (
-                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1 border border-brand-primary-200">
                         Brand:{" "}
                         {
                           enhancedBrands.find((b) => b.slug === selectedBrand)
@@ -967,14 +969,14 @@ export default function ShopPage() {
                         }
                         <button
                           onClick={() => setSelectedBrand("all")}
-                          className="hover:bg-brand-primary-100 rounded-full p-0.5"
+                          className="hover:bg-brand-primary-100 rounded-full p-0.5 transition-colors"
                         >
                           <X className="h-3 w-3" />
                         </button>
                       </span>
                     )}
                     {selectedSort !== "newest" && (
-                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1 border border-brand-primary-200">
                         Sort:{" "}
                         {
                           sortOptions.find((s) => s.value === selectedSort)
@@ -982,18 +984,18 @@ export default function ShopPage() {
                         }
                         <button
                           onClick={() => setSelectedSort("newest")}
-                          className="hover:bg-brand-primary-100 rounded-full p-0.5"
+                          className="hover:bg-brand-primary-100 rounded-full p-0.5 transition-colors"
                         >
                           <X className="h-3 w-3" />
                         </button>
                       </span>
                     )}
                     {searchQuery && (
-                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <span className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1 border border-brand-primary-200">
                         Search: {searchQuery}
                         <button
                           onClick={() => router.push("/shop")}
-                          className="hover:bg-brand-primary-100 rounded-full p-0.5"
+                          className="hover:bg-brand-primary-100 rounded-full p-0.5 transition-colors"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -1002,12 +1004,12 @@ export default function ShopPage() {
                     {selectedFilters.price.map((value) => (
                       <span
                         key={`price-${value}`}
-                        className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                        className="bg-brand-primary-50 text-brand-primary-600 px-2 py-1 rounded-full text-xs flex items-center gap-1 border border-brand-primary-200"
                       >
                         Price: {priceRanges.find((p) => p.id === value)?.name}
                         <button
                           onClick={() => toggleFilter("price", value)}
-                          className="hover:bg-brand-primary-100 rounded-full p-0.5"
+                          className="hover:bg-brand-primary-100 rounded-full p-0.5 transition-colors"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -1057,7 +1059,7 @@ export default function ShopPage() {
                   </p>
                   <button
                     onClick={clearAllFilters}
-                    className="px-4 py-2 bg-brand-primary-600 text-white rounded-md hover:bg-brand-primary-700 text-sm md:text-base"
+                    className="px-4 py-2 bg-brand-primary-600 text-white rounded-md hover:bg-brand-primary-700 text-sm md:text-base transition-colors"
                   >
                     Reset Filters
                   </button>
@@ -1071,7 +1073,7 @@ export default function ShopPage() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="p-1.5 md:p-2 rounded-full border border-brand-neutral-200 disabled:opacity-50"
+                      className="p-1.5 md:p-2 rounded-full border border-brand-neutral-200 disabled:opacity-50 hover:bg-brand-primary-50 transition-colors"
                     >
                       <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
                     </button>
@@ -1093,10 +1095,10 @@ export default function ShopPage() {
                           <button
                             key={pageNum}
                             onClick={() => setCurrentPage(pageNum)}
-                            className={`w-8 h-8 md:w-10 md:h-10 rounded-full text-sm ${
+                            className={`w-8 h-8 md:w-10 md:h-10 rounded-full text-sm transition-colors ${
                               currentPage === pageNum
                                 ? "bg-brand-primary-600 text-white"
-                                : "hover:bg-brand-primary-50"
+                                : "hover:bg-brand-primary-50 text-gray-700"
                             }`}
                           >
                             {pageNum}
@@ -1106,13 +1108,13 @@ export default function ShopPage() {
                     )}
 
                     {totalPages > 5 && currentPage < totalPages - 2 && (
-                      <span className="px-1 md:px-2">...</span>
+                      <span className="px-1 md:px-2 text-gray-500">...</span>
                     )}
 
                     {totalPages > 5 && currentPage < totalPages - 2 && (
                       <button
                         onClick={() => setCurrentPage(totalPages)}
-                        className="w-8 h-8 md:w-10 md:h-10 rounded-full hover:bg-brand-primary-50 text-sm"
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-full hover:bg-brand-primary-50 text-sm text-gray-700 transition-colors"
                       >
                         {totalPages}
                       </button>
@@ -1123,7 +1125,7 @@ export default function ShopPage() {
                         setCurrentPage((p) => Math.min(totalPages, p + 1))
                       }
                       disabled={currentPage === totalPages}
-                      className="p-1.5 md:p-2 rounded-full border border-brand-neutral-200 disabled:opacity-50"
+                      className="p-1.5 md:p-2 rounded-full border border-brand-neutral-200 disabled:opacity-50 hover:bg-brand-primary-50 transition-colors"
                     >
                       <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
                     </button>
@@ -1156,10 +1158,12 @@ export default function ShopPage() {
             >
               <div className="p-4 border-b border-brand-neutral-200 sticky top-0 bg-white z-10">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-bold">Filters</h2>
+                  <h2 className="text-xl font-bold text-brand-primary-600">
+                    Filters
+                  </h2>
                   <button
                     onClick={() => setIsFilterOpen(false)}
-                    className="p-1 rounded-full hover:bg-brand-neutral-100"
+                    className="p-1 rounded-full hover:bg-brand-neutral-100 text-gray-500"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -1167,13 +1171,13 @@ export default function ShopPage() {
                 <div className="flex justify-between mt-2">
                   <button
                     onClick={clearAllFilters}
-                    className="text-sm text-brand-primary-600 hover:underline"
+                    className="text-sm text-brand-primary-600 hover:text-brand-primary-700 hover:underline font-medium"
                   >
                     Clear all
                   </button>
                   <button
                     onClick={() => setIsFilterOpen(false)}
-                    className="text-sm text-brand-primary-600 hover:underline font-medium"
+                    className="text-sm text-brand-primary-600 hover:text-brand-primary-700 hover:underline font-medium"
                   >
                     Apply Filters
                   </button>
@@ -1182,14 +1186,14 @@ export default function ShopPage() {
 
               <div className="p-4 space-y-6">
                 <div>
-                  <h3 className="font-medium mb-2">Categories</h3>
+                  <h3 className="font-medium mb-2 text-gray-800">Categories</h3>
                   <select
                     value={selectedCategory}
                     onChange={(e) => {
                       setSelectedCategory(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                    className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary-300"
                   >
                     {enhancedCategories.map((category) => (
                       <option key={category.slug} value={category.slug}>
@@ -1200,14 +1204,14 @@ export default function ShopPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium mb-2">Brands</h3>
+                  <h3 className="font-medium mb-2 text-gray-800">Brands</h3>
                   <select
                     value={selectedBrand}
                     onChange={(e) => {
                       setSelectedBrand(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                    className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary-300"
                   >
                     {enhancedBrands.map((brand) => (
                       <option key={brand.slug} value={brand.slug}>
@@ -1218,14 +1222,14 @@ export default function ShopPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium mb-2">Sort By</h3>
+                  <h3 className="font-medium mb-2 text-gray-800">Sort By</h3>
                   <select
                     value={selectedSort}
                     onChange={(e) => {
                       setSelectedSort(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                    className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary-300"
                   >
                     {sortOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -1236,19 +1240,23 @@ export default function ShopPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium mb-2">Price Range</h3>
+                  <h3 className="font-medium mb-2 text-gray-800">
+                    Price Range
+                  </h3>
                   <ul className="space-y-2">
                     {priceRanges.map((option) => (
                       <li key={option.id}>
-                        <label className="flex items-center space-x-2 cursor-pointer">
+                        <label className="flex items-center space-x-2 cursor-pointer group">
                           <input
                             type="radio"
                             name="price"
                             checked={selectedFilters.price.includes(option.id)}
                             onChange={() => toggleFilter("price", option.id)}
-                            className="rounded text-brand-primary-600 focus:ring-brand-primary-500"
+                            className="rounded text-brand-primary-600 focus:ring-brand-primary-500 border-gray-300"
                           />
-                          <span className="text-sm">{option.name}</span>
+                          <span className="text-sm text-gray-700 group-hover:text-brand-primary-600 transition-colors">
+                            {option.name}
+                          </span>
                         </label>
                       </li>
                     ))}

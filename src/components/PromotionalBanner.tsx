@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Sparkles, ArrowRight, Zap } from "lucide-react";
+import { X, ArrowRight, Zap, Tag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,20 +44,75 @@ export default function PromotionalBanner() {
     }
   }, [isVisible]);
 
-  // Show banner after delay
+  // Show banner with smart logic
   useEffect(() => {
     const timer = setTimeout(() => {
-      const isDismissed = localStorage.getItem("promoBannerDismissed");
-      if (!isDismissed) {
-        setIsVisible(true);
-      }
-    }, 2000);
+      const fetchAndShowBanner = async () => {
+        try {
+          const response = await fetch("/api/hot-deals");
+          const products: Product[] = await response.json();
+
+          if (products.length > 0) {
+            const currentHotProduct = products.reduce((max, product) =>
+              product.discountPercentage > max.discountPercentage
+                ? product
+                : max
+            );
+
+            // Get previous banner data
+            const bannerData = JSON.parse(
+              localStorage.getItem("promoBannerData") || "{}"
+            );
+
+            // Conditions for showing banner
+            const neverSeenBefore = !bannerData.lastProductId;
+            const newHotProduct =
+              bannerData.lastProductId !== currentHotProduct.id;
+            const sevenDaysPassed =
+              bannerData.lastSeen &&
+              Date.now() - bannerData.lastSeen > 7 * 24 * 60 * 60 * 1000;
+            const betterDiscount =
+              currentHotProduct.discountPercentage >
+              (bannerData.lastDiscount || 0);
+
+            // Show banner if any condition is met
+            const shouldShow =
+              neverSeenBefore ||
+              newHotProduct ||
+              sevenDaysPassed ||
+              betterDiscount;
+
+            if (shouldShow) {
+              setHotProduct(currentHotProduct);
+              setIsVisible(true);
+            }
+          }
+        } catch (error) {
+          console.error("Error checking hot deals:", error);
+        }
+      };
+
+      fetchAndShowBanner();
+    }, 3000);
+
     return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
     setIsClosing(true);
-    localStorage.setItem("promoBannerDismissed", "true");
+
+    // Save current product info to localStorage
+    if (hotProduct) {
+      localStorage.setItem(
+        "promoBannerData",
+        JSON.stringify({
+          lastProductId: hotProduct.id,
+          lastSeen: Date.now(),
+          lastDiscount: hotProduct.discountPercentage,
+        })
+      );
+    }
+
     setTimeout(() => setIsVisible(false), 300);
   };
 
@@ -69,6 +124,10 @@ export default function PromotionalBanner() {
     })
       .format(price)
       .replace("BDT", "৳");
+  };
+
+  const calculateSavings = (original: number, current: number) => {
+    return original - current;
   };
 
   return (
@@ -132,9 +191,9 @@ export default function PromotionalBanner() {
 
               {/* Product Card */}
               {hotProduct && (
-                <div className="bg-gray-50 rounded-lg p-3 mb-4 border border-gray-200">
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
+                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 mb-4 border border-red-100">
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border-2 border-white shadow-sm">
                       <Image
                         src={
                           hotProduct.images[0]?.url ||
@@ -145,21 +204,42 @@ export default function PromotionalBanner() {
                         className="object-cover"
                         quality={80}
                       />
+                      {/* Discount Badge */}
+                      <div className="absolute top-1 left-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+                        -{hotProduct.discountPercentage}%
+                      </div>
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                      <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 mb-2">
                         {hotProduct.name}
                       </h4>
 
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-base font-bold text-red-600">
-                          {formatPrice(hotProduct.price)}
-                        </span>
-                        {hotProduct.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through">
-                            {formatPrice(hotProduct.originalPrice)}
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-bold text-red-600">
+                            {formatPrice(hotProduct.price)}
                           </span>
+                          {hotProduct.originalPrice && (
+                            <span className="text-sm text-gray-500 line-through">
+                              {formatPrice(hotProduct.originalPrice)}
+                            </span>
+                          )}
+                        </div>
+
+                        {hotProduct.originalPrice && (
+                          <div className="flex items-center gap-1">
+                            <Tag className="h-3 w-3 text-green-600" />
+                            <span className="text-xs text-green-600 font-medium">
+                              Save{" "}
+                              {formatPrice(
+                                calculateSavings(
+                                  hotProduct.originalPrice,
+                                  hotProduct.price
+                                )
+                              )}
+                            </span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -167,31 +247,64 @@ export default function PromotionalBanner() {
                 </div>
               )}
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col gap-2">
-                <Link
-                  href="/hot-deals"
-                  onClick={handleClose}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
-                >
-                  <span>View All Hot Deals</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+              {/* CTA Buttons - Optimized for Conversion */}
+              <div className="space-y-3">
+                {hotProduct ? (
+                  <>
+                    {/* Primary CTA - Direct to Product */}
+                    <Link
+                      href={`/products/${hotProduct.slug}`}
+                      onClick={handleClose}
+                      className="block w-full text-center bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-[1.02]"
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <span>Get This Deal</span>
+                        <ArrowRight className="h-4 w-4" />
+                      </div>
+                      <div className="text-xs font-normal opacity-90 mt-1">
+                        Save {hotProduct.discountPercentage}% • Limited Time
+                      </div>
+                    </Link>
 
+                    {/* Secondary CTA - All Hot Deals */}
+                    <Link
+                      href="/hot-deals"
+                      onClick={handleClose}
+                      className="block w-full text-center border-2 border-gray-300 text-gray-700 hover:border-red-300 hover:bg-red-50 hover:text-red-700 font-medium py-2.5 px-4 rounded-lg transition-all duration-200"
+                    >
+                      View All Hot Deals
+                    </Link>
+                  </>
+                ) : (
+                  /* Fallback when no product */
+                  <Link
+                    href="/hot-deals"
+                    onClick={handleClose}
+                    className="block w-full text-center bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <span>View Hot Deals</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </Link>
+                )}
+
+                {/* Tertiary Action */}
                 <button
                   onClick={handleClose}
-                  className="text-gray-600 hover:text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                  className="block w-full text-center text-gray-500 hover:text-gray-700 text-sm py-2 transition-colors duration-200"
                 >
-                  Maybe Later
+                  Continue Shopping
                 </button>
               </div>
             </div>
 
             {/* Footer Note */}
-            <div className="bg-gray-50 border-t border-gray-100 px-5 py-2">
-              <p className="text-xs text-gray-500 text-center">
-                Limited stock available
-              </p>
+            <div className="bg-gray-50 border-t border-gray-100 px-5 py-3">
+              <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+                <Zap className="h-3 w-3" />
+                <span>Limited stock • Prices may change</span>
+              </div>
             </div>
           </motion.div>
         </motion.div>

@@ -23,12 +23,12 @@ const heroImages = [
     highlight: "Beauty Routine",
     cta: "Shop Beauty",
     badge: "NEW ARRIVALS",
-    gradient: "from-purple-600/30 to-pink-600/30",
+    gradient: "from-brand-primary-600/30 to-brand-primary-700/30",
     stats: [
       { icon: Star, value: "4.9/5", label: "Beauty Rating" },
       { icon: Users, value: "10K+", label: "Happy Customers" },
     ],
-    color: "from-purple-400 to-pink-400",
+    color: "from-brand-primary-400 to-brand-primary-500",
   },
   {
     src: "/images/hero/Banner-3.jpg",
@@ -36,12 +36,12 @@ const heroImages = [
     highlight: "Wellness Journey",
     cta: "Explore Wellness",
     badge: "BESTSELLER",
-    gradient: "from-blue-600/30 to-cyan-600/30",
+    gradient: "from-brand-secondary-600/30 to-brand-secondary-700/30",
     stats: [
       { icon: Award, value: "Premium", label: "Quality Products" },
       { icon: Zap, value: "Fast", label: "Wellness Results" },
     ],
-    color: "from-blue-400 to-cyan-400",
+    color: "from-brand-secondary-400 to-brand-secondary-500",
   },
   {
     src: "/images/hero/hero-image.jpg",
@@ -49,12 +49,12 @@ const heroImages = [
     highlight: "Lifestyle",
     cta: "Discover Style",
     badge: "LIMITED EDITION",
-    gradient: "from-emerald-600/30 to-teal-600/30",
+    gradient: "from-brand-sky-500/30 to-brand-sky-600/30",
     stats: [
       { icon: TrendingUp, value: "50K+", label: "Lovers" },
       { icon: Sparkles, value: "Trending", label: "This Week" },
     ],
-    color: "from-emerald-400 to-teal-400",
+    color: "from-brand-sky-400 to-brand-sky-500",
   },
 ];
 
@@ -220,34 +220,6 @@ export default function Hero() {
                 </div>
               </motion.div>
             </div>
-          </div>
-        </div>
-
-        {/* Mobile Controls */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 xl:hidden flex items-center gap-4 z-20">
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className="bg-white/15 backdrop-blur-lg border border-white/30 p-3 rounded-full hover:bg-white/25 transition-colors shadow-lg"
-          >
-            {isPlaying ? (
-              <Pause className="h-4 w-4 text-white" />
-            ) : (
-              <Play className="h-4 w-4 text-white" />
-            )}
-          </button>
-
-          <div className="flex gap-2 bg-white/15 backdrop-blur-lg border border-white/30 px-3 py-2 rounded-full shadow-lg">
-            {heroImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentImageIndex(index)}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${
-                  index === currentImageIndex
-                    ? "bg-white scale-125 shadow-sm"
-                    : "bg-white/50 hover:bg-white/70"
-                }`}
-              />
-            ))}
           </div>
         </div>
       </div>

@@ -558,27 +558,7 @@ export default function ProductPageClient({
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center text-sm text-brand-neutral-500 mb-6">
-        <Link href="/" className="hover:text-brand-primary-600">
-          Home
-        </Link>
-        <span className="mx-2">/</span>
-        <Link href="/shop" className="hover:text-brand-primary-600">
-          Shop
-        </Link>
-        <span className="mx-2">/</span>
-        <Link
-          href={`/shop?category=${product.categoryId}`}
-          className="hover:text-brand-primary-600"
-        >
-          {product.category.name}
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-brand-neutral-800">{product.name}</span>
-      </div>
-
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Product Image Section - IMPROVED */}
         <div className="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-4">

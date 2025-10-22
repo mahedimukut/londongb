@@ -7,6 +7,7 @@ import {
   Instagram,
   Youtube,
 } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import React from "react";
 import Link from "next/link";
 
@@ -26,7 +27,7 @@ const Announcement = () => {
     },
     {
       name: "Twitter",
-      icon: Twitter,
+      icon: FaXTwitter,
       href: "https://twitter.com/britcartbd",
       color: "hover:text-blue-300",
     },

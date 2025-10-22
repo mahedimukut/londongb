@@ -164,3 +164,30 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Custom scrollbar styles - Lighter & Softer */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #f472b6; /* Lighter pink */
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #ec4899; /* Slightly darker on hover */
+  }
+
+  /* For Firefox */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #f472b6 #f8fafc;
+  }
+}

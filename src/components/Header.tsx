@@ -349,6 +349,42 @@ const Header = () => {
     );
   };
 
+  // Mobile User Avatar Component for Menu Drawer
+  const MobileUserAvatar = () => {
+    const [imageError, setImageError] = useState(false);
+
+    if (status === "loading") {
+      return (
+        <div className="w-12 h-12 bg-brand-neutral-100 rounded-full flex items-center justify-center border-2 border-brand-neutral-200">
+          <Loader2 className="w-6 h-6 text-brand-neutral-400 animate-spin" />
+        </div>
+      );
+    }
+
+    if (status === "authenticated" && session?.user?.image && !imageError) {
+      return (
+        <div className="relative">
+          <Image
+            src={session.user.image}
+            alt={session.user.name || "User"}
+            width={48}
+            height={48}
+            className="rounded-full border-2 border-brand-primary-200 object-cover w-12 h-12"
+            onError={() => setImageError(true)}
+            priority={false}
+            sizes="48px"
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="w-12 h-12 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200">
+        <User className="w-6 h-6 text-brand-primary-600" />
+      </div>
+    );
+  };
+
   // Action buttons component for reusability
   const ActionButton = ({
     icon: Icon,
@@ -952,8 +988,17 @@ const Header = () => {
               className="fixed inset-y-0 left-0 w-[85vw] max-w-sm bg-white z-50 lg:hidden overflow-y-auto safe-area-inset custom-scrollbar"
             >
               <div className="flex flex-col h-full">
-                {/* Header - Only close button, no text */}
-                <div className="flex items-center justify-end p-4 border-b border-brand-neutral-200 bg-gradient-to-r from-brand-primary-50 to-purple-50 safe-area-top min-h-[60px]">
+                {/* Header - Logo on left, close button on right */}
+                <div className="flex items-center justify-between p-4 border-b border-brand-neutral-200 bg-gradient-to-r from-brand-primary-50 to-purple-50 safe-area-top min-h-[60px]">
+                  <Link
+                    href="/"
+                    className="flex items-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="text-xl font-bold text-brand-primary-600 font-display">
+                      britcartbd.com
+                    </span>
+                  </Link>
                   <ActionButton
                     icon={X}
                     onClick={() => setMobileMenuOpen(false)}
@@ -1000,9 +1045,7 @@ const Header = () => {
                   {status === "authenticated" && session?.user ? (
                     <>
                       <div className="flex items-center gap-3 px-4 py-3 mb-3 bg-white rounded-xl border border-brand-primary-200 shadow-sm">
-                        <div className="w-12 h-12 bg-brand-primary-100 rounded-full flex items-center justify-center border-2 border-brand-primary-200">
-                          <User className="w-6 h-6 text-brand-primary-600" />
-                        </div>
+                        <MobileUserAvatar />
                         <div className="flex-1 min-w-0">
                           <p className="text-base font-bold text-brand-neutral-900 truncate">
                             {session.user.name || "User"}

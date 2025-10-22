@@ -15,6 +15,31 @@ export const metadata: Metadata = {
   title: "BritCartBD – Your Trusted Online Marketplace",
   description:
     "Shop online in Bangladesh with BritCartBD. From skincare and health to baby products, electronics, auto parts, pet supplies, and more — everything you need in one trusted marketplace.",
+  icons: {
+    icon: [
+      {
+        url: "/images/favicon/favicon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+      {
+        url: "/images/favicon/favicon-192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/images/favicon/favicon.ico",
+        sizes: "any",
+      },
+    ],
+    apple: [
+      {
+        url: "/images/favicon/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -24,6 +49,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/images/favicon/site.webmanifest" />
+      </head>
       <body className={`${nunitoSans.variable} font-sans antialiased`}>
         <SessionProvider>
           <CartProvider>
